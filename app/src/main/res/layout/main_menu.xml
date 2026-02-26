@@ -18,4 +18,36 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.157" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="141dp"
+        tools:layout_editor_absoluteY="148dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="342dp"
+        android:layout_height="48dp"
+        tools:layout_editor_absoluteX="34dp"
+        tools:layout_editor_absoluteY="309dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="339dp"
+            android:layout_height="44dp"
+            android:hint="Nombre" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="342dp"
+        android:layout_height="48dp"
+        tools:layout_editor_absoluteX="34dp"
+        tools:layout_editor_absoluteY="380dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="339dp"
+            android:layout_height="44dp"
+            android:hint="Fecha de Nacimiento" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
