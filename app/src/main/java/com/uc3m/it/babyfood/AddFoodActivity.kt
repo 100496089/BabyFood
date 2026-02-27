@@ -14,4 +14,13 @@ class AddFoodActivity : AppCompatActivity(){
         enableEdgeToEdge()
         setContentView(R.layout.addfood_activity)
     }
+    //  Metodo que procesa la pulsacion (onClick) del boton ok
+    fun newFood(view: View?){
+        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+        val intent = Intent(
+            this,
+            FoodRegisterActivity::class.java
+        )
+        startActivity(intent)
+    }
 }

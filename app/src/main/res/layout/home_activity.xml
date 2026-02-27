@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="85dp"
         android:scaleType="centerCrop"
         app:shapeAppearanceOverlay="@style/CircleImageView"
         android:contentDescription="foto del bebé"/>
@@ -27,8 +27,8 @@
         android:id="@+id/addAlimento_button"
         android:layout_width="370dp"
         android:layout_height="60dp"
-        android:onClick="addAlimento"
-        android:text="@string/AddFood_Button"
+        android:onClick="addFood"
+        android:text="@string/addFood_Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,8 +47,8 @@
         app:layout_constraintStart_toStartOf="@id/ImagenBebe"
         app:layout_constraintEnd_toEndOf="@id/ImagenBebe"
         android:layout_marginTop="10dp"
-        android:text="@string/perfilButton"
-        android:onClick="cambiaPerfil"/>
+        android:text="@string/profile_Button"
+        android:onClick="profileChange"/>
 
     <TextView
         android:id="@+id/Food_Registration"
@@ -58,7 +58,7 @@
         app:layout_constraintBottom_toTopOf="@id/addAlimento_button"
         android:layout_marginStart="2dp"
         android:layout_marginBottom="10dp"
-        android:text= "@string/RegistroAlimento"
+        android:text= "@string/foodRegister_Button"
         android:textSize= "18sp"
         android:textStyle= "bold"
         />
@@ -76,6 +76,7 @@
         app:shapeAppearanceOverlay="@style/CircleImageView"
         android:clickable="true"
         android:focusable="true"
+        android:onClick="foodRegister"
         />
 
     <TextView
@@ -86,7 +87,7 @@
         app:layout_constraintTop_toBottomOf="@id/addAlimento_button"
         android:layout_marginStart="2dp"
         android:layout_marginTop="30dp"
-        android:text= "@string/ExplorarRecetas"
+        android:text= "@string/exploreRecipes_Button"
         android:textSize= "20sp"
         android:textStyle= "bold"
         />
@@ -158,7 +159,7 @@
     <View
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="#010101"
+        android:background="#C6C6C6"
         app:layout_constraintBottom_toTopOf="@id/home_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

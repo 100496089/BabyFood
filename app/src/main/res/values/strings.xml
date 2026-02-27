@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">BabyFood</string>
-    <string name="AddFood_Button">Añadir alimento</string>
-    <string name="perfilButton">Editar perfil</string>
-    <string name="RegistroAlimento">Registro de alimentos</string>
-    <string name="ExplorarRecetas">Explorar recetas</string>
+    <string name="addFood_Button">Añadir alimento</string>
+    <string name="profile_Button">Editar perfil</string>
+    <string name="foodRegister_Button">Registro de alimentos</string>
+    <string name="exploreRecipes_Button">Explorar recetas</string>
     <string name="photo">Foto</string>
     <string name="name">Nombre</string>
-    <string name="coment">Comentario</string>
+    <string name="comment">Comentario</string>
     <string name="date">Fecha</string>
+    <string name="foodRegister">Registro de alimentos</string>
 </resources>

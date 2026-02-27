@@ -8,13 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.TextView
 
-class HomeActivity : AppCompatActivity() {
+class FoodRegisterActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.home_activity)
+        setContentView(R.layout.foodregister_activity)
     }
-    //  Metodo que procesa la pulsacion (onClick) del boton Añadir Alimento
+    //BOTONES
+    //Boton de Añadir alimento
     fun addFood(view: View?){
         // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
         val intent = Intent(
@@ -24,25 +25,13 @@ class HomeActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    //boton editar perfil
-    fun profileChange(view: View?){
+    //Boton de home
+    fun home(view: View?) {
         // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
         val intent = Intent(
             this,
-            MainActivity::class.java
+            HomeActivity::class.java
         )
         startActivity(intent)
-
-    }
-
-    //boton registro de alimentos
-    fun foodRegister(view: View?){
-        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
-        val intent = Intent(
-            this,
-            FoodRegisterActivity::class.java
-        )
-        startActivity(intent)
-
     }
 }
