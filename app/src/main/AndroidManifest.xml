@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BabyFood">
         <activity
+            android:name=".CalendarActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -20,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
