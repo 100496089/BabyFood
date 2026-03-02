@@ -51,12 +51,66 @@ class FoodActivity : AppCompatActivity() {
 
         // Lista de alimentos (texto en español)
         val foodList = listOf(
+            // Verduras y Hortalizas
             Food("Zanahoria"),
-            Food("Plátano"),
             Food("Brócoli"),
             Food("Patata"),
             Food("Tomate"),
-            Food("Calabaza")
+            Food("Calabaza"),
+            Food("Calabacín"),
+            Food("Berenjena"),
+            Food("Guisantes"),
+            Food("Judías verdes"),
+            Food("Puerro"),
+            Food("Batata"),
+            Food("Coliflor"),
+            Food("Pepino"),
+
+            // Frutas
+            Food("Plátano"),
+            Food("Manzana"),
+            Food("Pera"),
+            Food("Naranja"),
+            Food("Mandarina"),
+            Food("Uva"),
+            Food("Aguacate"),
+            Food("Mango"),
+            Food("Papaya"),
+            Food("Fresa"),
+            Food("Arándanos"),
+            Food("Ciruela"),
+            Food("Melocotón"),
+            Food("Sandía"),
+            Food("Melón"),
+
+            // Proteínas (Carnes, Pescados y Legumbres)
+            Food("Pollo"),
+            Food("Vacuno"),
+            Food("Cerdo"),
+            Food("Pavo"),
+            Food("Conejo"),
+            Food("Huevo"),
+            Food("Merluza"),
+            Food("Salmón"),
+            Food("Lentejas"),
+            Food("Garbanzos"),
+            Food("Alubias"),
+            Food("Tofu"),
+
+            // Cereales y Lácteos
+            Food("Maíz"),
+            Food("Arroz"),
+            Food("Avena"),
+            Food("Pasta"),
+            Food("Quinoa"),
+            Food("Cuscús"),
+            Food("Pan"),
+            Food("Leche"),
+            Food("Yogur natural"),
+            Food("Queso fresco"),
+
+            // Otros
+            Food("Aceite de oliva")
         )
 
 // Grid de 2 columnas
