@@ -123,7 +123,7 @@
         android:id="@+id/favorites_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/favorites"
+        android:src="@drawable/favorite"
         android:background="@null"
         android:scaleType="centerInside"
         android:layout_marginBottom="40dp"
