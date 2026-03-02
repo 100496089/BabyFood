@@ -5,8 +5,9 @@
         <item name="android:background">@drawable/button_calendar_bg</item>
         <item name="backgroundTint">@null</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/buttonCalendar</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
+
     </style>
 
 </resources>

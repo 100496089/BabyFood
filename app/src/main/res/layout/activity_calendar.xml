@@ -32,8 +32,9 @@
                 style="@style/StyleButtonCalendar"
                 android:id="@+id/addBreakfast"
                 android:text="+"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
 
             <!-- Contenedor donde se mostrarán las comidas del desayuno -->
             <LinearLayout
@@ -52,10 +53,12 @@
                 android:layout_height="wrap_content"/>
 
             <Button
+                style="@style/StyleButtonCalendar"
                 android:id="@+id/addLunch"
                 android:text="+"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
 
             <!-- Contenedor donde se mostrarán las comidas del almuerzo -->
             <LinearLayout
@@ -74,10 +77,12 @@
                 android:layout_height="wrap_content"/>
 
             <Button
+                style="@style/StyleButtonCalendar"
                 android:id="@+id/addSnack"
                 android:text="+"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
 
             <!-- Contenedor donde se mostrarán las comidas de la merienda -->
             <LinearLayout
@@ -96,10 +101,12 @@
                 android:layout_height="wrap_content"/>
 
             <Button
+                style="@style/StyleButtonCalendar"
                 android:id="@+id/addDinner"
                 android:text="+"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
 
             <!-- Contenedor donde se mostrarán las comidas de la cena -->
             <LinearLayout

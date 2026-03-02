@@ -41,17 +41,23 @@ class CalendarActivity : AppCompatActivity() {
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectedDate = "$dayOfMonth/${month + 1}/$year"
             loadMealsForDate(selectedDate) }
-    // Botón para añadir desayuno
-        addBreakfastButton.setOnClickListener { showAddMealDialog("breakfast") }
-    // Botón para añadir almuerzo
-        addLunchButton.setOnClickListener { showAddMealDialog("lunch") }
-    // Botón para añadir merienda
-        addSnackButton.setOnClickListener { showAddMealDialog("snack") }
-    // Botón para añadir cena
-        addDinnerButton.setOnClickListener { showAddMealDialog("dinner") }
+
+        //Boton
+        addBreakfastButton.setOnClickListener { openMealScreen("Desayuno") }
+        addLunchButton.setOnClickListener { openMealScreen("Almuerzo") }
+        addSnackButton.setOnClickListener { openMealScreen("Merienda") }
+        addDinnerButton.setOnClickListener { openMealScreen("Cena") }
+
 
     }
-// Muestra un diálogo donde el usuario escribe la comida
+private fun openMealScreen(mealType: String) {
+    val intent = Intent(this, MealDetailActivity::class.java)
+    intent.putExtra("mealType", mealType)
+    intent.putExtra("selectedDate", selectedDate)
+    startActivity(intent)
+}
+
+    // Muestra un diálogo donde el usuario escribe la comida
 private fun showAddMealDialog(mealType: String) {
     // Campo de texto donde el usuario escribe la comida
     val editText = EditText(this)
