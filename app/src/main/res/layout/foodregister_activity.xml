@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".FoodRegisterActivity"
+    android:background="#EFDAF8">
+
+    <TextView
+        android:id="@+id/addFood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text= "@string/foodRegister"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="100dp"
+        android:textSize= "25sp"
+        android:textStyle= "bold"
+        />
+
+    <!--Boton añadir alimento-->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addAlimento_button"
+        android:layout_width="370dp"
+        android:layout_height="60dp"
+        android:text="@string/addFood_Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="160dp"
+        style="@style/addAlimento"
+        android:onClick="addFood"/>
+
+    <ImageButton
+        android:id="@+id/home_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="40dp"
+        android:scaleType="centerInside"
+        android:background="@null"
+        android:src="@drawable/home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="home"/>
+
+    <ImageButton
+        android:id="@+id/favorites_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/favorite"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:layout_marginBottom="40dp"
+        android:layout_marginStart="140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <ImageButton
+        android:id="@+id/search_button"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
+        android:src="@drawable/search"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:layout_marginBottom="40dp"
+        android:layout_marginStart="240dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+    <ImageButton
+        android:id="@+id/calendar_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/calendar"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:layout_marginBottom="40dp"
+        android:layout_marginStart="340dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#C6C6C6"
+        app:layout_constraintBottom_toTopOf="@id/home_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="20dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
