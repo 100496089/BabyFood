@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BabyFood">
         <activity
-            android:name=".HomeActivity"
+            android:name=".CalendarActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,13 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FoodRegisterActivity"/>
-        <activity android:name=".AddFoodActivity"/>
-        <!--<activity android:name=".HomeActivity"/>-->
-        <activity android:name=".CalendarActivity"/>
-       <activity android:name=".FoodActivity"/>
-
-
+        <activity android:name=".FoodRegisterActivity" />
+        <activity android:name=".AddFoodActivity" />
+        <activity android:name=".HomeActivity" /> <!-- <activity android:name=".CalendarActivity"/> -->
+        <activity android:name=".FoodActivity" />
     </application>
 
 </manifest>
