@@ -7,6 +7,17 @@
     tools:context=".FoodRegisterActivity"
     android:background="#EFDAF8">
 
+    <ListView android:id="@+id/id_list_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/addFood"
+        app:layout_constraintBottom_toTopOf="@id/addAlimento_button"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        tools:ignore="MissingConstraints" />
+
     <TextView
         android:id="@+id/addFood"
         android:layout_width="wrap_content"
@@ -19,6 +30,14 @@
         android:textSize= "25sp"
         android:textStyle= "bold"
         />
+    <!-- ImageView para mostrar la foto -->
+    <ImageView
+        android:id="@+id/imagen"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        tools:ignore="MissingConstraints" />
 
     <!--Boton añadir alimento-->
     <com.google.android.material.button.MaterialButton
@@ -29,9 +48,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="160dp"
+        android:layout_marginBottom="140dp"
         style="@style/addAlimento"
-        android:onClick="addFood"/>
+        android:onClick="createNote"/>
 
     <ImageButton
         android:id="@+id/home_button"
@@ -70,6 +89,7 @@
         android:layout_marginStart="240dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:onClick="search"
         />
     <ImageButton
         android:id="@+id/calendar_button"
@@ -82,6 +102,7 @@
         android:layout_marginStart="340dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:onClick="calendar"
         />
     <View
         android:layout_width="0dp"

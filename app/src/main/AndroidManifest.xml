@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BabyFood">
+
         <activity
             android:name=".HomeActivity"
             android:exported="true">
@@ -26,6 +27,16 @@
         <activity android:name=".CalendarActivity"/>
        <activity android:name=".FoodActivity"/>
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.uc3m.it.hellocamera.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths">
+            </meta-data>
+        </provider>
 
     </application>
 

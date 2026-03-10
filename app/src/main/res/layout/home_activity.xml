@@ -57,7 +57,7 @@
         app:layout_constraintStart_toStartOf="@id/addAlimento_button"
         app:layout_constraintBottom_toTopOf="@id/addAlimento_button"
         android:layout_marginStart="2dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:text= "@string/foodRegister_Button"
         android:textSize= "18sp"
         android:textStyle= "bold"
@@ -72,6 +72,7 @@
         android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@+id/addAlimento_button"
         app:layout_constraintStart_toEndOf="@+id/Food_Registration"
+        android:layout_marginBottom="10dp"
         android:layout_marginStart="5dp"
         app:shapeAppearanceOverlay="@style/CircleImageView"
         android:clickable="true"
@@ -143,6 +144,7 @@
         android:layout_marginStart="240dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:onClick="search"
         />
     <ImageButton
         android:id="@+id/calendar_button"
@@ -155,6 +157,7 @@
         android:layout_marginStart="340dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:onClick="calendar"
         />
     <View
         android:layout_width="0dp"

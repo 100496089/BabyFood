@@ -45,4 +45,25 @@ class HomeActivity : AppCompatActivity() {
         startActivity(intent)
 
     }
+    //boton buscar
+    fun search(view: View?){
+        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+        val intent = Intent(
+            this,
+            FoodActivity::class.java
+        )
+        startActivity(intent)
+
+    }
+
+    //boton calendario
+    fun calendar(view: View?){
+        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+        val intent = Intent(
+            this,
+            CalendarActivity::class.java
+        )
+        startActivity(intent)
+
+    }
 }
