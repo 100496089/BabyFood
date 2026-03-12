@@ -59,12 +59,12 @@ class FoodRegisterActivity : AppCompatActivity(){
         val notesCursor = dbAdapter!!.fetchAllNotes() //puntero de todas las notas
         startManagingCursor(notesCursor)
 
-        val from = arrayOf(FoodRegisterAdapter.KEY_NAME, FoodRegisterAdapter.KEY_COMMENT) //que columnas quieres mostrar
-        val to = intArrayOf(android.R.id.text1, android.R.id.text2) //a que vistas del diseño van
+        val from = arrayOf(FoodRegisterAdapter.KEY_NAME, FoodRegisterAdapter.KEY_COMMENT, FoodRegisterAdapter.KEY_DATE, FoodRegisterAdapter.KEY_PHOTO) //que columnas quieres mostrar
+        val to = intArrayOf(R.id.name, R.id.comment, R.id.date, R.id.photo) //a que vistas del diseño van
 
         val adapter = SimpleCursorAdapter( // recorre cada fila de notesCursor y la muestra en el listview
             this,
-            android.R.layout.simple_list_item_1,
+            R.layout.list_item_food,
             notesCursor,
             from,
             to,
