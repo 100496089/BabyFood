@@ -5,7 +5,7 @@
         <item name="cornerSize">50%</item>
     </style>
     <style name="addAlimento" parent="Widget.MaterialComponents.Button">
-        <item name="backgroundTint">#FF000000</item>
+        <item name="backgroundTint">#B57EDC</item>
         <item name="cornerRadius">8dp</item>
     </style>
 </resources>

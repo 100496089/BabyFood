@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/home_button"
+        android:icon="@drawable/home"
+        android:title="Inicio"/>
+
+    <item
+        android:id="@+id/favorites_button"
+        android:icon="@drawable/favorite"
+        android:title="favorite"
+
+        />
+
+    <item
+        android:id="@+id/search_button"
+        android:icon="@drawable/search"
+        android:title="search"
+        />
+    <item
+        android:id="@+id/calendar_button"
+        android:icon="@drawable/calendar"
+        android:title="calendar"
+        />
+
+
+</menu>
