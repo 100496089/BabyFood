@@ -12,6 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.SimpleCursorAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class FoodRegisterActivity : AppCompatActivity(){
 
@@ -43,10 +44,53 @@ class FoodRegisterActivity : AppCompatActivity(){
 
         // rellenamos el listview con los títulos de todas las notas en la BD
         fillData()
+
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNav.setOnItemSelectedListener { item ->
+
+            when(item.itemId){
+
+                R.id.home_button -> {
+                    true
+                }
+
+                R.id.search_button -> {
+                    // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+                    val intent = Intent(
+                        this,
+                        FoodActivity::class.java
+                    )
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.favorites_button -> {
+                    true
+                }
+
+                R.id.calendar_button -> {
+                    // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+                    val intent = Intent(
+                        this,
+                        CalendarActivity::class.java
+                    )
+                    startActivity(intent)
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
-    //BOTONES
-    //Boton de Añadir alimento
+    // boton back
+    fun back(view: View?){
+        val intent = Intent(
+            this,
+            HomeActivity::class.java
+        )
+        startActivity(intent)
+    }
     fun createNote(view: View?){
         // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
         val intent = Intent(
@@ -59,7 +103,7 @@ class FoodRegisterActivity : AppCompatActivity(){
         val notesCursor = dbAdapter!!.fetchAllNotes() //puntero de todas las notas
         startManagingCursor(notesCursor)
 
-        val from = arrayOf(FoodRegisterAdapter.KEY_NAME, FoodRegisterAdapter.KEY_COMMENT, FoodRegisterAdapter.KEY_DATE, FoodRegisterAdapter.KEY_PHOTO) //que columnas quieres mostrar
+        val from = arrayOf(FoodRegisterAdapter.KEY_NAME, FoodRegisterAdapter.KEY_COMMENT, FoodRegisterAdapter.KEY_DATE, FoodRegisterAdapter.KEY_PHOTO, FoodRegisterAdapter.KEY_RATE) //que columnas quieres mostrar
         val to = intArrayOf(R.id.name, R.id.comment, R.id.date, R.id.photo) //a que vistas del diseño van
 
         val adapter = SimpleCursorAdapter( // recorre cada fila de notesCursor y la muestra en el listview
@@ -78,36 +122,6 @@ class FoodRegisterActivity : AppCompatActivity(){
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         fillData()
-    }
-
-    //Boton de home
-    fun home(view: View?) {
-        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
-        val intent = Intent(
-            this,
-            HomeActivity::class.java
-        )
-        startActivity(intent)
-    }
-    //boton buscar
-    fun search(view: View?) {
-        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
-        val intent = Intent(
-            this,
-            FoodActivity::class.java
-        )
-        startActivity(intent)
-    }
-
-    //boton calendario
-    fun calendar(view: View?){
-        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
-        val intent = Intent(
-            this,
-            CalendarActivity::class.java
-        )
-        startActivity(intent)
-
     }
 
     companion object {

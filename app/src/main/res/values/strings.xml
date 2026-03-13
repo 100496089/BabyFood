@@ -11,5 +11,14 @@
     <string name="peso">Peso</string>
     <string name="alergias_intolerancias">Alergias/Intolerancias</string>
     <string name="enviar_button">Enviar</string>
+    <string name="category">Categoría</string>
     <string name="foodRegister">Registro de alimentos</string>
+    <string-array name="food_categories">
+        <item>Verduras y frutas</item>
+        <item>Carnes</item>
+        <item>Pescado</item>
+        <item>Leguminosas</item>
+        <item>Postre</item>
+        <item>Bebida</item>
+    </string-array>
 </resources>

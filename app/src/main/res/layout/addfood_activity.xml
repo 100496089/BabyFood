@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".AddFoodActivity"
-    android:background="#EFDAF8">
+    android:background="#F7EDFB">
 
     <TextView
         android:id="@+id/addFood"
@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="100dp"
-        android:textSize= "25sp"
+        android:textSize= "30sp"
         android:textStyle= "bold"
         />
     <ImageButton
@@ -25,13 +25,22 @@
         android:layout_height="40dp"
         android:scaleType="centerInside"
         android:background="@null"
-        android:src="@drawable/arrow_back"
+        android:src="@drawable/arrow_backward"
         app:layout_constraintEnd_toStartOf="@+id/addFood"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="30dp"
         android:onClick="back"/>
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/camera_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="54dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
     <ImageButton
         android:id="@+id/camera_button"
@@ -40,59 +49,120 @@
         android:scaleType="centerInside"
         android:background="@null"
         android:src="@drawable/camera"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="60dp"
-        android:layout_marginStart="40dp"
         android:onClick="camera"/>
+    </com.google.android.material.card.MaterialCardView>
 
-
-     <EditText
-        android:id="@+id/Name"
-        android:inputType="text"
-        android:layout_width="370dp"
-        android:layout_height="60dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/Name_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="34dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
         app:layout_constraintTop_toBottomOf="@id/addFood"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="40dp"
-        android:hint="@string/name" />
+        tools:ignore="MissingConstraints">
 
-    <EditText
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/addFood"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="40dp"
+            android:hint="@string/name" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/Comment_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="14dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/Name_card"
+        tools:ignore="MissingConstraints">
+
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/Comment"
-        android:inputType="text"
-        android:layout_width="370dp"
-        android:layout_height="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/Name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="40dp"
         android:hint="@string/comment" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/Calendar"
-        android:inputType="text"
-        android:layout_width="370dp"
-        android:layout_height="60dp"
-        app:layout_constraintTop_toBottomOf="@id/Comment"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/Calendar_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="14dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/Comment_card"
+        tools:ignore="MissingConstraints"
+        app:endIconMode="custom"
+        app:endIconDrawable="@drawable/calendar">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/Comment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="40dp"
+            android:hint="@string/date" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/Category_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="14dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        app:layout_constraintTop_toBottomOf="@id/Calendar_card"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
+        tools:ignore="MissingConstraints">
+
+        <AutoCompleteTextView
+            android:id="@+id/category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/Calendar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="40dp"
+            android:hint="@string/category"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1.0"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toBottomOf="@id/Category_card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="40dp"
-        android:hint="@string/date" />
-
-
-    <ImageButton
-        android:id="@+id/date_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:scaleType="centerInside"
-        android:background="@null"
-        android:src="@drawable/calendar"
-        app:layout_constraintTop_toBottomOf="@id/Comment"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="30dp"
-        android:onClick="date"/>
+        android:layout_marginTop="40dp" />
 
     <ImageButton
         android:id="@+id/ok_button"
@@ -106,5 +176,6 @@
         android:layout_marginBottom="60dp"
         android:layout_marginEnd="40dp"
         android:onClick="saveNote"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
