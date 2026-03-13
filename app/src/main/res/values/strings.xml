@@ -8,11 +8,11 @@
     <string name="name">Nombre</string>
     <string name="comment">Comentario</string>
     <string name="date">Fecha</string>
-    <string name="peso">Peso</string>
-    <string name="alergias_intolerancias">Alergias/Intolerancias</string>
-    <string name="enviar_button">Enviar</string>
     <string name="category">Categoría</string>
     <string name="foodRegister">Registro de alimentos</string>
+    <string name="peso">Peso</string>
+    <string name="alergias_intolerancias">Alergias o intolerancias</string>
+    <string name="enviar_button">Enviar</string>
     <string-array name="food_categories">
         <item>Verduras y frutas</item>
         <item>Carnes</item>

@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import android.widget.Button
 import android.widget.TextView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,37 +16,73 @@ class HomeActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.home_activity)
 
-        // Referencia al TextView de bienvenida
-        val textViewBienvenida = findViewById<TextView>(R.id.textViewBienvenida)
-
-        // Cargar el nombre desde SharedPreferences
+        // Recuperar el nombre guardado para el mensaje de bienvenida
         val prefs = getSharedPreferences("BabyFoodPrefs", Context.MODE_PRIVATE)
-        val nombre = prefs.getString("nombre", "")
+        val nombreBebe = prefs.getString("nombre", "Bebé")
+        val welcomeText = findViewById<TextView>(R.id.welcomeMessage)
+        if (welcomeText != null) {
+            welcomeText.text = "¡Hola, $nombreBebe!"
+        }
 
-        // Actualizar el texto
-        if (!nombre.isNullOrEmpty()) {
-            textViewBienvenida.text = "Hola, $nombre"
-        } else {
-            textViewBienvenida.text = "Hola"
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNav.setOnItemSelectedListener { item ->
+
+            when(item.itemId){
+
+                R.id.home_button -> {
+                    true
+                }
+
+                R.id.search_button -> {
+                        val intent = Intent(
+                            this,
+                            FoodActivity::class.java
+                        )
+                        startActivity(intent)
+                    true
+                }
+
+                R.id.favorites_button -> {
+                    true
+                }
+
+                R.id.calendar_button -> {
+                        val intent = Intent(
+                            this,
+                            CalendarActivity::class.java
+                        )
+                        startActivity(intent)
+                    true
+                }
+
+                else -> false
+            }
         }
     }
-    //  Metodo que procesa la pulsacion (onClick) del boton Añadir Alimento
+
     fun addFood(view: View?){
-        val intent = Intent(this, AddFoodActivity::class.java)
+        val intent = Intent(
+            this,
+            AddFoodActivity::class.java
+        )
         startActivity(intent)
     }
 
-    // Boton editar perfil
+    //boton editar perfil
     fun profileChange(view: View?){
-        val intent = Intent(this, MainMenuActivity::class.java)
-        // Pasamos un flag para indicar que queremos editar, para que no nos redirija de vuelta
+        val intent = Intent(
+            this,
+            MainMenuActivity::class.java
+        )
         intent.putExtra("isEditing", true)
         startActivity(intent)
     }
 
-    // Boton registro de alimentos
     fun foodRegister(view: View?){
-        val intent = Intent(this, FoodRegisterActivity::class.java)
+        val intent = Intent(
+            this,
+            FoodRegisterActivity::class.java
+        )
         startActivity(intent)
     }
 }
