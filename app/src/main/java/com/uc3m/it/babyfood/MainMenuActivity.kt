@@ -1,6 +1,10 @@
 package com.uc3m.it.babyfood
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -24,8 +28,8 @@ class MainMenuActivity : AppCompatActivity() {
             insets
         }
 
+        // Configuración de Fecha
         val editTextFecha = findViewById<EditText>(R.id.editTextFecha)
-
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Selecciona fecha de nacimiento")
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
@@ -40,6 +44,19 @@ class MainMenuActivity : AppCompatActivity() {
             sdf.timeZone = TimeZone.getTimeZone("UTC")
             val date = Date(selection)
             editTextFecha.setText(sdf.format(date))
+        }
+
+        // Configuración de Desplegable de Alergias
+        val alergias = arrayOf("Ninguna", "Lactosa", "Gluten", "Huevo", "Frutos Secos", "Pescado", "Otros")
+        val adapter = ArrayAdapter(this, R.layout.list_item, alergias)
+        val autoCompleteAlergia = findViewById<AutoCompleteTextView>(R.id.autoCompleteAlergia)
+        autoCompleteAlergia.setAdapter(adapter)
+
+        // Configuración del botón Enviar para navegar a HomeActivity
+        val buttonEnviar = findViewById<Button>(R.id.buttonMenu)
+        buttonEnviar.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
         }
     }
 }

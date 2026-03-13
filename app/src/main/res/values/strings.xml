@@ -8,5 +8,8 @@
     <string name="name">Nombre</string>
     <string name="comment">Comentario</string>
     <string name="date">Fecha</string>
+    <string name="peso">Peso</string>
+    <string name="alergias_intolerancias">Alergias/Intolerancias</string>
+    <string name="enviar_button">Enviar</string>
     <string name="foodRegister">Registro de alimentos</string>
 </resources>
