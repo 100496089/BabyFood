@@ -1,26 +1,22 @@
 package com.uc3m.it.babyfood
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
-import android.view.View
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import android.widget.Button
-import android.widget.TextView
 import android.provider.MediaStore
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
+import android.view.View
 import android.widget.EditText
-import android.widget.ImageView
+import android.widget.RatingBar
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.google.android.material.textfield.TextInputLayout
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
-
 
 
 class AddFoodActivity : AppCompatActivity(){
@@ -36,11 +32,16 @@ class AddFoodActivity : AppCompatActivity(){
     private var selectedDate: String = ""  // Para guardar el valor que irá a la BD
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.addfood_activity)
+
+        //boton calendario
+        val calendar = findViewById<TextInputLayout?>(R.id.Calendar_card)
+        calendar?.setEndIconOnClickListener{ v -> date(v)}
+
+        //desplegable categorias
 
         // obtiene referencia a los views que componen el layout
         NameText = findViewById<View>(R.id.Name) as EditText
@@ -77,6 +78,20 @@ class AddFoodActivity : AppCompatActivity(){
                     note.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_DATE)
                 )
             )
+            val imagePath = note.getString(
+                note.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_PHOTO)
+            )
+            if (imagePath != null) {
+                ubicacion = File(imagePath)
+            }
+            val ratingValue = note.getString(
+                note.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_RATE)
+            )
+            if (!ratingValue.isNullOrEmpty()) {
+                val ratingBar = findViewById<RatingBar>(R.id.ratingBar)
+                ratingBar?.rating = ratingValue.toFloat() // Convertimos de String a Float
+            }
+
         }
     }
 
@@ -85,18 +100,36 @@ class AddFoodActivity : AppCompatActivity(){
     //guardar en la BD
     fun saveNote(view: View?) {
         val name = NameText!!.text.toString()
-        val comment = commentText!!.text.toString()
+        var comment = commentText!!.text.toString()
         val date= dateText!!.text.toString()
-        val imagePath = ubicacion?.path ?: ""
+        var imagePath = ubicacion?.path ?: ""
+        //estrellas
+        val ratingBar = findViewById<RatingBar?>(R.id.ratingBar)
+        val rate = ratingBar?.rating.toString()
+
+        if (name==""){
+            Toast.makeText(this, "El nombre no puede estar vacío", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (comment==""){
+            comment="Sin comentario"
+        }
+        if (imagePath==""){
+            imagePath="Sin foto"
+        }
+        if (rate==""){
+            comment="Sin comentario"
+        }
 
 
         if (mRowId == null) {
-            val id = dbAdapter!!.createNote(name, comment, date, imagePath) // si antes no habia la crea
+            val id = dbAdapter!!.createNote(name, comment, date, imagePath,rate ) // si antes no habia la crea
             if (id > 0) {
                 mRowId = id
             }
+
         } else {
-            dbAdapter!!.updateNote(mRowId!!, name, comment, date, imagePath) // y si no la
+            dbAdapter!!.updateNote(mRowId!!, name, comment, date, imagePath, rate)
         }
         setResult(RESULT_OK)
         dbAdapter!!.close()
