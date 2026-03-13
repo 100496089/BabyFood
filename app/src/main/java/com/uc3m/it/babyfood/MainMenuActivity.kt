@@ -1,5 +1,6 @@
 package com.uc3m.it.babyfood
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -28,8 +29,21 @@ class MainMenuActivity : AppCompatActivity() {
             insets
         }
 
-        // Configuración de Fecha
+        // Referencias a los componentes
+        val editTextNombre = findViewById<EditText>(R.id.editTextNombre)
         val editTextFecha = findViewById<EditText>(R.id.editTextFecha)
+        val editTextPeso = findViewById<EditText>(R.id.editTextPeso)
+        val autoCompleteAlergia = findViewById<AutoCompleteTextView>(R.id.autoCompleteAlergia)
+        val buttonEnviar = findViewById<Button>(R.id.buttonMenu)
+
+        // CARGAR DATOS GUARDADOS
+        val prefs = getSharedPreferences("BabyFoodPrefs", Context.MODE_PRIVATE)
+        editTextNombre.setText(prefs.getString("nombre", ""))
+        editTextFecha.setText(prefs.getString("fecha", ""))
+        editTextPeso.setText(prefs.getString("peso", ""))
+        autoCompleteAlergia.setText(prefs.getString("alergia", ""), false)
+
+        // Configuración de Fecha (DatePicker)
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Selecciona fecha de nacimiento")
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
@@ -46,15 +60,22 @@ class MainMenuActivity : AppCompatActivity() {
             editTextFecha.setText(sdf.format(date))
         }
 
-        // Configuración de Desplegable de Alergias
+        // Configuración de Alergias
         val alergias = arrayOf("Ninguna", "Lactosa", "Gluten", "Huevo", "Frutos Secos", "Pescado", "Otros")
         val adapter = ArrayAdapter(this, R.layout.list_item, alergias)
-        val autoCompleteAlergia = findViewById<AutoCompleteTextView>(R.id.autoCompleteAlergia)
         autoCompleteAlergia.setAdapter(adapter)
 
-        // Configuración del botón Enviar para navegar a HomeActivity
-        val buttonEnviar = findViewById<Button>(R.id.buttonMenu)
+        // GUARDAR Y ENVIAR
         buttonEnviar.setOnClickListener {
+            // Guardar los datos
+            val editor = prefs.edit()
+            editor.putString("nombre", editTextNombre.text.toString())
+            editor.putString("fecha", editTextFecha.text.toString())
+            editor.putString("peso", editTextPeso.text.toString())
+            editor.putString("alergia", autoCompleteAlergia.text.toString())
+            editor.apply()
+
+            // Navegar a HomeActivity
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }
