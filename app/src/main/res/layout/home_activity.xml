@@ -23,94 +23,89 @@
         android:contentDescription="foto del bebé"/>
 
     <!--Boton añadir alimento-->
-
-    <!--Boton editar perfil-->
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/addAlimento_button"
-        style="@style/addAlimento"
         android:layout_width="370dp"
         android:layout_height="60dp"
         android:onClick="addFood"
         android:text="@string/addFood_Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/next_button"
-        app:layout_constraintVertical_bias="0.035" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/addAlimento"/>
 
+    <!--Boton editar perfil-->
     <TextView
         android:id="@+id/perfilButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="profileChange"
         android:padding="10dp"
-        android:text="@string/profile_Button"
-        app:layout_constraintEnd_toEndOf="@id/ImagenBebe"
+        app:layout_constraintTop_toBottomOf="@id/ImagenBebe"
         app:layout_constraintStart_toStartOf="@id/ImagenBebe"
-        app:layout_constraintTop_toBottomOf="@id/ImagenBebe" />
+        app:layout_constraintEnd_toEndOf="@id/ImagenBebe"
+        android:layout_marginTop="10dp"
+        android:text="@string/profile_Button"
+        android:onClick="profileChange"/>
 
     <TextView
         android:id="@+id/Food_Registration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/addAlimento_button"
+        app:layout_constraintBottom_toTopOf="@id/addAlimento_button"
         android:layout_marginStart="2dp"
-        android:layout_marginTop="312dp"
-        android:text="@string/foodRegister_Button"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.076"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/Recipe_Search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="84dp"
-        android:text="@string/exploreRecipes_Button"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/addAlimento_button" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/next_button2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="#DCDCDC"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="centerInside"
-        android:src="@drawable/arrow_forward"
-        app:layout_constraintBottom_toBottomOf="@+id/Recipe_Search"
-        app:layout_constraintStart_toEndOf="@+id/Recipe_Search"
-        app:layout_constraintTop_toTopOf="@+id/Recipe_Search"
-        app:shapeAppearanceOverlay="@style/CircleImageView" />
+        android:layout_marginBottom="10dp"
+        android:text= "@string/foodRegister_Button"
+        android:textSize= "18sp"
+        android:textStyle= "bold"
+        />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/next_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:src="@drawable/arrow_forward"
         android:background="#DCDCDC"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toTopOf="@+id/addAlimento_button"
+        app:layout_constraintStart_toEndOf="@+id/Food_Registration"
+        android:layout_marginStart="5dp"
+        app:shapeAppearanceOverlay="@style/CircleImageView"
         android:clickable="true"
         android:focusable="true"
         android:onClick="foodRegister"
-        android:scaleType="centerInside"
+        />
+
+    <TextView
+        android:id="@+id/Recipe_Search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/addAlimento_button"
+        app:layout_constraintTop_toBottomOf="@id/addAlimento_button"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="30dp"
+        android:text= "@string/exploreRecipes_Button"
+        android:textSize= "20sp"
+        android:textStyle= "bold"
+        />
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/next_button2"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/arrow_forward"
-        app:layout_constraintStart_toEndOf="@+id/Food_Registration"
-        app:layout_constraintTop_toBottomOf="@+id/perfilButton"
-        app:shapeAppearanceOverlay="@style/CircleImageView" />
+        android:background="#DCDCDC"
+        android:scaleType="centerInside"
+        app:layout_constraintTop_toBottomOf="@+id/addAlimento_button"
+        app:layout_constraintStart_toEndOf="@+id/Recipe_Search"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="25dp"
+        app:shapeAppearanceOverlay="@style/CircleImageView"
+        android:clickable="true"
+        android:focusable="true"
+        />
 
     <ImageButton
         android:id="@+id/home_button"
