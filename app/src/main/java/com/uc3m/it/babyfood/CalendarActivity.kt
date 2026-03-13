@@ -27,11 +27,22 @@ class CalendarActivity : AppCompatActivity() {
         db = MealsCalendarDB(this)
 
         val calendarView = findViewById<CalendarView>(R.id.calendarView)
+        calendarView.firstDayOfWeek = java.util.Calendar.MONDAY
 
         breakfastLayout = findViewById(R.id.breakfastLayout)
         lunchLayout = findViewById(R.id.lunchLayout)
         snackLayout = findViewById(R.id.snackLayout)
         dinnerLayout = findViewById(R.id.dinnerLayout)
+
+        val today = java.util.Calendar.getInstance()
+        val day = today.get(java.util.Calendar.DAY_OF_MONTH)
+        val month = today.get(java.util.Calendar.MONTH) + 1
+        val year = today.get(java.util.Calendar.YEAR)
+
+        selectedDate = "$day/$month/$year"
+
+        // Cargar comidas del día actual al abrir la app
+        loadMeals()
 
         calendarView.setOnDateChangeListener { _, year, month, day ->
             selectedDate = "$day/${month + 1}/$year"
@@ -105,6 +116,14 @@ class CalendarActivity : AppCompatActivity() {
 
             //// NUEVO: estilo visual
             button.setBackgroundResource(android.R.drawable.dialog_holo_light_frame)
+
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,   // ancho
+                200                                       // alto en píxeles (puedes cambiarlo)
+            )
+            params.setMargins(0, 10, 0, 10)               // márgenes opcionales
+            button.layoutParams = params
+
 
             //// NUEVO: al pulsar → editar o eliminar
             button.setOnClickListener {
