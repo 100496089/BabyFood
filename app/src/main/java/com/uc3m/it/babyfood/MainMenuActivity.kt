@@ -20,6 +20,22 @@ import java.util.TimeZone
 class MainMenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // CARGAR DATOS GUARDADOS PARA COMPROBAR SI YA EXISTEN
+        val prefs = getSharedPreferences("BabyFoodPrefs", Context.MODE_PRIVATE)
+        val nombreGuardado = prefs.getString("nombre", "")
+        
+        // Comprobar si venimos de "Editar Perfil"
+        val isEditing = intent.getBooleanExtra("isEditing", false)
+
+        // Redirigir a HomeActivity SOLO si ya hay datos Y NO estamos editando
+        if (!nombreGuardado.isNullOrEmpty() && !isEditing) {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_main_menu)
         
@@ -36,9 +52,8 @@ class MainMenuActivity : AppCompatActivity() {
         val autoCompleteAlergia = findViewById<AutoCompleteTextView>(R.id.autoCompleteAlergia)
         val buttonEnviar = findViewById<Button>(R.id.buttonMenu)
 
-        // CARGAR DATOS GUARDADOS
-        val prefs = getSharedPreferences("BabyFoodPrefs", Context.MODE_PRIVATE)
-        editTextNombre.setText(prefs.getString("nombre", ""))
+        // Cargar datos en los campos para editar
+        editTextNombre.setText(nombreGuardado)
         editTextFecha.setText(prefs.getString("fecha", ""))
         editTextPeso.setText(prefs.getString("peso", ""))
         autoCompleteAlergia.setText(prefs.getString("alergia", ""), false)
@@ -61,7 +76,17 @@ class MainMenuActivity : AppCompatActivity() {
         }
 
         // Configuración de Alergias
-        val alergias = arrayOf("Ninguna", "Lactosa", "Gluten", "Huevo", "Frutos Secos", "Pescado", "Otros")
+        val alergias = arrayOf(
+            "Ninguna",
+            "Lactosa",
+            "Gluten",
+            "Huevo",
+            "Pescado",
+            "Legumbres",
+            "Frutas",
+            "Soja",
+            "Otros"
+        )
         val adapter = ArrayAdapter(this, R.layout.list_item, alergias)
         autoCompleteAlergia.setAdapter(adapter)
 
@@ -78,6 +103,7 @@ class MainMenuActivity : AppCompatActivity() {
             // Navegar a HomeActivity
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 }

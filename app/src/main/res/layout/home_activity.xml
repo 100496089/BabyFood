@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?> <!--parte grafica de la primera pantalla MainActivity-->
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,6 +8,18 @@
     tools:context=".HomeActivity"
     android:background="#EFDAF8">
 
+    <!-- Mensaje de Bienvenida -->
+    <TextView
+        android:id="@+id/textViewBienvenida"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Hola"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!--foto-->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ImagenBebe"
@@ -16,8 +28,8 @@
         android:src="@drawable/imagen_bebe"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="85dp"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBienvenida"
+        android:layout_marginTop="25dp"
         android:scaleType="centerCrop"
         app:shapeAppearanceOverlay="@style/CircleImageView"
         android:contentDescription="foto del bebé"/>
@@ -139,16 +151,16 @@
 
     <ImageButton
         android:id="@+id/search_button"
-        android:layout_width="43dp"
-        android:layout_height="43dp"
-        android:src="@drawable/search"
+        android:layout_width="37dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="244dp"
+        android:layout_marginBottom="44dp"
         android:background="@null"
         android:scaleType="centerInside"
-        android:layout_marginBottom="40dp"
-        android:layout_marginStart="240dp"
+        android:src="@drawable/search"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageButton
         android:id="@+id/calendar_button"
         android:layout_width="40dp"
