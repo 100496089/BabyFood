@@ -8,6 +8,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.appcompat.app.AlertDialog
 import android.widget.*
 import android.content.Intent
+///NUEVO
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -24,6 +26,11 @@ class CalendarActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendar)
 
+        ///NUEVO
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNav.selectedItemId = R.id.calendar_button
+
+        
         db = MealsCalendarDB(this)
 
         val calendarView = findViewById<CalendarView>(R.id.calendarView)
