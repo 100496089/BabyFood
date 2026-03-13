@@ -10,11 +10,11 @@ import android.widget.*
 import android.content.Intent
 
 class CalendarActivity : AppCompatActivity() {
-    //Creamos variables globales
-    private val mealsByDate= mutableMapOf<String, MutableList<String>>() // Guardamos las comidas por fecha y tipo
-    private var selectedDate: String = "" //Guardamos la fecha seleccionada
 
-    //Referencias a layouts de las comidas
+    private lateinit var db: MealsCalendarDB
+    private var selectedDate = ""
+    private val meals = mutableMapOf<String, String>() // clave: "fecha-tipo", valor: comida
+
     private lateinit var breakfastLayout: LinearLayout
     private lateinit var lunchLayout: LinearLayout
     private lateinit var snackLayout: LinearLayout
@@ -22,109 +22,118 @@ class CalendarActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_calendar)
 
-        setContentView(R.layout.activity_calendar) //Conectamos con nuestro xml
+        db = MealsCalendarDB(this)
 
-        // Conectamos los elementos del XML con variables de Kotlin
         val calendarView = findViewById<CalendarView>(R.id.calendarView)
+
         breakfastLayout = findViewById(R.id.breakfastLayout)
         lunchLayout = findViewById(R.id.lunchLayout)
         snackLayout = findViewById(R.id.snackLayout)
         dinnerLayout = findViewById(R.id.dinnerLayout)
 
-        val addBreakfastButton = findViewById<Button>(R.id.addBreakfast)
-        val addLunchButton = findViewById<Button>(R.id.addLunch)
-        val addSnackButton = findViewById<Button>(R.id.addSnack)
-        val addDinnerButton = findViewById<Button>(R.id.addDinner)
-
-        // Cuando el usuario selecciona un día del calendario
-        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            selectedDate = "$dayOfMonth/${month + 1}/$year"
-            loadMealsForDate(selectedDate) }
-
-        //Boton
-        addBreakfastButton.setOnClickListener { openMealScreen("Desayuno") }
-        addLunchButton.setOnClickListener { openMealScreen("Almuerzo") }
-        addSnackButton.setOnClickListener { openMealScreen("Merienda") }
-        addDinnerButton.setOnClickListener { openMealScreen("Cena") }
-
-
-    }
-private fun openMealScreen(mealType: String) {
-    val intent = Intent(this, MealDetailActivity::class.java)
-    intent.putExtra("mealType", mealType)
-    intent.putExtra("selectedDate", selectedDate)
-    startActivity(intent)
-}
-
-    // Muestra un diálogo donde el usuario escribe la comida
-private fun showAddMealDialog(mealType: String) {
-    // Campo de texto donde el usuario escribe la comida
-    val editText = EditText(this)
-    editText.hint = "Write your meal"
-
-    // Creamos el layout del diálogo para añadir el botón extra
-    val layout = LinearLayout(this)
-    layout.orientation = LinearLayout.VERTICAL
-    layout.setPadding(50, 40, 50, 10)
-    layout.addView(editText)
-
-    // Botón extra para ir a la pantalla de tu compañera
-    val exploreButton = Button(this)
-    exploreButton.text = "Explore recipes"
-    layout.addView(exploreButton)
-
-    // Acción del botón que abre la otra pantalla
-    exploreButton.setOnClickListener {
-        val intent = Intent(this, MainActivity::class.java) // <-- cambia el nombre si tu compañera usa otro
-        startActivity(intent)
-    }
-
-    // Construimos el diálogo
-    AlertDialog.Builder(this)
-        .setTitle("Add meal")
-        .setMessage("Enter the meal for $mealType:")
-        .setView(layout)
-        .setPositiveButton("Save") { _, _ ->
-            val mealText = editText.text.toString()
-
-            // Guardamos la comida
-            saveMeal(selectedDate, mealText, mealType)
-
-            // Actualizamos la pantalla
-            loadMealsForDate(selectedDate)
+        calendarView.setOnDateChangeListener { _, year, month, day ->
+            selectedDate = "$day/${month + 1}/$year"
+            loadMeals()
         }
-        .setNegativeButton("Cancel", null)
-        .show()
-}
 
-
-    // Guarda una comida asociada a una fecha y tipo
-    private fun saveMeal(date: String, meal: String, mealType: String) {
-        val key = "$date-$mealType"
-        val list = mealsByDate.getOrPut(key) { mutableListOf() }
-        list.add(meal)
+        findViewById<Button>(R.id.addBreakfast).setOnClickListener {
+            showInputUI("breakfast", breakfastLayout)
+        }
+        findViewById<Button>(R.id.addLunch).setOnClickListener {
+            showInputUI("lunch", lunchLayout)
+        }
+        findViewById<Button>(R.id.addSnack).setOnClickListener {
+            showInputUI("snack", snackLayout)
+        }
+        findViewById<Button>(R.id.addDinner).setOnClickListener {
+            showInputUI("dinner", dinnerLayout)
+        }
     }
 
-    // Carga todas las comidas de un día
-    private fun loadMealsForDate(date: String) {
-        loadMealsForType(date, "breakfast", breakfastLayout)
-        loadMealsForType(date, "lunch", lunchLayout)
-        loadMealsForType(date, "snack", snackLayout)
-        loadMealsForType(date, "dinner", dinnerLayout)
-    }
-
-    // Carga las comidas de un tipo concreto
-    private fun loadMealsForType(date: String, mealType: String, container: LinearLayout) {
+    private fun showInputUI(type: String, container: LinearLayout) {
         container.removeAllViews()
-        val key = "$date-$mealType"
-        val meals = mealsByDate[key] ?: emptyList()
+
+        val input = EditText(this)
+        input.hint = "Añadir..."
+
+        val saveButton = Button(this)
+        saveButton.text = "Guardar"
+
+        val exploreButton = Button(this)
+        exploreButton.text = "Explorar recetas"
+
+        container.addView(input)
+        container.addView(saveButton)
+        container.addView(exploreButton)
+
+        saveButton.setOnClickListener {
+            val text = input.text.toString()
+            db.insertMeal(selectedDate, type, text)
+            loadMeals()
+        }
+
+        exploreButton.setOnClickListener {
+            startActivity(Intent(this, FoodActivity::class.java))
+        }
+    }
+
+    private fun loadMeals() {
+        loadMealForType("breakfast", breakfastLayout)
+        loadMealForType("lunch", lunchLayout)
+        loadMealForType("snack", snackLayout)
+        loadMealForType("dinner", dinnerLayout)
+    }
+
+    private fun loadMealForType(type: String, container: LinearLayout) {
+        container.removeAllViews()
+
+        // ---------------------------------------------
+        // NUEVO: obtener comidas guardadas en SQL
+        // ---------------------------------------------
+        val meals = db.getMeals(selectedDate, type)   // NUEVO
+
+        if (meals.isEmpty()) return   // NO mostramos "+" extra
 
         for (meal in meals) {
-            val textView = TextView(this)
-            textView.text = meal
-            textView.textSize = 16f
-            container.addView(textView)
+            //// NUEVO: crear recuadro tipo botón
+            val button = Button(this)
+            button.text = meal.text
+            button.textSize = 16f
+            button.setPadding(20, 20, 20, 20)
+
+            //// NUEVO: estilo visual
+            button.setBackgroundResource(android.R.drawable.dialog_holo_light_frame)
+
+            //// NUEVO: al pulsar → editar o eliminar
+            button.setOnClickListener {
+                showEditDeleteDialog(meal.id, meal.text, type)
+            }
+
+            container.addView(button)
         }
+    }
+    private fun showEditDeleteDialog(id: Int, oldText: String, type: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Editar comida")
+
+        val input = EditText(this)
+        input.setText(oldText)
+        builder.setView(input)
+
+        builder.setPositiveButton("Guardar") { _, _ ->
+            db.updateMeal(id, input.text.toString()) //// NUEVO
+            loadMeals()
+        }
+
+        builder.setNegativeButton("Eliminar") { _, _ ->
+            db.deleteMeal(id) //// NUEVO
+            loadMeals()
+        }
+
+        builder.setNeutralButton("Cancelar", null)
+
+        builder.show()
     }
 }
