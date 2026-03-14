@@ -17,7 +17,7 @@ import kotlin.collections.ArrayList
 class WeightChartActivity : AppCompatActivity() {
 
     private lateinit var lineChart: LineChart
-    private lateinit var dbAdapter: FoodRegisterAdapter
+    private lateinit var dbAdapter: DatabaseAdapter
     private val dateLabels = ArrayList<String>() // Lista para guardar las fechas de las etiquetas
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +27,7 @@ class WeightChartActivity : AppCompatActivity() {
         lineChart = findViewById(R.id.weightChart)
         val btnBack = findViewById<Button>(R.id.btnBack)
 
-        dbAdapter = FoodRegisterAdapter(this)
+        dbAdapter = DatabaseAdapter(this)
         dbAdapter.open()
 
         setupChart()
@@ -81,8 +81,8 @@ class WeightChartActivity : AppCompatActivity() {
             var index = 0f
 
             do {
-                val weight = cursor.getDouble(cursor.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_WEIGHT_VALUE))
-                val dateStr = cursor.getString(cursor.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_WEIGHT_DATE))
+                val weight = cursor.getDouble(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_WEIGHT_VALUE))
+                val dateStr = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_WEIGHT_DATE))
                 
                 try {
                     val date = inputFormat.parse(dateStr)

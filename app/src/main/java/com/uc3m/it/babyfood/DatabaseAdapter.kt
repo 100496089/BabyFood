@@ -8,9 +8,9 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 
-class FoodRegisterAdapter (private val mCtx: Context) {
-    private var mDbHelper: DatabaseHelper? = null
-    private var mDb: SQLiteDatabase? = null
+class DatabaseAdapter (private val mCtx: Context) {
+    private var mDbHelper: DatabaseHelper? = null // onCreate() → crea tablas si no existen onUpgrade() → actualiza tablas si cambió la versión
+    private var mDb: SQLiteDatabase? = null //insert(), query(), delete(), update()
 
     private class DatabaseHelper(context: Context?) :
         SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -30,10 +30,11 @@ class FoodRegisterAdapter (private val mCtx: Context) {
         }
     }
 
+    //Permito la escritura en las tablas con writableDatabase
     @Throws(SQLException::class)
-    fun open(): FoodRegisterAdapter {
+    fun open(): DatabaseAdapter {
         mDbHelper = DatabaseHelper(mCtx)
-        mDb = mDbHelper!!.writableDatabase
+        mDb = mDbHelper!!.writableDatabase //!! -> Confío en que la variable no es null, si lo es, lanza una excepción
         return this
     }
 
@@ -99,8 +100,8 @@ class FoodRegisterAdapter (private val mCtx: Context) {
     }
 
     companion object {
-        private const val TAG = "FoodRegisterAdapter"
-        private const val DATABASE_NAME = "RegisteredFood"
+        private const val TAG = "DatabaseAdapter"
+        private const val DATABASE_NAME = "AppDatabase"
         private const val DATABASE_TABLE = "Food"
         private const val TABLE_WEIGHTS = "Pesos"
         private const val DATABASE_VERSION = 7 // Incrementado de 6 a 7

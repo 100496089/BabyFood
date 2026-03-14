@@ -26,7 +26,7 @@ class AddFoodActivity : AppCompatActivity(){
     private var NameText: EditText? = null
     private var commentText: EditText? = null
     private var mRowId: Long? = null
-    private var dbAdapter: FoodRegisterAdapter? = null
+    private var dbAdapter: DatabaseAdapter? = null
 
     private var dateText: TextView? = null // Para mostrar la fecha seleccionada
     private var selectedDate: String = ""  // Para guardar el valor que irá a la BD
@@ -49,43 +49,43 @@ class AddFoodActivity : AppCompatActivity(){
         dateText = findViewById<View>(R.id.Calendar) as TextView
 
         //creamos el adaptador de la BD y la abrimos
-        dbAdapter = FoodRegisterAdapter(this)
+        dbAdapter = DatabaseAdapter(this)
         dbAdapter!!.open() // abre la base de datos
 
         // obtiene id de fila de la tabla si se le ha pasado (hemos pulsado una nota para editarla)
         mRowId = if ((savedInstanceState == null)) null else savedInstanceState.getSerializable( // Si mRowId es null → estás creando una comida/note nueva.
-            FoodRegisterAdapter.KEY_ROWID
+            DatabaseAdapter.KEY_ROWID
         ) as Long?
         if (mRowId == null) {
             val extras = intent.extras
-            mRowId = extras?.getLong(FoodRegisterAdapter.KEY_ROWID) // busca en un sitio el numero que tenga el id (KEY_ID)
+            mRowId = extras?.getLong(DatabaseAdapter.KEY_ROWID) // busca en un sitio el numero que tenga el id (KEY_ID)
         }
 
         if (mRowId != null) { // si hay id es que lo que estamos haciendo es mdificar un registro, por eso fetchNote
             val note = dbAdapter!!.fetchNote(mRowId!!)
             NameText!!.setText(
                 note.getString(
-                    note.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_NAME) // El código lee el nombre de un alimento desde la base de datos y lo muestra en el TextView
+                    note.getColumnIndexOrThrow(DatabaseAdapter.KEY_NAME) // El código lee el nombre de un alimento desde la base de datos y lo muestra en el TextView
                 )
             )
             commentText!!.setText(
                 note.getString(
-                    note.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_COMMENT)
+                    note.getColumnIndexOrThrow(DatabaseAdapter.KEY_COMMENT)
                 )
             )
             dateText!!.setText(
                 note.getString(
-                    note.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_DATE)
+                    note.getColumnIndexOrThrow(DatabaseAdapter.KEY_DATE)
                 )
             )
             val imagePath = note.getString(
-                note.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_PHOTO)
+                note.getColumnIndexOrThrow(DatabaseAdapter.KEY_PHOTO)
             )
             if (imagePath != null) {
                 ubicacion = File(imagePath)
             }
             val ratingValue = note.getString(
-                note.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_RATE)
+                note.getColumnIndexOrThrow(DatabaseAdapter.KEY_RATE)
             )
             if (!ratingValue.isNullOrEmpty()) {
                 val ratingBar = findViewById<RatingBar>(R.id.ratingBar)

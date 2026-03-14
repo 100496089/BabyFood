@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,53 +22,67 @@ import java.util.*
 
 class MainMenuActivity : AppCompatActivity() {
 
-    private lateinit var imageView: ShapeableImageView
+    private lateinit var imageViewProfile: ShapeableImageView
     private var currentPhotoPath: String? = null
-    private lateinit var dbAdapter: FoodRegisterAdapter
+    private lateinit var dbAdapter: DatabaseAdapter
 
+    //Esto permite abrir la galería del usuario
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            val inputStream = contentResolver.openInputStream(it)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
+            val inputStream = contentResolver.openInputStream(it) // Abre el flujo de entrada de la imagen a través de la URI
+            val bitmap = BitmapFactory.decodeStream(inputStream) // Convierte el flujo de entrada en un Bitmap
             saveImageToInternalStorage(bitmap)
         }
     }
 
-    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val imageBitmap = result.data?.extras?.get("data") as? Bitmap
-            imageBitmap?.let { saveImageToInternalStorage(it) }
+    //Usamos TakePicturePreview() porque estamos trabajando con un thumbnail y me devuelve un bitmap directamente
+    private val takePictureLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+            bitmap?.let { saveImageToInternalStorage(it) }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Inicializar DB
-        dbAdapter = FoodRegisterAdapter(this)
+        dbAdapter = DatabaseAdapter(this)
         dbAdapter.open()
 
         val prefs = getSharedPreferences("BabyFoodPrefs", Context.MODE_PRIVATE)
+        //Leo los datos guardados
         val nombreGuardado = prefs.getString("nombre", "")
-        val isEditing = intent.getBooleanExtra("isEditing", false)
+        val fechaGuardada = prefs.getString("fecha", null)
+        val pesoGuardado = prefs.getString("peso", null)
+        val fotoGuardada = prefs.getString("foto_perfil", null)
 
-        if (!nombreGuardado.isNullOrEmpty() && !isEditing) {
+        val isEditing = intent.getBooleanExtra("isEditing", false) //Compruebo si estoy editando el perfil
+
+        // Comprobar si el perfil está completo
+        val perfilCompleto = !nombreGuardado.isNullOrEmpty() &&
+                !fechaGuardada.isNullOrEmpty() &&
+                !pesoGuardado.isNullOrEmpty() &&
+                !fotoGuardada.isNullOrEmpty()
+
+        // Si el perfil está completo y no estamos editando, saltar a HomeActivity
+        if (perfilCompleto && !isEditing) {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()
             return
         }
 
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main_menu)
-        
+        enableEdgeToEdge() //Quito los márgenes
+        setContentView(R.layout.activity_main_menu) //Utilizo el layout de activity_main_menu
+
+        //Como estoy quitando los márgenes, para evitar que los elementos queden tapados,
+        //calculo el tamaño de las barras del sistema y lo uso como padding
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        imageView = findViewById(R.id.imageView)
+        imageViewProfile = findViewById(R.id.imageViewProfile)
         val editTextNombre = findViewById<EditText>(R.id.editTextNombre)
         val editTextFecha = findViewById<EditText>(R.id.editTextFecha)
         val editTextPeso = findViewById<EditText>(R.id.editTextPeso)
@@ -80,7 +93,7 @@ class MainMenuActivity : AppCompatActivity() {
         currentPhotoPath?.let {
             val file = File(it)
             if (file.exists()) {
-                imageView.setImageURI(Uri.fromFile(file))
+                imageViewProfile.setImageURI(Uri.fromFile(file))
             }
         }
 
@@ -119,9 +132,15 @@ class MainMenuActivity : AppCompatActivity() {
             val pesoStr = editTextPeso.text.toString()
             val alergia = autoCompleteAlergia.text.toString()
 
-            if (nombre.isNotEmpty() && pesoStr.isNotEmpty()) {
+            // Comprobamos los campos actuales, no los guardados anteriormente (no usamos perfilCompleto)
+            val camposRellenos = nombre.isNotEmpty() &&
+                    fecha.isNotEmpty() &&
+                    pesoStr.isNotEmpty() &&
+                    !currentPhotoPath.isNullOrEmpty()
+
+            if (camposRellenos) {
                 val pesoDouble = pesoStr.toDoubleOrNull() ?: 0.0
-                
+
                 // 1. Guardar en SharedPreferences (Datos actuales)
                 val editor = prefs.edit()
                 editor.putString("nombre", nombre)
@@ -139,7 +158,7 @@ class MainMenuActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } else {
-                Toast.makeText(this, "Por favor, rellena al menos el nombre y el peso", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -155,7 +174,7 @@ class MainMenuActivity : AppCompatActivity() {
             .setTitle("Cambiar foto del bebé")
             .setItems(options) { _, which ->
                 when (which) {
-                    0 -> takePictureLauncher.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+                    0 -> takePictureLauncher.launch(null) //takePicturePreview no necesita input
                     1 -> pickImageLauncher.launch("image/*")
                 }
             }
@@ -163,17 +182,17 @@ class MainMenuActivity : AppCompatActivity() {
     }
 
     private fun saveImageToInternalStorage(bitmap: Bitmap) {
-        val fileName = "perfil_bebe_${System.currentTimeMillis()}.jpg"
-        val file = File(filesDir, fileName)
+        val fileName = "perfil_bebe_${System.currentTimeMillis()}.jpg" //Genero un nombre para la imagen guardada con el tiempo en milisegundos para no sobreescribir fotos
+        val file = File(filesDir, fileName) //Guardo la foto en el almacenamiento interno del dispositivo
         try {
-            val fos = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos)
-            fos.close()
-            currentPhotoPath?.let { File(it).delete() }
-            currentPhotoPath = file.absolutePath
-            imageView.setImageBitmap(bitmap)
+            val fos = FileOutputStream(file) //recojo el stream de datos (los bytes) de la imagen
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos) //convierto de bitmap a jpeg
+            fos.close() //cierro el stream de datos
+            currentPhotoPath?.let { File(it).delete() }//si ya había una foto, la borro
+            currentPhotoPath = file.absolutePath //guardo el path de la foto actual
+            imageViewProfile.setImageBitmap(bitmap) //actualizo la foto
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.printStackTrace() //imprime el error en el log; impide que la app se pare si ha habido algún error
         }
     }
 }
