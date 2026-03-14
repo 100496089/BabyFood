@@ -124,6 +124,36 @@ class FoodRegisterActivity : AppCompatActivity(){
         fillData()
     }
 
+    //Boton de home
+    fun home(view: View?) {
+        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+        val intent = Intent(
+            this,
+            HomeActivity::class.java
+        )
+        startActivity(intent)
+    }
+    //boton buscar
+    fun search(view: View?) {
+        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+        val intent = Intent(
+            this,
+            FoodActivity::class.java
+        )
+        startActivity(intent)
+    }
+
+    //boton calendario
+    fun calendar(view: View?){
+        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+        val intent = Intent(
+            this,
+            CalendarActivity::class.java
+        )
+        startActivity(intent)
+
+    }
+
     companion object {
         private const val ACTIVITY_EDIT = 1
     }
