@@ -2,13 +2,15 @@ package com.uc3m.it.babyfood
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.Button
-import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.imageview.ShapeableImageView
+import java.io.File
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,73 +18,59 @@ class HomeActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.home_activity)
 
-        // Recuperar el nombre guardado para el mensaje de bienvenida
         val prefs = getSharedPreferences("BabyFoodPrefs", Context.MODE_PRIVATE)
+        
         val nombreBebe = prefs.getString("nombre", "Bebé")
         val welcomeText = findViewById<TextView>(R.id.welcomeMessage)
-        if (welcomeText != null) {
-            welcomeText.text = "¡Hola, $nombreBebe!"
+        welcomeText?.text = "¡Hola, $nombreBebe!"
+
+        val imageViewBebe = findViewById<ShapeableImageView>(R.id.ImagenBebe)
+        val photoPath = prefs.getString("foto_perfil", null)
+        photoPath?.let {
+            val file = File(it)
+            if (file.exists()) {
+                imageViewBebe.setImageURI(Uri.fromFile(file))
+            }
         }
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->
-
             when(item.itemId){
-
-                R.id.home_button -> {
-                    true
-                }
-
+                R.id.home_button -> true
                 R.id.search_button -> {
-                        val intent = Intent(
-                            this,
-                            FoodActivity::class.java
-                        )
-                        startActivity(intent)
+                    startActivity(Intent(this, FoodActivity::class.java))
                     true
                 }
-
-                R.id.favorites_button -> {
-                    true
-                }
-
+                R.id.favorites_button -> true
                 R.id.calendar_button -> {
-                        val intent = Intent(
-                            this,
-                            CalendarActivity::class.java
-                        )
-                        startActivity(intent)
+                    startActivity(Intent(this, CalendarActivity::class.java))
                     true
                 }
-
                 else -> false
             }
         }
     }
 
     fun addFood(view: View?){
-        val intent = Intent(
-            this,
-            AddFoodActivity::class.java
-        )
-        startActivity(intent)
+        startActivity(Intent(this, AddFoodActivity::class.java))
     }
 
-    //boton editar perfil
     fun profileChange(view: View?){
-        val intent = Intent(
-            this,
-            MainMenuActivity::class.java
-        )
+        val intent = Intent(this, MainMenuActivity::class.java)
         intent.putExtra("isEditing", true)
         startActivity(intent)
     }
 
     fun foodRegister(view: View?){
-        val intent = Intent(
-            this,
-            FoodRegisterActivity::class.java
-        )
-        startActivity(intent)
+        startActivity(Intent(this, FoodRegisterActivity::class.java))
+    }
+
+    fun openWeightChart(view: View?) {
+        startActivity(Intent(this, WeightChartActivity::class.java))
+    }
+
+    // Nuevo método para abrir la pantalla de recetas/alimentos
+    fun openRecipes(view: View?) {
+        startActivity(Intent(this, FoodActivity::class.java))
     }
 }

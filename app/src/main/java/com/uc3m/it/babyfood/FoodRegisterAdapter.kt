@@ -8,134 +8,127 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 
-// Clase adaptadora que nos va a facilitar el uso de la BD
-class FoodRegisterAdapter (private val mCtx: Context) { // Se encarga de abrir, cerrar y manipular la base de datos.
-    private var mDbHelper: DatabaseHelper? = null // ayuda a crear y actualizar la base de datos.
-    private var mDb: SQLiteDatabase? = null // representa la base de datos abierta para poder hacer operaciones.
+class FoodRegisterAdapter (private val mCtx: Context) {
+    private var mDbHelper: DatabaseHelper? = null
+    private var mDb: SQLiteDatabase? = null
 
     private class DatabaseHelper(context: Context?) :
         SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-        override fun onCreate(db: SQLiteDatabase) { // se ejecuta la primera vez para crear la base de datos
-            db.execSQL(DATABASE_CREATE) // ejecuta la sentencia SQL para crear la tabla
+        
+        override fun onCreate(db: SQLiteDatabase) {
+            db.execSQL(DATABASE_CREATE)
+            db.execSQL(DATABASE_CREATE_WEIGHTS)
         }
-        // se ejecuta cuando cambias la version de la base de datos
+
         override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-            Log.w(
-                TAG, ("Upgrading database from version " + oldVersion + " to "
-                        + newVersion + ", which will destroy all old data")
-            )
-            db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE)
+            Log.w(TAG, "Upgrading database from version $oldVersion to $newVersion")
+            // En una app real, aquí haríamos ALTER TABLE para no perder datos,
+            // pero para desarrollo simplificamos borrando y creando.
+            db.execSQL("DROP TABLE IF EXISTS $DATABASE_TABLE")
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_WEIGHTS")
             onCreate(db)
         }
     }
 
-    /**
-     * Open the notes database. If it cannot be opened, try to create a new
-     * instance of the database. If it cannot be created, throw an exception to
-     * signal the failure
-     *
-     * @return this (self reference, allowing this to be chained in an
-     * initialization call)
-     * @throws SQLException if the database could be neither opened or created
-     */
     @Throws(SQLException::class)
-    // abre la base de datos en modo escritura
     fun open(): FoodRegisterAdapter {
         mDbHelper = DatabaseHelper(mCtx)
         mDb = mDbHelper!!.writableDatabase
         return this
     }
-    //cierra la base de datos
+
     fun close() {
         mDbHelper!!.close()
     }
 
+    // --- MÉTODOS PARA ALIMENTOS ---
+
     fun createNote(name: String?, comment: String?, date: String?, photo: String?, rate: String?): Long {
         val initialValues = ContentValues()
-        initialValues.put(KEY_NAME, name) // crea el content values
+        initialValues.put(KEY_NAME, name)
         initialValues.put(KEY_COMMENT, comment)
         initialValues.put(KEY_DATE, date)
         initialValues.put(KEY_PHOTO, photo)
         initialValues.put(KEY_RATE, rate)
-
-
-
-        return mDb!!.insert(DATABASE_TABLE, null, initialValues) //inserta los datos en la tabla
+        return mDb!!.insert(DATABASE_TABLE, null, initialValues)
     }
 
-    fun deleteNote(rowId: Long): Boolean { //borra una fila por su id
+    fun deleteNote(rowId: Long): Boolean {
         return mDb!!.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0
     }
 
-    fun fetchAllNotes(): Cursor { //para que te de todas los regstros guardados en la base de datos
-        return mDb!!.query(
-            DATABASE_TABLE, arrayOf(
-                KEY_ROWID,KEY_NAME,
-                KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE
-            ), null, null, null, null, null
-        )
+    fun fetchAllNotes(): Cursor {
+        return mDb!!.query(DATABASE_TABLE, arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE), 
+            null, null, null, null, null)
     }
 
     @Throws(SQLException::class)
-    fun fetchNote(rowId: Long): Cursor { //para que te de un registro de la base de datos
-        val mCursor =
-            mDb!!.query(
-                true, DATABASE_TABLE, arrayOf(
-                    KEY_ROWID,
-                    KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE
-                ), KEY_ROWID + "=" + rowId, null,
-                null, null, null, null
-            )
-        if (mCursor != null) {
-            mCursor.moveToFirst()
-        }
+    fun fetchNote(rowId: Long): Cursor {
+        val mCursor = mDb!!.query(true, DATABASE_TABLE, arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE), 
+            KEY_ROWID + "=" + rowId, null, null, null, null, null)
+        mCursor?.moveToFirst()
         return mCursor
     }
 
-    /**
-     * Update the note using the details provided. The note to be updated is
-     * specified using the rowId, and it is altered to use the name and comment
-     * values passed in
-     *
-     * @param rowId id of note to update
-     * @param name value to set note name to
-     * @param comment value to set note comment to
-     * @return true if the note was successfully updated, false otherwise
-     */
-    fun updateNote(rowId: Long, name: String?, comment: String?, date: String?, photo: String?, rate: String?): Boolean { //actualiza una nota existente
+    fun updateNote(rowId: Long, name: String?, comment: String?, date: String?, photo: String?, rate: String?): Boolean {
         val args = ContentValues()
         args.put(KEY_NAME, name)
         args.put(KEY_COMMENT, comment)
         args.put(KEY_DATE, date)
         args.put(KEY_PHOTO, photo)
         args.put(KEY_RATE, rate)
-
         return mDb!!.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0
     }
 
+    // --- MÉTODOS PARA PESOS ---
+
+    fun insertWeight(weight: Double, date: String): Long {
+        val values = ContentValues()
+        values.put(KEY_WEIGHT_VALUE, weight)
+        values.put(KEY_WEIGHT_DATE, date)
+        return mDb!!.insert(TABLE_WEIGHTS, null, values)
+    }
+
+    fun fetchAllWeights(): Cursor {
+        return mDb!!.query(TABLE_WEIGHTS, arrayOf(KEY_WEIGHT_ID, KEY_WEIGHT_VALUE, KEY_WEIGHT_DATE), 
+            null, null, null, null, "$KEY_WEIGHT_DATE ASC")
+    }
+
+    fun deleteWeight(id: Long): Boolean {
+        return mDb!!.delete(TABLE_WEIGHTS, "$KEY_WEIGHT_ID=$id", null) > 0
+    }
+
     companion object {
-        private const val TAG = "APMOV: NotesDbAdapter" // Usado en los mensajes de Log
+        private const val TAG = "FoodRegisterAdapter"
+        private const val DATABASE_NAME = "RegisteredFood"
+        private const val DATABASE_TABLE = "Food"
+        private const val TABLE_WEIGHTS = "Pesos"
+        private const val DATABASE_VERSION = 7 // Incrementado de 6 a 7
 
-        //Nombre de la base de datos, tablas (en este caso una) y versión
-        private const val DATABASE_NAME = "RegisteredFood" // nombre de la base de datos
-        private const val DATABASE_TABLE = "Food" // nombre de cada registro que se haga en la base de datos
-        private const val DATABASE_VERSION = 6
+        // Campos Alimentos
+        const val KEY_ROWID = "_id"
+        const val KEY_NAME = "Nombre"
+        const val KEY_COMMENT = "Comentario"
+        const val KEY_DATE = "Fecha"
+        const val KEY_PHOTO = "Foto"
+        const val KEY_RATE = "Calificacion"
 
-        //campos de la tabla de la base de datos
-        const val KEY_NAME: String = "Nombre"
-        const val KEY_COMMENT: String = "Comentario"
-        const val KEY_DATE: String = "Fecha"
-        const val KEY_PHOTO: String = "Foto"
-        const val KEY_RATE: String = "Calificacion"
-        const val KEY_ROWID: String = "_id"
+        // Campos Pesos
+        const val KEY_WEIGHT_ID = "_id"
+        const val KEY_WEIGHT_VALUE = "valor"
+        const val KEY_WEIGHT_DATE = "fecha"
 
-        // Sentencia SQL para crear las tablas de las bases de datos cuando la app se inicia por primera vez
-        private const val DATABASE_CREATE = "create table " + DATABASE_TABLE + " (" +
-                KEY_ROWID + " integer primary key autoincrement, " +
-                KEY_NAME + " text not null, " +
-                KEY_COMMENT + " text not null, "+
-                KEY_DATE + " text not null, "+
-                KEY_PHOTO + " text not null, "+
-                KEY_RATE + " text not null "+");"
+        private const val DATABASE_CREATE = "create table $DATABASE_TABLE (" +
+                "$KEY_ROWID integer primary key autoincrement, " +
+                "$KEY_NAME text not null, " +
+                "$KEY_COMMENT text not null, " +
+                "$KEY_DATE text not null, " +
+                "$KEY_PHOTO text not null, " +
+                "$KEY_RATE text not null);"
+
+        private const val DATABASE_CREATE_WEIGHTS = "create table $TABLE_WEIGHTS (" +
+                "$KEY_WEIGHT_ID integer primary key autoincrement, " +
+                "$KEY_WEIGHT_VALUE real not null, " +
+                "$KEY_WEIGHT_DATE text not null);"
     }
 }
