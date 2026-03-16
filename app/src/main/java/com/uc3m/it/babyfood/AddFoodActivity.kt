@@ -134,7 +134,6 @@ class AddFoodActivity : AppCompatActivity(){
             comment="Sin comentario"
         }
 
-
         if (mRowId == null) {
             val id = dbAdapter!!.createNote(name, comment, date, imagePath,rate, category ) // si antes no habia la crea
             if (id > 0) {
