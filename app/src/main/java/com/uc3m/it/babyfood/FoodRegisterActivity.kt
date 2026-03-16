@@ -16,7 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class FoodRegisterActivity : AppCompatActivity(){
 
-    private var dbAdapter: FoodRegisterAdapter? = null // sirve para manipular la BD
+    private var dbAdapter: DatabaseAdapter? = null // sirve para manipular la BD
     private var m_listview: ListView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +25,7 @@ class FoodRegisterActivity : AppCompatActivity(){
         setContentView(R.layout.foodregister_activity)
 
         //creamos el adaptador de la BD y la abrimos
-        dbAdapter = FoodRegisterAdapter(this)
+        dbAdapter = DatabaseAdapter(this)
         dbAdapter!!.open()
 
         // Creamos un listview que va a contener el título de todas las notas y
@@ -38,7 +38,7 @@ class FoodRegisterActivity : AppCompatActivity(){
                     view.context,
                     AddFoodActivity::class.java
                 )
-                i.putExtra(FoodRegisterAdapter.KEY_ROWID, id)
+                i.putExtra(DatabaseAdapter.KEY_ROWID, id)
                 startActivityForResult(i, ACTIVITY_EDIT)
             }
 
@@ -103,7 +103,8 @@ class FoodRegisterActivity : AppCompatActivity(){
         val notesCursor = dbAdapter!!.fetchAllNotes() //puntero de todas las notas
         startManagingCursor(notesCursor)
 
-        val from = arrayOf(FoodRegisterAdapter.KEY_NAME, FoodRegisterAdapter.KEY_COMMENT, FoodRegisterAdapter.KEY_DATE, FoodRegisterAdapter.KEY_PHOTO, FoodRegisterAdapter.KEY_RATE) //que columnas quieres mostrar
+        val from = arrayOf(DatabaseAdapter.KEY_NAME, DatabaseAdapter.KEY_COMMENT, DatabaseAdapter.KEY_DATE,
+            DatabaseAdapter.KEY_PHOTO, DatabaseAdapter.KEY_RATE) //que columnas quieres mostrar
         val to = intArrayOf(R.id.name, R.id.comment, R.id.date, R.id.photo) //a que vistas del diseño van
 
         val adapter = SimpleCursorAdapter( // recorre cada fila de notesCursor y la muestra en el listview

@@ -98,7 +98,7 @@ class AddFoodActivity : AppCompatActivity(){
                 ratingBar?.rating = ratingValue.toFloat() // Convertimos de String a Float
             }
             val category = note.getString(
-                note.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_CATEGORY))
+                note.getColumnIndexOrThrow(DatabaseAdapter.KEY_CATEGORY))
                 categoryDropdown.setText(category, false)
 
 
