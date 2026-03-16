@@ -6,6 +6,8 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.RatingBar
 import android.widget.TextView
@@ -42,6 +44,10 @@ class AddFoodActivity : AppCompatActivity(){
         calendar?.setEndIconOnClickListener{ v -> date(v)}
 
         //desplegable categorias
+        val categories = resources.getStringArray(R.array.food_categories)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categories)
+        val categoryDropdown = findViewById<AutoCompleteTextView>(R.id.category)
+        categoryDropdown.setAdapter(adapter)
 
         // obtiene referencia a los views que componen el layout
         NameText = findViewById<View>(R.id.Name) as EditText
@@ -91,6 +97,11 @@ class AddFoodActivity : AppCompatActivity(){
                 val ratingBar = findViewById<RatingBar>(R.id.ratingBar)
                 ratingBar?.rating = ratingValue.toFloat() // Convertimos de String a Float
             }
+            val category = note.getString(
+                note.getColumnIndexOrThrow(FoodRegisterAdapter.KEY_CATEGORY))
+                categoryDropdown.setText(category, false)
+
+
 
         }
     }
@@ -103,6 +114,8 @@ class AddFoodActivity : AppCompatActivity(){
         var comment = commentText!!.text.toString()
         val date= dateText!!.text.toString()
         var imagePath = ubicacion?.path ?: ""
+        val categoryDropdown = findViewById<AutoCompleteTextView>(R.id.category)
+        val category = categoryDropdown.text.toString()
         //estrellas
         val ratingBar = findViewById<RatingBar?>(R.id.ratingBar)
         val rate = ratingBar?.rating.toString()
@@ -121,15 +134,14 @@ class AddFoodActivity : AppCompatActivity(){
             comment="Sin comentario"
         }
 
-
         if (mRowId == null) {
-            val id = dbAdapter!!.createNote(name, comment, date, imagePath,rate ) // si antes no habia la crea
+            val id = dbAdapter!!.createNote(name, comment, date, imagePath,rate, category ) // si antes no habia la crea
             if (id > 0) {
                 mRowId = id
             }
 
         } else {
-            dbAdapter!!.updateNote(mRowId!!, name, comment, date, imagePath, rate)
+            dbAdapter!!.updateNote(mRowId!!, name, comment, date, imagePath, rate, category)
         }
         setResult(RESULT_OK)
         dbAdapter!!.close()
