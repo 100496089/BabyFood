@@ -24,13 +24,15 @@
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="141dp"
         tools:layout_editor_absoluteY="148dp"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"
+        tools:ignore="MissingConstraints" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="342dp"
         android:layout_height="48dp"
         tools:layout_editor_absoluteX="34dp"
-        tools:layout_editor_absoluteY="309dp">
+        tools:layout_editor_absoluteY="309dp"
+        tools:ignore="MissingConstraints">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="339dp"
@@ -42,7 +44,8 @@
         android:layout_width="342dp"
         android:layout_height="48dp"
         tools:layout_editor_absoluteX="34dp"
-        tools:layout_editor_absoluteY="380dp">
+        tools:layout_editor_absoluteY="380dp"
+        tools:ignore="MissingConstraints">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="339dp"

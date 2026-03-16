@@ -1,6 +1,7 @@
 package com.uc3m.it.babyfood
 
 import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -44,6 +45,23 @@ class FoodRegisterActivity : AppCompatActivity(){
 
         // rellenamos el listview con los títulos de todas las notas en la BD
         fillData()
+
+        //buscador de notas
+        val searchView = findViewById<androidx.appcompat.widget.SearchView>(R.id.search_view)
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Cada vez que escribas, filtramos la lista
+                val cursor = dbAdapter!!.fetchNotesBySearch(newText ?: "")
+                // Actualizamos el cursor del adaptador que ya tienes
+                (m_listview?.adapter as? SimpleCursorAdapter)?.changeCursor(cursor)
+                return true
+            }
+        })
+
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->
@@ -123,6 +141,7 @@ class FoodRegisterActivity : AppCompatActivity(){
         super.onActivityResult(requestCode, resultCode, intent)
         fillData()
     }
+
 
     companion object {
         private const val ACTIVITY_EDIT = 1

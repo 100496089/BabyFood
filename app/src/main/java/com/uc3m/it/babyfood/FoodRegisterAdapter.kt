@@ -50,13 +50,14 @@ class FoodRegisterAdapter (private val mCtx: Context) { // Se encarga de abrir, 
         mDbHelper!!.close()
     }
 
-    fun createNote(name: String?, comment: String?, date: String?, photo: String?, rate: String?): Long {
+    fun createNote(name: String?, comment: String?, date: String?, photo: String?, rate: String?, category: String?): Long {
         val initialValues = ContentValues()
         initialValues.put(KEY_NAME, name) // crea el content values
         initialValues.put(KEY_COMMENT, comment)
         initialValues.put(KEY_DATE, date)
         initialValues.put(KEY_PHOTO, photo)
         initialValues.put(KEY_RATE, rate)
+        initialValues.put(KEY_CATEGORY, category)
 
 
 
@@ -71,7 +72,7 @@ class FoodRegisterAdapter (private val mCtx: Context) { // Se encarga de abrir, 
         return mDb!!.query(
             DATABASE_TABLE, arrayOf(
                 KEY_ROWID,KEY_NAME,
-                KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE
+                KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY
             ), null, null, null, null, null
         )
     }
@@ -82,7 +83,7 @@ class FoodRegisterAdapter (private val mCtx: Context) { // Se encarga de abrir, 
             mDb!!.query(
                 true, DATABASE_TABLE, arrayOf(
                     KEY_ROWID,
-                    KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE
+                    KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY
                 ), KEY_ROWID + "=" + rowId, null,
                 null, null, null, null
             )
@@ -90,6 +91,19 @@ class FoodRegisterAdapter (private val mCtx: Context) { // Se encarga de abrir, 
             mCursor.moveToFirst()
         }
         return mCursor
+    }
+
+    //buscar nota por nombre
+    fun fetchNotesBySearch(query: String): Cursor {
+        return mDb!!.query(
+            DATABASE_TABLE,
+            arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
+            "$KEY_NAME LIKE ?",
+            arrayOf("%$query%"),
+            null,
+            null,
+            null
+        )
     }
 
     /**
@@ -102,13 +116,15 @@ class FoodRegisterAdapter (private val mCtx: Context) { // Se encarga de abrir, 
      * @param comment value to set note comment to
      * @return true if the note was successfully updated, false otherwise
      */
-    fun updateNote(rowId: Long, name: String?, comment: String?, date: String?, photo: String?, rate: String?): Boolean { //actualiza una nota existente
+    fun updateNote(rowId: Long, name: String?, comment: String?, date: String?, photo: String?, rate: String?, category: String?): Boolean { //actualiza una nota existente
         val args = ContentValues()
         args.put(KEY_NAME, name)
         args.put(KEY_COMMENT, comment)
         args.put(KEY_DATE, date)
         args.put(KEY_PHOTO, photo)
         args.put(KEY_RATE, rate)
+        args.put(KEY_CATEGORY, category)
+
 
         return mDb!!.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0
     }
@@ -119,7 +135,7 @@ class FoodRegisterAdapter (private val mCtx: Context) { // Se encarga de abrir, 
         //Nombre de la base de datos, tablas (en este caso una) y versión
         private const val DATABASE_NAME = "RegisteredFood" // nombre de la base de datos
         private const val DATABASE_TABLE = "Food" // nombre de cada registro que se haga en la base de datos
-        private const val DATABASE_VERSION = 6
+        private const val DATABASE_VERSION = 7
 
         //campos de la tabla de la base de datos
         const val KEY_NAME: String = "Nombre"
@@ -127,6 +143,7 @@ class FoodRegisterAdapter (private val mCtx: Context) { // Se encarga de abrir, 
         const val KEY_DATE: String = "Fecha"
         const val KEY_PHOTO: String = "Foto"
         const val KEY_RATE: String = "Calificacion"
+        const val KEY_CATEGORY: String = "Categoria"
         const val KEY_ROWID: String = "_id"
 
         // Sentencia SQL para crear las tablas de las bases de datos cuando la app se inicia por primera vez
@@ -136,6 +153,7 @@ class FoodRegisterAdapter (private val mCtx: Context) { // Se encarga de abrir, 
                 KEY_COMMENT + " text not null, "+
                 KEY_DATE + " text not null, "+
                 KEY_PHOTO + " text not null, "+
-                KEY_RATE + " text not null "+");"
+                KEY_RATE + " text not null, "+
+                KEY_CATEGORY + " text not null "+");"
     }
 }
