@@ -17,7 +17,7 @@ class FoodRegisterActivity : AppCompatActivity(){
     //BOTONES
     //Boton de Añadir alimento
     fun addFood(view: View?){
-        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+        // Creamos el Intent que va a lanzar la segunda activity (AddFoodActivity)
         val intent = Intent(
             this,
             AddFoodActivity::class.java
@@ -27,7 +27,7 @@ class FoodRegisterActivity : AppCompatActivity(){
 
     //Boton de home
     fun home(view: View?) {
-        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+        // Creamos el Intent que va a lanzar la segunda activity (HomeActivity)
         val intent = Intent(
             this,
             HomeActivity::class.java
