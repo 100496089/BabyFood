@@ -27,11 +27,9 @@
                     android:layout_height="64dp"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerCrop"
-                    android:src="@mipmap/ic_launcher"
                     app:layout_constraintTop_toTopOf="parent"
                     app:shapeAppearanceOverlay="@style/CircleImageView"
                     tools:ignore="MissingConstraints" />
-
 
                 <TextView
                     android:id="@+id/name"
