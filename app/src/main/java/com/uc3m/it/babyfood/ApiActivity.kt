@@ -57,7 +57,7 @@ class ApiActivity : AppCompatActivity() {
 
                 for (q in queries) {//bucle para cada palabra
                     //busqueda de palabra, devuelve 10 resultados de la api
-                    val url = "https://api.spoonacular.com/recipes/complexSearch?query=$q&number=10&apiKey=$apiKey"
+                    val url = "https://api.spoonacular.com/recipes/complexSearch?query=$q&number=1&apiKey=$apiKey"
                     val respuesta = URL(url).readText()//leemos la respuesta de la api- descarga json-lee texto
                     Log.d("API_RESPUESTA", respuesta)
                     val json = JSONObject(respuesta)//texto a json
