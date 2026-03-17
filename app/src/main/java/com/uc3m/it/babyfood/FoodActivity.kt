@@ -1,7 +1,9 @@
 package com.uc3m.it.babyfood
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
@@ -121,6 +123,14 @@ class FoodActivity : AppCompatActivity() {
 
 // Adapter
         val foodAdapter = FoodAdapter(foodList) //el adapter le meto la lista
+
+
+        val btnContinue = findViewById<Button>(R.id.btnContinue)
+        btnContinue.setOnClickListener {
+            val intent = Intent(this, ApiActivity::class.java)
+            startActivity(intent)
+        }
+
         // Grid de 2 columnas
         recyclerView.layoutManager = GridLayoutManager(this, 2)
         recyclerView.adapter = foodAdapter
@@ -137,6 +147,8 @@ class FoodActivity : AppCompatActivity() {
             foodAdapter.updateList(filteredList)
 
     }
+
+
 
     }
 
