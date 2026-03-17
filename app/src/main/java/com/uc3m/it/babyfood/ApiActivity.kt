@@ -1,5 +1,6 @@
 package com.uc3m.it.babyfood
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +15,8 @@ import java.net.URL
 
 class ApiActivity : AppCompatActivity() {
 
-    private val apiKey = "0b42d0c40af044c8a21ee108e502dd6b"
+    //private val apiKey = "0b42d0c40af044c8a21ee108e502dd6b"
+    private val apiKey ="6f63320e184e43b6b4f1c6ffbb74528c"
     private lateinit var adapter: RecipeAdapter //declaro el adapter pero se inicializará mas tarde
     private val recipeList = mutableListOf<Recipe>() // Lista de recetas que llegan de la api
     //se trata de una lista que se puede modificar
@@ -26,7 +28,13 @@ class ApiActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerRecetas)
 
-        adapter = RecipeAdapter(recipeList)
+        adapter = RecipeAdapter(recipeList){ receta ->
+
+            val intent = Intent(this, RecipeDetailActivity::class.java)
+            intent.putExtra("recipeId", receta.id)
+            startActivity(intent)
+
+        }
         recyclerView.layoutManager = LinearLayoutManager(this)//linear layout para que las recetas se muestren en una columna
         recyclerView.adapter = adapter
 
@@ -57,7 +65,7 @@ class ApiActivity : AppCompatActivity() {
 
                 for (q in queries) {//bucle para cada palabra
                     //busqueda de palabra, devuelve 10 resultados de la api
-                    val url = "https://api.spoonacular.com/recipes/complexSearch?query=$q&number=10&apiKey=$apiKey"
+                    val url = "https://api.spoonacular.com/recipes/complexSearch?query=$q&number=1&apiKey=$apiKey"
                     val respuesta = URL(url).readText()//leemos la respuesta de la api- descarga json-lee texto
                     Log.d("API_RESPUESTA", respuesta)
                     val json = JSONObject(respuesta)//texto a json
@@ -67,7 +75,8 @@ class ApiActivity : AppCompatActivity() {
                         val item = listaJson.getJSONObject(i)
                         val title = item.getString("title")
                         val image = item.getString("image")
-                        allRecipes.add(Recipe(title, image))
+                        val id = item.getInt("id")
+                        allRecipes.add(Recipe(title, image, id))
                     }
                 }
 

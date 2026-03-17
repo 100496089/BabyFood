@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import android.util.Log
 
-class RecipeAdapter(private val recipeList: List<Recipe>) :
+class RecipeAdapter(private val recipeList: List<Recipe>, private val onClick: (Recipe) -> Unit) :
     RecyclerView.Adapter<RecipeAdapter.ViewHolder>() {
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -28,6 +28,10 @@ class RecipeAdapter(private val recipeList: List<Recipe>) :
         val receta = recipeList[position]
         Log.d("RECETA_IMG", receta.image)
         holder.titulo.text = receta.title
+
+        holder.itemView.setOnClickListener {
+            onClick(receta)
+        }
 
         Glide.with(holder.img.context)
             .load(receta.image)
