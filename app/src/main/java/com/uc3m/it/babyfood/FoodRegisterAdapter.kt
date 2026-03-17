@@ -59,8 +59,6 @@ class FoodRegisterAdapter (private val mCtx: Context) { // Se encarga de abrir, 
         initialValues.put(KEY_RATE, rate)
         initialValues.put(KEY_CATEGORY, category)
 
-
-
         return mDb!!.insert(DATABASE_TABLE, null, initialValues) //inserta los datos en la tabla
     }
 

@@ -175,7 +175,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="60dp"
         android:layout_marginEnd="40dp"
-        android:onClick="saveNote"/>
+        android:onClick="saveNote" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

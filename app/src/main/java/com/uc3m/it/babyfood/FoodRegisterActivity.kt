@@ -13,6 +13,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.SimpleCursorAdapter
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class FoodRegisterActivity : AppCompatActivity(){
@@ -117,6 +119,7 @@ class FoodRegisterActivity : AppCompatActivity(){
         )
         startActivity(intent)
     }
+
     private fun fillData() { // rellenamos el listview con los títulos de todas las notas
         val notesCursor = dbAdapter!!.fetchAllNotes() //puntero de todas las notas
         startManagingCursor(notesCursor)
@@ -134,6 +137,28 @@ class FoodRegisterActivity : AppCompatActivity(){
         )
 
         m_listview!!.adapter = adapter
+    }
+
+    fun deleteNoteClick(view: View) {
+        // 1. Obtenemos la posición del elemento en la lista a través de su vista padre
+        val position = m_listview!!.getPositionForView(view)
+
+        // 2. Obtenemos el ID de la base de datos de esa posición
+        val id = m_listview!!.getItemIdAtPosition(position)
+
+        // 3. Mostramos un diálogo de confirmación
+        val ad= AlertDialog.Builder(this)
+        ad.setTitle("Eliminar nota")
+        ad.setMessage("¿Estás seguro de que quieres eliminar esta nota?")
+        ad.setPositiveButton("Eliminar") { _, _ ->
+            // 4. Llamamos al adaptador de la BD para borrar
+            if (dbAdapter!!.deleteNote(id)) {
+                    fillData() // 5. Recargamos la lista
+                    Toast.makeText(this, "Eliminado correctamente", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     // si se modifica una nota, o se añade, para que se actualice la lista
