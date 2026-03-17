@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".FoodRegisterActivity"
+    android:background="#F7EDFB">
+
+
+    <TextView
+        android:id="@+id/addFood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text= "@string/foodRegister"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="100dp"
+        android:textSize= "25sp"
+        android:textStyle= "bold"
+        />
+
+    <!--BUSCADOR -->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/white"
+        android:elevation="2dp"
+        app:iconifiedByDefault="false"
+        app:queryHint="Buscar por nombre..."
+        app:layout_constraintTop_toBottomOf="@id/addFood"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingConstraints" />
+
+
+        <ListView android:id="@+id/id_list_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintTop_toBottomOf="@id/search_view"
+            app:layout_constraintBottom_toTopOf="@id/addAlimento_button"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            tools:ignore="MissingConstraints" />
+
+
+    <!--Boton añadir alimento-->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addAlimento_button"
+        android:layout_width="370dp"
+        android:layout_height="60dp"
+        android:text="@string/addFood_Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="110dp"
+        style="@style/addAlimento"
+        android:onClick="createNote"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@android:color/white"
+        app:itemIconSize="26dp"
+        app:itemIconTint="@color/bottom_nav_colors"
+        app:itemTextColor="@color/bottom_nav_colors"
+        app:menu="@menu/bottom_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:labelVisibilityMode="unlabeled"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
