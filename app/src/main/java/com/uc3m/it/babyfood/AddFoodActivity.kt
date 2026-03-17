@@ -102,7 +102,6 @@ class AddFoodActivity : AppCompatActivity(){
                 categoryDropdown.setText(category, false)
 
 
-
         }
     }
 
@@ -129,9 +128,6 @@ class AddFoodActivity : AppCompatActivity(){
         }
         if (imagePath==""){
             imagePath="Sin foto"
-        }
-        if (rate==""){
-            comment="Sin comentario"
         }
 
         if (mRowId == null) {
