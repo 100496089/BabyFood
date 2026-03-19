@@ -5,9 +5,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import android.widget.Button
 import android.widget.ListView
+import android.widget.TextView
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.SimpleCursorAdapter
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class FoodRegisterActivity : AppCompatActivity(){
@@ -95,11 +101,13 @@ class FoodRegisterActivity : AppCompatActivity(){
         )
         startActivity(intent)
     }
+
     private fun fillData() { // rellenamos el listview con los títulos de todas las notas
         val notesCursor = dbAdapter!!.fetchAllNotes() //puntero de todas las notas
         startManagingCursor(notesCursor)
 
-        val from = arrayOf(DatabaseAdapter.KEY_NAME, DatabaseAdapter.KEY_COMMENT, DatabaseAdapter.KEY_DATE, DatabaseAdapter.KEY_PHOTO, DatabaseAdapter.KEY_RATE) //que columnas quieres mostrar
+        val from = arrayOf(DatabaseAdapter.KEY_NAME, DatabaseAdapter.KEY_COMMENT, DatabaseAdapter.KEY_DATE,
+            DatabaseAdapter.KEY_PHOTO, DatabaseAdapter.KEY_RATE) //que columnas quieres mostrar
         val to = intArrayOf(R.id.name, R.id.comment, R.id.date, R.id.photo) //a que vistas del diseño van
 
         val adapter = SimpleCursorAdapter( // recorre cada fila de notesCursor y la muestra en el listview
@@ -114,40 +122,32 @@ class FoodRegisterActivity : AppCompatActivity(){
         m_listview!!.adapter = adapter
     }
 
+    fun deleteNoteClick(view: View) {
+        // 1. Obtenemos la posición del elemento en la lista a través de su vista padre
+        val position = m_listview!!.getPositionForView(view)
+
+        // 2. Obtenemos el ID de la base de datos de esa posición
+        val id = m_listview!!.getItemIdAtPosition(position)
+
+        // 3. Mostramos un diálogo de confirmación
+        val ad= AlertDialog.Builder(this)
+        ad.setTitle("Eliminar nota")
+        ad.setMessage("¿Estás seguro de que quieres eliminar esta nota?")
+        ad.setPositiveButton("Eliminar") { _, _ ->
+            // 4. Llamamos al adaptador de la BD para borrar
+            if (dbAdapter!!.deleteNote(id)) {
+                    fillData() // 5. Recargamos la lista
+                    Toast.makeText(this, "Eliminado correctamente", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
     // si se modifica una nota, o se añade, para que se actualice la lista
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         fillData()
-    }
-
-    //Boton de home
-    fun home(view: View?) {
-        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
-        val intent = Intent(
-            this,
-            HomeActivity::class.java
-        )
-        startActivity(intent)
-    }
-    //boton buscar
-    fun search(view: View?) {
-        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
-        val intent = Intent(
-            this,
-            FoodActivity::class.java
-        )
-        startActivity(intent)
-    }
-
-    //boton calendario
-    fun calendar(view: View?){
-        // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
-        val intent = Intent(
-            this,
-            CalendarActivity::class.java
-        )
-        startActivity(intent)
-
     }
 
     companion object {

@@ -44,13 +44,14 @@ class DatabaseAdapter (private val mCtx: Context) {
 
     // --- MÉTODOS PARA ALIMENTOS ---
 
-    fun createNote(name: String?, comment: String?, date: String?, photo: String?, rate: String?): Long {
+    fun createNote(name: String?, comment: String?, date: String?, photo: String?, rate: String?, category: String?): Long {
         val initialValues = ContentValues()
         initialValues.put(KEY_NAME, name)
         initialValues.put(KEY_COMMENT, comment)
         initialValues.put(KEY_DATE, date)
         initialValues.put(KEY_PHOTO, photo)
         initialValues.put(KEY_RATE, rate)
+        initialValues.put(KEY_CATEGORY, category)
         return mDb!!.insert(DATABASE_TABLE, null, initialValues)
     }
 
@@ -59,25 +60,26 @@ class DatabaseAdapter (private val mCtx: Context) {
     }
 
     fun fetchAllNotes(): Cursor {
-        return mDb!!.query(DATABASE_TABLE, arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE), 
+        return mDb!!.query(DATABASE_TABLE, arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
             null, null, null, null, null)
     }
 
     @Throws(SQLException::class)
     fun fetchNote(rowId: Long): Cursor {
-        val mCursor = mDb!!.query(true, DATABASE_TABLE, arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE), 
+        val mCursor = mDb!!.query(true, DATABASE_TABLE, arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
             KEY_ROWID + "=" + rowId, null, null, null, null, null)
         mCursor?.moveToFirst()
         return mCursor
     }
 
-    fun updateNote(rowId: Long, name: String?, comment: String?, date: String?, photo: String?, rate: String?): Boolean {
+    fun updateNote(rowId: Long, name: String?, comment: String?, date: String?, photo: String?, rate: String?, category: String?): Boolean {
         val args = ContentValues()
         args.put(KEY_NAME, name)
         args.put(KEY_COMMENT, comment)
         args.put(KEY_DATE, date)
         args.put(KEY_PHOTO, photo)
         args.put(KEY_RATE, rate)
+        args.put(KEY_CATEGORY, category)
         return mDb!!.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0
     }
 
@@ -113,6 +115,7 @@ class DatabaseAdapter (private val mCtx: Context) {
         const val KEY_DATE = "Fecha"
         const val KEY_PHOTO = "Foto"
         const val KEY_RATE = "Calificacion"
+        const val KEY_CATEGORY = "Categoria"
 
         // Campos Pesos
         const val KEY_WEIGHT_ID = "_id"
@@ -125,7 +128,8 @@ class DatabaseAdapter (private val mCtx: Context) {
                 "$KEY_COMMENT text not null, " +
                 "$KEY_DATE text not null, " +
                 "$KEY_PHOTO text not null, " +
-                "$KEY_RATE text not null);"
+                "$KEY_RATE text not null," +
+                "$KEY_CATEGORY text not null);"
 
         private const val DATABASE_CREATE_WEIGHTS = "create table $TABLE_WEIGHTS (" +
                 "$KEY_WEIGHT_ID integer primary key autoincrement, " +
