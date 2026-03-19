@@ -47,6 +47,22 @@ class FoodRegisterActivity : AppCompatActivity(){
         // rellenamos el listview con los títulos de todas las notas en la BD
         fillData()
 
+        //buscador de notas
+        val searchView = findViewById<androidx.appcompat.widget.SearchView>(R.id.search_view)
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Cada vez que escribas, filtramos la lista
+                val cursor = dbAdapter!!.fetchNotesBySearch(newText ?: "")
+                // Actualizamos el cursor del adaptador que ya tienes
+                (m_listview?.adapter as? SimpleCursorAdapter)?.changeCursor(cursor)
+                return true
+            }
+        })
+
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->
 
@@ -130,7 +146,7 @@ class FoodRegisterActivity : AppCompatActivity(){
         val id = m_listview!!.getItemIdAtPosition(position)
 
         // 3. Mostramos un diálogo de confirmación
-        val ad= AlertDialog.Builder(this)
+        val ad= com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
         ad.setTitle("Eliminar nota")
         ad.setMessage("¿Estás seguro de que quieres eliminar esta nota?")
         ad.setPositiveButton("Eliminar") { _, _ ->

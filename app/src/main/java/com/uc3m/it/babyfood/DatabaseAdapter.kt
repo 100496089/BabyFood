@@ -72,6 +72,19 @@ class DatabaseAdapter (private val mCtx: Context) {
         return mCursor
     }
 
+    //buscar nota por nombre
+    fun fetchNotesBySearch(query: String): Cursor {
+        return mDb!!.query(
+            DATABASE_TABLE,
+            arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
+            "$KEY_NAME LIKE ?",
+            arrayOf("%$query%"),
+            null,
+            null,
+            null
+        )
+    }
+
     fun updateNote(rowId: Long, name: String?, comment: String?, date: String?, photo: String?, rate: String?, category: String?): Boolean {
         val args = ContentValues()
         args.put(KEY_NAME, name)
