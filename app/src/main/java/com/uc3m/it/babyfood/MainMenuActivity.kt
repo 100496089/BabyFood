@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.textfield.TextInputEditText
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -25,6 +26,10 @@ class MainMenuActivity : AppCompatActivity() {
     private lateinit var imageViewProfile: ShapeableImageView
     private var currentPhotoPath: String? = null
     private lateinit var dbAdapter: DatabaseAdapter
+
+    // Opciones de alergias para el diálogo multiselección
+    private val alergiasArray = arrayOf("Lactosa", "Gluten", "Huevo", "Pescado", "Legumbres", "Frutas", "Soja", "Otros")
+    private val selectedAlergias = BooleanArray(alergiasArray.size)
 
     //Esto permite abrir la galería del usuario
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -54,6 +59,7 @@ class MainMenuActivity : AppCompatActivity() {
         val fechaGuardada = prefs.getString("fecha", null)
         val pesoGuardado = prefs.getString("peso", null)
         val fotoGuardada = prefs.getString("foto_perfil", null)
+        val alergiasGuardadas = prefs.getString("alergia", "")
 
         val isEditing = intent.getBooleanExtra("isEditing", false) //Compruebo si estoy editando el perfil
 
@@ -86,7 +92,7 @@ class MainMenuActivity : AppCompatActivity() {
         val editTextNombre = findViewById<EditText>(R.id.editTextNombre)
         val editTextFecha = findViewById<EditText>(R.id.editTextFecha)
         val editTextPeso = findViewById<EditText>(R.id.editTextPeso)
-        val autoCompleteAlergia = findViewById<AutoCompleteTextView>(R.id.autoCompleteAlergia)
+        val editTextAlergia = findViewById<TextInputEditText>(R.id.editTextAlergia)
         val buttonEnviar = findViewById<Button>(R.id.buttonMenu)
 
         currentPhotoPath = prefs.getString("foto_perfil", null)
@@ -104,7 +110,19 @@ class MainMenuActivity : AppCompatActivity() {
         editTextNombre.setText(nombreGuardado)
         editTextFecha.setText(prefs.getString("fecha", ""))
         editTextPeso.setText(prefs.getString("peso", ""))
-        autoCompleteAlergia.setText(prefs.getString("alergia", ""), false)
+        
+        // Inicializar el estado de las alergias seleccionadas
+        if (!alergiasGuardadas.isNullOrEmpty() && alergiasGuardadas != "Ninguna") {
+            val savedList = alergiasGuardadas.split(", ")
+            for (i in alergiasArray.indices) {
+                if (savedList.contains(alergiasArray[i])) {
+                    selectedAlergias[i] = true
+                }
+            }
+            editTextAlergia.setText(alergiasGuardadas)
+        } else {
+            editTextAlergia.setText("Ninguna")
+        }
 
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Selecciona fecha de nacimiento")
@@ -122,17 +140,16 @@ class MainMenuActivity : AppCompatActivity() {
             editTextFecha.setText(sdf.format(date))
         }
 
-        val alergias = arrayOf("Ninguna", "Lactosa", "Gluten", "Huevo", "Pescado", "Legumbres", "Frutas", "Soja", "Otros")
-        val adapter = ArrayAdapter(this, R.layout.list_item, alergias)
-        autoCompleteAlergia.setAdapter(adapter)
+        editTextAlergia.setOnClickListener {
+            showMultiSelectAlergiasDialog(editTextAlergia)
+        }
 
         buttonEnviar.setOnClickListener {
             val nombre = editTextNombre.text.toString()
             val fecha = editTextFecha.text.toString()
             val pesoStr = editTextPeso.text.toString()
-            val alergia = autoCompleteAlergia.text.toString()
+            val alergia = editTextAlergia.text.toString()
 
-            // Comprobamos los campos actuales, no los guardados anteriormente (no usamos perfilCompleto)
             val camposRellenos = nombre.isNotEmpty() &&
                     fecha.isNotEmpty() &&
                     pesoStr.isNotEmpty() &&
@@ -161,6 +178,31 @@ class MainMenuActivity : AppCompatActivity() {
                 Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showMultiSelectAlergiasDialog(textView: TextInputEditText) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Selecciona alergias")
+        builder.setMultiChoiceItems(alergiasArray, selectedAlergias) { _, which, isChecked ->
+            selectedAlergias[which] = isChecked
+        }
+        
+        builder.setPositiveButton("Aceptar") { _, _ ->
+            val result = mutableListOf<String>()
+            for (i in alergiasArray.indices) {
+                if (selectedAlergias[i]) {
+                    result.add(alergiasArray[i])
+                }
+            }
+            if (result.isEmpty()) {
+                textView.setText("Ninguna")
+            } else {
+                textView.setText(result.joinToString(", "))
+            }
+        }
+        
+        builder.setNegativeButton("Cancelar", null)
+        builder.show()
     }
 
     override fun onDestroy() {

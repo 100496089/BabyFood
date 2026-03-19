@@ -8,16 +8,20 @@
     tools:context=".HomeActivity"
     android:background="#F7EDFB">
 
+    <!-- ScrollView para el contenido principal -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:clipChildren="false"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation">
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="24dp">
+            android:paddingBottom="40dp">
 
             <!--foto-->
             <com.google.android.material.imageview.ShapeableImageView
@@ -33,16 +37,15 @@
                 app:shapeAppearanceOverlay="@style/CircleImageView"
                 android:contentDescription="foto del bebé"/>
 
-            <!-- Mensaje de Bienvenida -->
+            <!-- Mensaje de bienvenida -->
             <TextView
                 android:id="@+id/welcomeMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:text="¡Hola!"
-                android:textSize="24sp"
+                android:textSize="28sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ImagenBebe" />
@@ -58,11 +61,10 @@
                 app:layout_constraintTop_toBottomOf="@id/welcomeMessage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="5dp"
                 android:text="@string/profile_Button"
                 android:onClick="profileChange"/>
 
-            <!-- CARD REGISTRO ALIMENTOS -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_food_registration"
                 android:layout_width="0dp"
@@ -112,20 +114,19 @@
                         android:text="@string/addFood_Button"
                         android:onClick="addFood"
                         style="@style/addAlimento"/>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- CARD GRÁFICA PESO -->
+            <!-- Card Historial de Peso -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_weight_chart"
+                android:id="@+id/card_weight_history"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginTop="16dp"
+                android:layout_margin="24dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="6dp"
-                app:layout_constraintTop_toBottomOf="@+id/card_food_registration"
+                app:layout_constraintTop_toBottomOf="@id/card_food_registration"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -148,38 +149,42 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Historial de Peso"
+                            android:text="Historial de peso"
                             android:textSize="18sp"
                             android:textStyle="bold"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Ver evolución en gráfica"
-                            android:textSize="14sp" />
+                            android:text="Sigue el crecimiento del bebé"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"/>
+
                     </LinearLayout>
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/arrow_forward"
-                        android:contentDescription="Ver gráfica" />
+                        android:contentDescription="Ir al historial de peso"/>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- CARD RECETAS -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_recetas"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="32dp"
                 app:cardCornerRadius="20dp"
-                app:cardElevation="6dp"
-                app:layout_constraintTop_toBottomOf="@+id/card_weight_chart"
+                app:cardElevation="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_weight_history"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -198,6 +203,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/title_recetas"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Explorar recetas"
@@ -208,20 +214,78 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Descubre ideas saludables"
-                            android:textSize="14sp"/>
-                    </LinearLayout>
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"/>
 
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:scrollbars="none">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:layout_width="150dp"
+                                    android:layout_height="150dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/receta_arroz"
+                                    app:shapeAppearanceOverlay="@style/CornerImage" />
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:layout_width="150dp"
+                                    android:layout_height="150dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/z_manzana"
+                                    app:shapeAppearanceOverlay="@style/CornerImage" />
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:layout_width="150dp"
+                                    android:layout_height="150dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/z_pollo"
+                                    app:shapeAppearanceOverlay="@style/CornerImage" />
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:layout_width="150dp"
+                                    android:layout_height="150dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/z_platano"
+                                    app:shapeAppearanceOverlay="@style/CornerImage" />
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:layout_width="150dp"
+                                    android:layout_height="150dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/z_zanahoria"
+                                    app:shapeAppearanceOverlay="@style/CornerImage" />
+
+                            </LinearLayout>
+                        </HorizontalScrollView>
+
+                    </LinearLayout>
+                    <!-- Flecha -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/arrow_forward"
                         android:contentDescription="Ir a recetas"/>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
+    <!-- Menú de navegación fijo -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
