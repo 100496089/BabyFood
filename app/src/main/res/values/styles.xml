@@ -5,7 +5,17 @@
         <item name="cornerSize">50%</item>
     </style>
     <style name="addAlimento" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">#B57EDC</item>
         <item name="cornerRadius">8dp</item>
     </style>
 
+    <!--ayuda IA (COPILOT) -->
+    <!--Definimos características para botón de añadir comida (+)-->
+    <style name="StyleButtonCalendar">
+        <item name="android:background">@drawable/button_calendar_bg</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

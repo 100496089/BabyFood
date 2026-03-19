@@ -1,65 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- Constraintlayout: https://www.geeksforgeeks.org/android/constraintlayout-in-android/ + ayuda de IA (COPILOT)) -->
 
-    <!-- Ayuda 1 COPILOT-->
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <!-- Uso ScrollView: IA (COPILOT) + clase -->
+    <!--Sirve para hacer scroll vertical cuando hay mucho contenido-->
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
+        <!-- Bloque LinearLayout: clase -->
+        <!--LinearLayout PRINCIPAL-->
         <LinearLayout
             android:orientation="vertical"
             android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+        <!-- Bloque CalendarView: https://www.geeksforgeeks.org/android/android-creating-a-calendar-view-app/ + ayuda de IA (COPILOT) -->
+            <!--Calendario interactivo para el usuario-->
             <CalendarView
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"/>
 
-            <TextView
-                android:text="Desayuno"
-                android:textColor="@color/textDayCalendar"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"
+            <!-- Bloque LinearLayout: clase -->
+            <!--LinearLayout para texto Desayuno e imagen-->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"> <!--"gravity" y "marginTop": IA (COPILOT) -->
 
+                <!-- Bloque ImageView: clase + ayuda IA (COPILOT)-->
+                <!--Imagen para desayuno-->
+                <ImageView
+                    android:src="@drawable/desayuno"
+                    android:background="@drawable/image_calendar"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@null"/>
+
+                <!-- Bloque TextView: clase + ayuda IA (COPILOT) + https://www.geeksforgeeks.org/android/textview-in-android-with-example/-->
+                <!--Muestra texto desayuno-->
+                <TextView
+                    android:text="@string/Breakfast"
+                    android:textColor="@color/textDayCalendar"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!-- Bloque Button: clase + ayuda IA (COPILOT)-->
+            <!--Botón para añadir comida-->
             <Button
                 style="@style/StyleButtonCalendar"
                 android:id="@+id/addBreakfast"
-                android:text="+"
+                android:text="@string/Plus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="15dp"/>
 
+            <!-- Bloque LinearLayout: clase -->
             <!-- Contenedor donde se mostrarán las comidas del desayuno -->
             <LinearLayout
                 android:id="@+id/breakfastLayout"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="30dp"/> <!--"marginBottom": IA (COPILOT) -->
 
-            <TextView
-                android:text="Almuerzo"
-                android:textColor="@color/textDayCalendar"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"
+            <!-- Las referencias de ayuda se repiten de la misma manera para cada tipo de comida igual que en el caso del desayuno -->
+
+            <!--LinearLayout para texto Almuerzo e imagen-->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
 
+                <!--Imagen para almuerzo-->
+                <ImageView
+                    android:src="@drawable/almuerzo"
+                    android:background="@drawable/image_calendar"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@null"/>
+
+                <!--Muestra texto almuerzo-->
+                <TextView
+                    android:text="@string/Lunch"
+                    android:textColor="@color/textDayCalendar"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!--Botón para añadir comida-->
             <Button
                 style="@style/StyleButtonCalendar"
                 android:id="@+id/addLunch"
-                android:text="+"
+                android:text="@string/Plus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="15dp"/>
 
             <!-- Contenedor donde se mostrarán las comidas del almuerzo -->
             <LinearLayout
@@ -67,24 +135,48 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="30dp"/>
 
-            <TextView
-                android:text="Merienda"
-                android:textColor="@color/textDayCalendar"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"
+            <!--LinearLayout para texto Merienda e imagen-->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
 
+                <!--Imagen para merienda-->
+                <ImageView
+                    android:src="@drawable/merienda"
+                    android:background="@drawable/image_calendar"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@null"/>
+
+                <!--Muestra texto merienda-->
+                <TextView
+                    android:text="@string/Snack"
+                    android:textColor="@color/textDayCalendar"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!--Botón para añadir comida-->
             <Button
                 style="@style/StyleButtonCalendar"
                 android:id="@+id/addSnack"
-                android:text="+"
+                android:text="@string/Plus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="15dp"/>
 
             <!-- Contenedor donde se mostrarán las comidas de la merienda -->
             <LinearLayout
@@ -92,24 +184,48 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="30dp"/>
 
-            <TextView
-                android:text="Cena"
-                android:textColor="@color/textDayCalendar"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"
+            <!--LinearLayout para texto Cena e imagen-->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
 
+                <!--Imagen para cena-->
+                <ImageView
+                    android:src="@drawable/cena"
+                    android:background="@drawable/image_calendar"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@null"/>
+
+                <!--Muestra texto cena-->
+                <TextView
+                    android:text="@string/Dinner"
+                    android:textColor="@color/textDayCalendar"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!--Botón para añadir comida-->
             <Button
                 style="@style/StyleButtonCalendar"
                 android:id="@+id/addDinner"
-                android:text="+"
+                android:text="@string/Plus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="15dp"/>
 
             <!-- Contenedor donde se mostrarán las comidas de la cena -->
             <LinearLayout
@@ -117,10 +233,29 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"/> <!-- Añadir espacio entre botones -->
+                android:layout_marginBottom="30dp"/> <!-- Añadir espacio entre botones -->
+
+            <!-- ayuda IA (COPILOT) -->
+            <!--Espacio vacío para que barra inferior no tape contenido-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
 
         </LinearLayout>
     </ScrollView>
-    <!-- Ayuda 1 COPILOT -->
+
+    <!-- Lo implementó otra compañera-->
+    <!--Permite cambiar entre las secciones de la app-->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@android:color/white"
+        app:itemIconSize="26dp"
+        app:itemIconTint="@color/bottom_nav_colors"
+        app:itemTextColor="@color/bottom_nav_colors"
+        app:menu="@menu/bottom_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:labelVisibilityMode="unlabeled"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
