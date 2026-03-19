@@ -24,9 +24,33 @@ class CalendarActivity : AppCompatActivity() {
         setContentView(R.layout.activity_calendar) //cargamos xml asociado
 
         // ayuda IA (COPILOT)
-        //Para que al pulsar barra inferior se quede seleccionado calendario
+        //Para que al pulsar barra inferior cambiemos de pantalla
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.selectedItemId = R.id.calendar_button
+
+        bottomNav.setOnItemSelectedListener { item ->
+            when(item.itemId){
+
+                R.id.home_button -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+
+                R.id.search_button -> {
+                    startActivity(Intent(this, FoodActivity::class.java))
+                    true
+                }
+
+                R.id.favorites_button -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+
+                R.id.calendar_button -> true
+
+                else -> false
+            }
+        }
         
         db = MealsCalendarDB(this)
 
@@ -61,6 +85,7 @@ class CalendarActivity : AppCompatActivity() {
         findViewById<Button>(R.id.addLunch).setOnClickListener { showInputUI("lunch", lunchLayout) }
         findViewById<Button>(R.id.addSnack).setOnClickListener { showInputUI("snack", snackLayout) }
         findViewById<Button>(R.id.addDinner).setOnClickListener { showInputUI("dinner", dinnerLayout)}
+
     }
 
     //ayuda IA (COPILOT)
@@ -154,4 +179,5 @@ class CalendarActivity : AppCompatActivity() {
 
         builder.show() //Mostramos dialogo en pantalla
     }
+
 }
