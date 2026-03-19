@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET"/> <!-- Para que haya internet y funcionen las apis -->
 
     <application
         android:allowBackup="true"
@@ -29,6 +29,7 @@
         <activity android:name=".CalendarActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".RecipeDetailActivity"/>
+        <activity android:name=".FavoritesActivity" />
     </application>
 
 </manifest>

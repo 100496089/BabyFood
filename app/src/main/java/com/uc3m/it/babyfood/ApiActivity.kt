@@ -4,10 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -26,6 +27,14 @@ class ApiActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_api)
 
+        // Botón volver a FoodActivity
+        val btnBack = findViewById<ImageButton>(R.id.btnBack)
+        btnBack.setOnClickListener {
+            val intent = Intent(this, FoodActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerRecetas)
 
         adapter = RecipeAdapter(recipeList){ receta ->
@@ -38,12 +47,41 @@ class ApiActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)//linear layout para que las recetas se muestren en una columna
         recyclerView.adapter = adapter
 
+        setupBottomNavigation()
         obtenerTodasLasRecetas()
+    }
+
+    private fun setupBottomNavigation() {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home_button -> {
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+                R.id.calendar_button -> {
+                    startActivity(Intent(this, CalendarActivity::class.java))
+                    true
+                }
+                R.id.search_button -> {
+                    // Ya estamos en ApiActivity (búsqueda)
+                    true
+                }
+                R.id.favorites_button -> {
+                    startActivity(Intent(this, FavoritesActivity::class.java))
+                    // Lógica para favoritos si existe
+                    true
+                }
+                else -> false
+            }
+        }
+        // Marcar el ítem de búsqueda como seleccionado (lupa)
+        bottomNav.selectedItemId = R.id.search_button
     }
 
     private fun obtenerTodasLasRecetas() {
         val queries = listOf(
-            "puree",
+            /*"puree",
             "baby porridge",
             "mashed vegetables",
             "fruit puree",
@@ -54,7 +92,7 @@ class ApiActivity : AppCompatActivity() {
             "baby cakes",
             "baby muffins",
             "baby snacks",
-            "baby biscuits",
+            "baby biscuits",*/
             "baby finger food"
 
         )
@@ -65,7 +103,7 @@ class ApiActivity : AppCompatActivity() {
 
                 for (q in queries) {//bucle para cada palabra
                     //busqueda de palabra, devuelve 10 resultados de la api
-                    val url = "https://api.spoonacular.com/recipes/complexSearch?query=$q&number=1&apiKey=$apiKey"
+                    val url = "https://api.spoonacular.com/recipes/complexSearch?query=$q&number=10&apiKey=$apiKey"
                     val respuesta = URL(url).readText()//leemos la respuesta de la api- descarga json-lee texto
                     Log.d("API_RESPUESTA", respuesta)
                     val json = JSONObject(respuesta)//texto a json

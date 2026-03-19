@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,14 +22,22 @@ class FoodActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge() //, para que el contenido pueda ir hasta los bordes de la pantalla.
         setContentView(R.layout.activity_food) //este será el layout que se sará como interfaz
+        //R.layout  Para acceder a los recursos desde el código
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }// Sirve para que el contenido de tu app no se quede tapado por la cámara frontal o los botones de navegación del sistema, añadiendo un margen (padding) dinámico.
+
+        // Botón volver
+        val btnBack: ImageButton = findViewById(R.id.btnBack)
+        btnBack.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish() // Finaliza esta actividad para volver a la anterior
         }
 
-//para el selector de meses
-
+        // Configuración del spinner de meses
         val optionsMonths = arrayOf(
             "tercer mes",
             "cuarto mes",
@@ -47,9 +56,10 @@ class FoodActivity : AppCompatActivity() {
             android.R.layout.simple_spinner_item,
             optionsMonths
         )
-        val selectOpts: Spinner = findViewById<Spinner>(R.id.spinnerMonths)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)//es un layout XML que Google incluye dentro del propio framework de Android.
-        selectOpts.adapter = adapter//Conectas el Spinner con el adapter para que muestre las opciones.
+        val adapterMonths = ArrayAdapter(this, android.R.layout.simple_spinner_item, optionsMonths)
+        val selectOpts: Spinner = findViewById(R.id.spinnerMonths)
+        adapterMonths.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        selectOpts.adapter = adapterMonths
 
 
         val recyclerView: RecyclerView = findViewById<RecyclerView>(R.id.recyclerFoods)
@@ -124,10 +134,11 @@ class FoodActivity : AppCompatActivity() {
 // Adapter
         val foodAdapter = FoodAdapter(foodList) //el adapter le meto la lista
 
-
-        val btnContinue = findViewById<Button>(R.id.btnContinue)
-        btnContinue.setOnClickListener {
-            val intent = Intent(this, ApiActivity::class.java)
+//GEMINI
+        val btnContinue = findViewById<Button>(R.id.btnContinue)//Es una función que busca en tu archivo XML (activity_food.xml) un elemento que tenga el ID btnContinue
+        // Para devolver un resultado a su actividad madre
+        btnContinue.setOnClickListener {//listener que se activa cuando tocas el botón
+            val intent = Intent(this, ApiActivity::class.java)//El .class.java es necesario porque Android (que corre sobre una base de Java) necesita la referencia técnica de esa clase para poder abrirla.
             startActivity(intent)
         }
 
@@ -135,7 +146,7 @@ class FoodActivity : AppCompatActivity() {
         recyclerView.layoutManager = GridLayoutManager(this, 2)
         recyclerView.adapter = foodAdapter
 
-        //listener para la búsqueda
+        //listener para la búsqueda--- GEMINI
         searchEditText.addTextChangedListener { text ->
 
             val filteredList = foodList.filter { food ->
@@ -144,7 +155,8 @@ class FoodActivity : AppCompatActivity() {
                     ignoreCase = true //hace que no importe mayúsculas/minúsculas
                 )
             }
-            foodAdapter.updateList(filteredList)
+            foodAdapter.updateList(filteredList)//AVISA al adapter que la lista ha cambiado
+
 
     }
 
