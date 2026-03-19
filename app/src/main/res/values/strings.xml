@@ -21,4 +21,10 @@
         <item>Postre</item>
         <item>Bebida</item>
     </string-array>
+    <string name="Plus">+</string>
+    <string name="Breakfast">Desayuno</string>
+    <string name="Lunch">Almuerzo</string>
+    <string name="Snack">Merienda</string>
+    <string name="Dinner">Cena</string>
+
 </resources>

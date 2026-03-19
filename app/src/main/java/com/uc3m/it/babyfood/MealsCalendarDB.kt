@@ -5,10 +5,11 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class MealsCalendarDB(context: Context) :
-    SQLiteOpenHelper(context, "meals.db", null, 1) {
 
-    override fun onCreate(db: SQLiteDatabase) {
+//ayuda IA (COPILOT) + clase
+class MealsCalendarDB(context: Context) :SQLiteOpenHelper(context, "meals.db", null, 1) { //nombre de la BD
+
+    override fun onCreate(db: SQLiteDatabase) { //Creamos tabla con columnas
         db.execSQL("""
             CREATE TABLE meals (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,48 +20,55 @@ class MealsCalendarDB(context: Context) :
         """)
     }
 
+    //Por si caambiamos de versión en un futuro (si se quita no afectaria ahora)
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS meals")
         onCreate(db)
     }
 
+    //Guardamos una comida en la BD
     fun insertMeal(date: String, type: String, text: String) {
-        val db = writableDatabase
+        val db = writableDatabase  //Abrimos en modo escritura
         val values = ContentValues()
-        values.put("date", date)
+        values.put("date", date)  //Añadimos valores
         values.put("type", type)
         values.put("text", text)
-        db.insert("meals", null, values)
+        db.insert("meals", null, values)  //Insertamos fila en tabla
     }
 
+    //Comida que se lee de la BD
     data class Meal(val id: Int, val text: String)
 
+    //Leemos comidas de la BD
     fun getMeals(date: String, type: String): List<Meal> {
-        val db = readableDatabase
+        val db = readableDatabase  //Abrimos en modo lectura
         val cursor = db.rawQuery(
             "SELECT id, text FROM meals WHERE date=? AND type=?",
             arrayOf(date, type)
-        )
+        )//Buscamos en filas por "date" y "type"
 
-        val list = mutableListOf<Meal>()
+        val list = mutableListOf<Meal>()  //Lista donde guaradamos resultados
         while (cursor.moveToNext()) {
             val id = cursor.getInt(0)
             val text = cursor.getString(1)
-            list.add(Meal(id, text))
+            list.add(Meal(id, text)) //Añadimos
         }
         cursor.close()
         return list
     }
+
+    //Editamos comida de la BD
     fun updateMeal(id: Int, newText: String) {
-        val db = writableDatabase
+        val db = writableDatabase //Abrimos en modo escritura
         val values = ContentValues()
         values.put("text", newText)
-        db.update("meals", values, "id=?", arrayOf(id.toString()))
+        db.update("meals", values, "id=?", arrayOf(id.toString())) //Actualizamos segun id
     }
 
+    //Borramos de la BD
     fun deleteMeal(id: Int) {
-        val db = writableDatabase
-        db.delete("meals", "id=?", arrayOf(id.toString()))
+        val db = writableDatabase //Abrimos en modo escritura
+        db.delete("meals", "id=?", arrayOf(id.toString())) //Borro dependiendo de id
     }
 
 }
