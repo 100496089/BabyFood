@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
 
 class FoodAdapter(
-    private var items: List<Food>//por que con val no pero con private var si
+    private var items: List<Food>//cambiamos val por var
+    //Si pones val, la lista de alimentos se queda "congelada". Una vez que le pasas la lista al crear el adaptador, no podría cambiarla nunca más
 ) : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 
     class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -24,8 +25,8 @@ class FoodAdapter(
     }
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
-        val food = items[position]
 
+        val food = items[position]
         holder.textName.text = food.name
         holder.image.setImageResource(food.imageRes)
 

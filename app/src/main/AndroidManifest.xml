@@ -12,7 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BabyFood">
-
         <activity
             android:name=".MainMenuActivity"
             android:exported="true">
@@ -31,7 +30,8 @@
         <activity android:name=".CalendarActivity" android:exported="false" />
         <activity android:name=".WeightChartActivity" android:exported="false" />
         <activity android:name=".ApiActivity" android:exported="false" />
-
+        <activity android:name=".RecipeDetailActivity" android:exported="false"/>
+        <activity android:name=".FavoritesActivity" android:exported="false"/>
     </application>
 
 </manifest>
