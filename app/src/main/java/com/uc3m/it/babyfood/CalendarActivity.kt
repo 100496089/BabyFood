@@ -42,7 +42,7 @@ class CalendarActivity : AppCompatActivity() {
                 }
 
                 R.id.favorites_button -> {
-                    startActivity(Intent(this, HomeActivity::class.java))
+                    startActivity(Intent(this, FavoritesActivity::class.java))
                     true
                 }
 
