@@ -18,13 +18,13 @@
         android:src="@drawable/arrow_backward"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="Volver" />
+        android:contentDescription="@string/volver" />
 
     <TextView
         android:id="@+id/txtBuscadorTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Buscador"
+        android:text="@string/buscador"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#000000"
@@ -56,7 +56,7 @@
         android:id="@+id/editSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Buscar alimento..."
+        android:hint="@string/buscar_alimento"
         android:padding="12dp"
         android:background="@drawable/bg_search"
         android:layout_marginHorizontal="16dp"
@@ -82,7 +82,7 @@
         android:id="@+id/btnContinue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Continuar"
+        android:text="@string/continuar"
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
