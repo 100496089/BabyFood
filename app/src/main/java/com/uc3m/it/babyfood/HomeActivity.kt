@@ -41,7 +41,10 @@ class HomeActivity : AppCompatActivity() {
                     startActivity(Intent(this, FoodActivity::class.java))
                     true
                 }
-                R.id.favorites_button -> true
+                R.id.favorites_button -> {
+                    startActivity(Intent(this, FavoritesActivity::class.java))
+                    true
+                }
                 R.id.calendar_button -> {
                     startActivity(Intent(this, CalendarActivity::class.java))
                     true
