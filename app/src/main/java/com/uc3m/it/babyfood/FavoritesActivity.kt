@@ -36,7 +36,7 @@ class FavoritesActivity : AppCompatActivity() {
                     true
                 }
                 R.id.search_button -> {
-                    startActivity(Intent(this, ApiActivity::class.java))
+                    startActivity(Intent(this, FoodActivity::class.java))
                     true
                 }
                 R.id.favorites_button -> {
