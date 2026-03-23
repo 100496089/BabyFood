@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+//Uso OnChartValueSelectedListener para poder borrar los registros de la gráfica
 class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
     private lateinit var lineChart: LineChart
@@ -30,12 +31,12 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
         setContentView(R.layout.activity_weight_chart)
 
         lineChart = findViewById(R.id.weightChart)
-        val btnBack = findViewById<Button>(R.id.btnBack)
+        val btnBack = findViewById<Button>(R.id.btnBack) //boton de volver atrás
 
         dbAdapter = DatabaseAdapter(this)
         dbAdapter.open()
 
-        setupChart()
+        setupChart() //cargamos configuraciones del gráfico
         loadDataIntoChart()
 
         btnBack.setOnClickListener {
@@ -49,9 +50,9 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
         lineChart.description.isEnabled = false
         lineChart.setTouchEnabled(true)
         lineChart.setDragEnabled(true)
-        lineChart.setScaleEnabled(true)
-        lineChart.setPinchZoom(true)
-        lineChart.setDrawGridBackground(false)
+        lineChart.setScaleEnabled(true) //zoom
+        lineChart.setPinchZoom(true) //permite hacer zoom con los dedos
+        lineChart.setDrawGridBackground(false) // Sin fondo de cuadrícula
 
         // Configuración del Eje X
         val xAxis = lineChart.xAxis
@@ -64,7 +65,7 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
             override fun getFormattedValue(value: Float): String {
                 val index = value.toInt()
                 return if (index >= 0 && index < dateLabels.size) {
-                    dateLabels[index]
+                    dateLabels[index] // devuelvo la fecha correspondiente al id del dato
                 } else {
                     ""
                 }
@@ -85,7 +86,7 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
         if (cursor.moveToFirst()) {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("dd/MM", Locale.getDefault()) //parseo los datos para quedarme solo con el dia y el mes
             var index = 0f
 
             do {
@@ -120,15 +121,16 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
             dataSet.setDrawCircleHole(false)
             dataSet.valueTextSize = 12f
             dataSet.setDrawFilled(true)
-            dataSet.fillAlpha = 50
+            dataSet.fillAlpha = 50 //transparencia del relleno
             dataSet.fillColor = Color.parseColor("#6200EE")
-            dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // Línea suavizada (opcional)
+            dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // Línea suavizada
 
             val lineData = LineData(dataSet)
             lineChart.data = lineData
             
-            // Forzar que se vea el eje X correctamente con los nuevos labels
+            // fijo un número máximo de etiquetas en el eje X (5) para que sea siempre legible
             lineChart.xAxis.labelCount = if (dateLabels.size > 5) 5 else dateLabels.size
+            lineChart.setVisibleXRangeMaximum(5f) //hace que la gráfica sea scrolleable a partir de 5 valores
             
             lineChart.animateX(1000) // Animación al cargar
             lineChart.invalidate()

@@ -57,7 +57,7 @@ class HomeActivity : AppCompatActivity() {
 
     fun profileChange(view: View?){
         val intent = Intent(this, MainMenuActivity::class.java)
-        intent.putExtra("isEditing", true)
+        intent.putExtra("isEditing", true) //nos permite enviar información entre activities. En este caso, para saber si estamos editando el perfil
         startActivity(intent)
     }
 
@@ -69,7 +69,6 @@ class HomeActivity : AppCompatActivity() {
         startActivity(Intent(this, WeightChartActivity::class.java))
     }
 
-    // Nuevo método para abrir la pantalla de recetas/alimentos
     fun openRecipes(view: View?) {
         startActivity(Intent(this, FoodActivity::class.java))
     }

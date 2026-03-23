@@ -183,14 +183,22 @@ class MainMenuActivity : AppCompatActivity() {
     private fun showMultiSelectAlergiasDialog(textView: TextInputEditText) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Selecciona alergias")
+
+        //como solo tiene un metodo, uso paso una lambda (función sin nombre), no hace falta implementar el metodo onClick
+        //object : DialogInterface.OnMultiChoiceClickListener {
+        //    override fun onClick(dialog, which, isChecked) {
+        //        selectedAlergias[which] = isChecked
+        //    }
+        //}
         builder.setMultiChoiceItems(alergiasArray, selectedAlergias) { _, which, isChecked ->
-            selectedAlergias[which] = isChecked
+            selectedAlergias[which] = isChecked //genera una lista de booleanos para saber qué alergias están seleccionadas
         }
-        
+        //pongo un '_' en dialog porque no necesito mandarle ninguna acción al diálogo al seleccionar una opción
+
         builder.setPositiveButton("Aceptar") { _, _ ->
             val result = mutableListOf<String>()
             for (i in alergiasArray.indices) {
-                if (selectedAlergias[i]) {
+                if (selectedAlergias[i]) { //si la alergia está seleccionada, la añado a la lista
                     result.add(alergiasArray[i])
                 }
             }
@@ -202,6 +210,9 @@ class MainMenuActivity : AppCompatActivity() {
         }
         
         builder.setNegativeButton("Cancelar", null)
+        // NOTA: No hace falta poner dialog.dismiss().
+        // Android lo hace automáticamente al terminar el metodo onClick.
+
         builder.show()
     }
 
