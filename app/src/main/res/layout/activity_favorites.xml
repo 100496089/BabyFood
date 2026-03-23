@@ -20,7 +20,7 @@
         android:id="@+id/txtFavoritesTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Favoritos"
+        android:text="@string/favoritos"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/textDayCalendar"
