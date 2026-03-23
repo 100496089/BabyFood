@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BabyFood</string>
     <string name="app_Title">BabyFood</string>
@@ -14,6 +15,7 @@
     <string name="peso">Peso</string>
     <string name="alergias_intolerancias">Alergias o intolerancias</string>
     <string name="enviar_button">Enviar</string>
+
     <string-array name="food_categories">
         <item>Verduras y frutas</item>
         <item>Carnes</item>
@@ -22,10 +24,22 @@
         <item>Postre</item>
         <item>Bebida</item>
     </string-array>
+
     <string name="Plus">+</string>
     <string name="Breakfast">Desayuno</string>
     <string name="Lunch">Almuerzo</string>
     <string name="Snack">Merienda</string>
     <string name="Dinner">Cena</string>
+
+    <string name="buscador">Buscador</string>
+    <string name="favoritos">Favoritos</string>
+    <string name="volver">Volver</string>
+    <string name="ingredientes">Ingredientes</string>
+    <string name="preparacion">Preparación</string>
+    <string name="buscar_alimento">Buscar alimento...</string>
+    <string name="continuar">Continuar</string>
+    <string name="me_gusta">Me gusta</string>
+    <string name="añadir_al_calendario">Añadir al calendario</string>
+    <string name="alimento">Alimento</string>
 
 </resources>

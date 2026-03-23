@@ -44,10 +44,10 @@ class AddFoodActivity : AppCompatActivity(){
         calendar?.setEndIconOnClickListener{ v -> date(v)}
 
         //desplegable categorias
-        val categories = resources.getStringArray(R.array.food_categories)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categories)
-        val categoryDropdown = findViewById<AutoCompleteTextView>(R.id.category)
-        categoryDropdown.setAdapter(adapter)
+        val categories = resources.getStringArray(R.array.food_categories) //string de palabras
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categories)// como dibujar cada palabra en la lista
+        val categoryDropdown = findViewById<AutoCompleteTextView>(R.id.category)// componente en el xml
+        categoryDropdown.setAdapter(adapter)// le pasamos al adaptador la lista de palabras para que se llene
 
         // obtiene referencia a los views que componen el layout
         NameText = findViewById<View>(R.id.Name) as EditText
@@ -97,11 +97,11 @@ class AddFoodActivity : AppCompatActivity(){
                 val ratingBar = findViewById<RatingBar>(R.id.ratingBar)
                 ratingBar?.rating = ratingValue.toFloat() // Convertimos de String a Float
             }
-            val category = note.getString(
-                note.getColumnIndexOrThrow(DatabaseAdapter.KEY_CATEGORY))
+                val category =
+                    note.getString(note.getColumnIndexOrThrow(DatabaseAdapter.KEY_CATEGORY))
+            if (category != null) {
                 categoryDropdown.setText(category, false)
-
-
+            }
         }
     }
 

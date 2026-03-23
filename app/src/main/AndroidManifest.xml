@@ -24,13 +24,26 @@
         </activity>
 
         <activity android:name=".HomeActivity" android:exported="false" />
-        <activity android:name=".MainActivity" android:exported="false" />
         <activity android:name=".FoodActivity" android:exported="false" />
         <activity android:name=".FoodRegisterActivity" android:exported="false" />
         <activity android:name=".AddFoodActivity" android:exported="false" />
         <activity android:name=".CalendarActivity" android:exported="false" />
         <activity android:name=".WeightChartActivity" android:exported="false" />
         <activity android:name=".ApiActivity" android:exported="false" />
+        <activity android:name=".RecipeDetailActivity" android:exported="false"/>
+        <activity android:name=".FavoritesActivity" android:exported="false"/>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.uc3m.it.babyfood.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths">
+            </meta-data>
+        </provider>
+
 
     </application>
 
