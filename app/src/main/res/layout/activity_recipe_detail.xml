@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#EFDAF8">
+    android:layout_height="match_parent">
 
     <ImageButton
         android:id="@+id/btnBack"
@@ -21,10 +20,10 @@
         android:id="@+id/txtBuscadorTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Buscador"
+        android:text="@string/buscador"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#000000"
+        android:textColor="@color/textDayCalendar"
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="@id/btnBack"
@@ -35,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        android:background="#000000"
+        android:background="@color/textDayCalendar"
         app:layout_constraintTop_toBottomOf="@id/btnBack" />
 
     <ScrollView
@@ -56,7 +55,7 @@
                 android:id="@+id/txtTitle"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -64,14 +63,14 @@
                 android:text="Ingredientes"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/txtIngredients"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -79,14 +78,14 @@
                 android:text="Preparación"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/txtSummary"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -101,7 +100,6 @@
         android:orientation="horizontal"
         android:padding="12dp"
         android:gravity="center"
-        android:background="#EFDAF8"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
 
         <LinearLayout
@@ -119,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:text="Me gusta"
                 android:layout_marginStart="8dp"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -138,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:text="Añadir al calendario"
                 android:layout_marginStart="8dp"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:textStyle="bold" />
         </LinearLayout>
 

@@ -32,16 +32,12 @@ class FoodActivity : AppCompatActivity() {
         // Botón volver
         val btnBack: ImageButton = findViewById(R.id.btnBack)
         btnBack.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            finish() // Finaliza esta actividad para volver a la anterior
+            onBackPressedDispatcher.onBackPressed()
         }
 
         // Configuración del spinner de meses
         val optionsMonths = arrayOf(
-            "tercer mes",
-            "cuarto mes",
-            "quinto mes",
+            "tercer-quinto mes",
             "sexto mes",
             "séptimo mes",
             "octavo mes",
@@ -51,11 +47,6 @@ class FoodActivity : AppCompatActivity() {
             "duodécimo mes"
         )
 //adapter que mostrará las opciones en el spinner
-        val adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            optionsMonths
-        )
         val adapterMonths = ArrayAdapter(this, android.R.layout.simple_spinner_item, optionsMonths)
         val selectOpts: Spinner = findViewById(R.id.spinnerMonths)
         adapterMonths.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -136,7 +127,7 @@ class FoodActivity : AppCompatActivity() {
 
 //GEMINI
         val btnContinue = findViewById<Button>(R.id.btnContinue)//Es una función que busca en tu archivo XML (activity_food.xml) un elemento que tenga el ID btnContinue
-        // Para devolver un resultado a su actividad madre
+        // Para devolver un resultado a su actividad
         btnContinue.setOnClickListener {//listener que se activa cuando tocas el botón
             val intent = Intent(this, ApiActivity::class.java)//El .class.java es necesario porque Android (que corre sobre una base de Java) necesita la referencia técnica de esa clase para poder abrirla.
             startActivity(intent)

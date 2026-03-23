@@ -40,4 +40,6 @@
     <string name="continuar">Continuar</string>
     <string name="me_gusta">Me gusta</string>
     <string name="añadir_al_calendario">Añadir al calendario</string>
+    <string name="alimento">Alimento</string>
+
 </resources>

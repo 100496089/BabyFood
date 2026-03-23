@@ -16,6 +16,8 @@ import java.net.URL
 
 class ApiActivity : AppCompatActivity() {
 
+//Ayuda de Gemini y de la pagina web de Spoonacular
+
     //private val apiKey = "0b42d0c40af044c8a21ee108e502dd6b"
     private val apiKey ="6f63320e184e43b6b4f1c6ffbb74528c"
     private lateinit var adapter: RecipeAdapter //declaro el adapter pero se inicializará mas tarde
@@ -27,12 +29,10 @@ class ApiActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_api)
 
-        // Botón volver a FoodActivity
+        // Botón volver al foodActivity
         val btnBack = findViewById<ImageButton>(R.id.btnBack)
         btnBack.setOnClickListener {
-            val intent = Intent(this, FoodActivity::class.java)
-            startActivity(intent)
-            finish()
+            onBackPressedDispatcher.onBackPressed()
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerRecetas)

@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFDAF8"
     android:padding="0dp">
 
     <ImageButton
@@ -25,7 +24,7 @@
         android:text="@string/buscador"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#000000"
+        android:textColor="@color/textDayCalendar"
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="@id/btnBack"
