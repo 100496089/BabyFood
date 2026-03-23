@@ -23,7 +23,7 @@
         android:text="Favoritos"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#@color/textDayCalendar"
+        android:textColor="@color/textDayCalendar"
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="@id/btnBack"
