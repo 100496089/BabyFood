@@ -24,7 +24,7 @@ class DatabaseAdapter (private val mCtx: Context) {
             Log.w(TAG, "Upgrading database from version $oldVersion to $newVersion")
             // En una app real, aquí haríamos ALTER TABLE para no perder datos,
             // pero para desarrollo simplificamos borrando y creando.
-            db.execSQL("DROP TABLE IF EXISTS $DATABASE_TABLE")
+            db.execSQL("DROP TABLE IF EXISTS $REGISTER_TABLE")
             db.execSQL("DROP TABLE IF EXISTS $TABLE_WEIGHTS")
             onCreate(db)
         }
@@ -52,21 +52,21 @@ class DatabaseAdapter (private val mCtx: Context) {
         initialValues.put(KEY_PHOTO, photo)
         initialValues.put(KEY_RATE, rate)
         initialValues.put(KEY_CATEGORY, category)
-        return mDb!!.insert(DATABASE_TABLE, null, initialValues)
+        return mDb!!.insert(REGISTER_TABLE, null, initialValues)
     }
 
     fun deleteNote(rowId: Long): Boolean {
-        return mDb!!.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0
+        return mDb!!.delete(REGISTER_TABLE, KEY_ROWID + "=" + rowId, null) > 0
     }
 
     fun fetchAllNotes(): Cursor {
-        return mDb!!.query(DATABASE_TABLE, arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
+        return mDb!!.query(REGISTER_TABLE, arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
             null, null, null, null, null)
     }
 
     @Throws(SQLException::class)
     fun fetchNote(rowId: Long): Cursor {
-        val mCursor = mDb!!.query(true, DATABASE_TABLE, arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
+        val mCursor = mDb!!.query(true, REGISTER_TABLE, arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
             KEY_ROWID + "=" + rowId, null, null, null, null, null)
         mCursor?.moveToFirst()
         return mCursor
@@ -75,7 +75,7 @@ class DatabaseAdapter (private val mCtx: Context) {
     //buscar nota por nombre
     fun fetchNotesBySearch(query: String): Cursor {
         return mDb!!.query(
-            DATABASE_TABLE,
+            REGISTER_TABLE,
             arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
             "$KEY_NAME LIKE ?",
             arrayOf("%$query%"),
@@ -93,7 +93,7 @@ class DatabaseAdapter (private val mCtx: Context) {
         args.put(KEY_PHOTO, photo)
         args.put(KEY_RATE, rate)
         args.put(KEY_CATEGORY, category)
-        return mDb!!.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0
+        return mDb!!.update(REGISTER_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0
     }
 
     // --- MÉTODOS PARA PESOS ---
@@ -117,7 +117,7 @@ class DatabaseAdapter (private val mCtx: Context) {
     companion object {
         private const val TAG = "DatabaseAdapter"
         private const val DATABASE_NAME = "AppDatabase"
-        private const val DATABASE_TABLE = "Food"
+        private const val REGISTER_TABLE = "Food"
         private const val TABLE_WEIGHTS = "Pesos"
         private const val DATABASE_VERSION = 7 // Incrementado de 6 a 7
 
@@ -135,7 +135,7 @@ class DatabaseAdapter (private val mCtx: Context) {
         const val KEY_WEIGHT_VALUE = "valor"
         const val KEY_WEIGHT_DATE = "fecha"
 
-        private const val DATABASE_CREATE = "create table $DATABASE_TABLE (" +
+        private const val DATABASE_CREATE = "create table $REGISTER_TABLE (" +
                 "$KEY_ROWID integer primary key autoincrement, " +
                 "$KEY_NAME text not null, " +
                 "$KEY_COMMENT text not null, " +
