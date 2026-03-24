@@ -24,9 +24,10 @@ class RecipeDetailActivity : AppCompatActivity() {
         // Botón volver a ApiActivity
         val btnBack = findViewById<ImageButton>(R.id.btnBack)
         btnBack.setOnClickListener {
-            val intent = Intent(this, ApiActivity::class.java)
-            startActivity(intent)
-            finish()
+           // val intent = Intent(this, ApiActivity::class.java)
+            //startActivity(intent)
+            //finish()
+            onBackPressedDispatcher.onBackPressed() //cierra la actividad actual y vuelve a la anterior (ApiActivity)
         }
 
         val recipeId = intent.getIntExtra("recipeId", -1)  // Recoge el ID que se envió desde la pantalla anterior
@@ -51,8 +52,9 @@ class RecipeDetailActivity : AppCompatActivity() {
                     true
                 }
                 R.id.search_button -> {
-                    startActivity(Intent(this, ApiActivity::class.java))
-                    true
+                  //  startActivity(Intent(this, ApiActivity::class.java))
+                    finish()   // cierra la actividad actual, sin crear nada nuevo
+                    true //indicamos que el botón de menú ya fue gestionado
                 }
                 R.id.favorites_button -> {
                     startActivity(Intent(this, FavoritesActivity::class.java))
@@ -62,7 +64,10 @@ class RecipeDetailActivity : AppCompatActivity() {
             }
         }
         // Sombreado de la lupa (search_button)
-        bottomNav.selectedItemId = R.id.search_button
+       // bottomNav.selectedItemId = R.id.search_button
+        bottomNav.menu.findItem(R.id.search_button).isChecked = true
+        //Dentro del menú buscamos el botón de buscar y con 'isChecked' lo marcamos como seleccionado
+
     }
 
     private fun cargarReceta(id: Int) {
