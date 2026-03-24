@@ -79,7 +79,7 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
     }
 
     private fun loadDataIntoChart() {
-        val cursor = dbAdapter.fetchAllWeights()
+        val cursor = dbAdapter.fetchAllWeights() //obtengo los datos de la base de datos
         val entries = ArrayList<Entry>()
         dateLabels.clear()
         weightIds.clear()

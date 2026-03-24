@@ -167,6 +167,8 @@ class MainMenuActivity : AppCompatActivity() {
                 editor.putString("foto_perfil", currentPhotoPath)
                 editor.apply()
 
+                BabyUtils.updateAge(this)
+
                 // 2. Guardar en Base de Datos (Historial para la gráfica)
                 val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
                 dbAdapter.insertWeight(pesoDouble, todayDate)
@@ -196,7 +198,7 @@ class MainMenuActivity : AppCompatActivity() {
         //pongo un '_' en dialog porque no necesito mandarle ninguna acción al diálogo al seleccionar una opción
 
         builder.setPositiveButton("Aceptar") { _, _ ->
-            val result = mutableListOf<String>()
+            val result = mutableListOf<String>() //lista y no array porque el tamaño es dinámico
             for (i in alergiasArray.indices) {
                 if (selectedAlergias[i]) { //si la alergia está seleccionada, la añado a la lista
                     result.add(alergiasArray[i])
