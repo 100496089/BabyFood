@@ -32,7 +32,10 @@ class ApiActivity : AppCompatActivity() {
         // Botón volver al foodActivity
         val btnBack = findViewById<ImageButton>(R.id.btnBack)
         btnBack.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+            val intent = Intent(this, FoodActivity::class.java)
+            startActivity(intent)
+            finish()
+
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerRecetas)

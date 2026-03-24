@@ -139,6 +139,7 @@ class CalendarActivity : AppCompatActivity() {
             val button = Button(this)
             button.text = meal.text //Se ajusta al tamaño del texto que introduce el usuario
             button.textSize = 16f
+            button.isAllCaps = false
             button.setPadding(20, 20, 20, 20) //espacio interno entre borde y texto
 
             //Le ponemos un estilo al recuadro mediante un xml
