@@ -6,8 +6,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.imageview.ShapeableImageView
 import java.io.File
@@ -17,9 +19,10 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.home_activity)
+        BabyUtils.updateAge(this)
 
         val prefs = getSharedPreferences("BabyFoodPrefs", Context.MODE_PRIVATE)
-        
+
         val nombreBebe = prefs.getString("nombre", "Bebé")
         val welcomeText = findViewById<TextView>(R.id.welcomeMessage)
         welcomeText?.text = "¡Hola, $nombreBebe!"
@@ -29,7 +32,11 @@ class HomeActivity : AppCompatActivity() {
         photoPath?.let {
             val file = File(it)
             if (file.exists()) {
-                imageViewBebe.setImageURI(Uri.fromFile(file))
+                //imageViewBebe.setImageURI(Uri.fromFile(file))
+                Glide.with(this)
+                    .load(file)
+                    .circleCrop() 
+                    .into(imageViewBebe)
             }
         }
 
@@ -60,7 +67,7 @@ class HomeActivity : AppCompatActivity() {
 
     fun profileChange(view: View?){
         val intent = Intent(this, MainMenuActivity::class.java)
-        intent.putExtra("isEditing", true)
+        intent.putExtra("isEditing", true) //nos permite enviar información entre activities. En este caso, para saber si estamos editando el perfil
         startActivity(intent)
     }
 
@@ -72,7 +79,6 @@ class HomeActivity : AppCompatActivity() {
         startActivity(Intent(this, WeightChartActivity::class.java))
     }
 
-    // Nuevo método para abrir la pantalla de recetas/alimentos
     fun openRecipes(view: View?) {
         startActivity(Intent(this, FoodActivity::class.java))
     }
