@@ -17,6 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:textSize="18sp"
-        android:textColor="#000000"/>
+        android:textColor="@color/textDayCalendar"/>
 
 </LinearLayout>

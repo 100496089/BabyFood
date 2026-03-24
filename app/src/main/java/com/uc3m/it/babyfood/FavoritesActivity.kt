@@ -20,7 +20,7 @@ class FavoritesActivity : AppCompatActivity() {
 
         setupBottomNavigation()
     }
-
+//ChatGPT
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->

@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:text="@string/alimento"
         android:textSize="16sp"
-        android:textColor="#000000"
+        android:textColor="@color/textDayCalendar"
         android:layout_marginTop="8dp" />
 
 

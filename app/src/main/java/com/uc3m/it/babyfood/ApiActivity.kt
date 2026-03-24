@@ -50,7 +50,7 @@ class ApiActivity : AppCompatActivity() {
         setupBottomNavigation()
         obtenerTodasLasRecetas()
     }
-
+//ChatGPT
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->

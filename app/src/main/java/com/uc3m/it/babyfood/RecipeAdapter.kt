@@ -8,10 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import android.util.Log
-
+//GEMINI
 class RecipeAdapter(private val recipeList: List<Recipe>, private val onClick: (Recipe) -> Unit) :
     RecyclerView.Adapter<RecipeAdapter.ViewHolder>() {
-
+//una función que se ejecuta cuando el usuario toca una receta
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val img: ImageView = v.findViewById(R.id.imgReceta)
         val titulo: TextView = v.findViewById(R.id.txtTitulo)
@@ -25,15 +25,15 @@ class RecipeAdapter(private val recipeList: List<Recipe>, private val onClick: (
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val receta = recipeList[position]
+        val receta = recipeList[position] //obtiene la receta correspondiente
         Log.d("RECETA_IMG", receta.image)
-        holder.titulo.text = receta.title
+        holder.titulo.text = receta.title //muestra el titulo
 
         holder.itemView.setOnClickListener {
             onClick(receta)
         }
 
-        Glide.with(holder.img.context)
+        Glide.with(holder.img.context) //carga la imagen con glide, entonces nueva versión
             .load(receta.image)
             .into(holder.img)
     }

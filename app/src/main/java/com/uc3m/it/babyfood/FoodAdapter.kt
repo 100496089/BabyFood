@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
-
+//GEMINI
 class FoodAdapter(
     private var items: List<Food>//cambiamos val por var
     //Si pones val, la lista de alimentos se queda "congelada". Una vez que le pasas la lista al crear el adaptador, no podría cambiarla nunca más
@@ -44,7 +44,7 @@ class FoodAdapter(
     }
 
     override fun getItemCount(): Int = items.size
-
+//Actualizar lista
     fun updateList(newList: List<Food>) {
         items = newList
         notifyDataSetChanged()

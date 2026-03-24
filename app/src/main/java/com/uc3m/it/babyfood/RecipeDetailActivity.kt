@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+//GEMINI
 class RecipeDetailActivity : AppCompatActivity() {
 
     private val apiKey = "6f63320e184e43b6b4f1c6ffbb74528c"
@@ -29,15 +29,15 @@ class RecipeDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        val recipeId = intent.getIntExtra("recipeId", -1)
+        val recipeId = intent.getIntExtra("recipeId", -1)  // Recoge el ID que se envió desde la pantalla anterior
 
         if (recipeId != -1) {
-            cargarReceta(recipeId)
+            cargarReceta(recipeId) //Llama a la función que descarga la receta
         }
 
         setupBottomNavigation()
     }
-
+//ChatGPT
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->
@@ -67,20 +67,21 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private fun cargarReceta(id: Int) {
 
-        CoroutineScope(Dispatchers.IO).launch {
-
+        CoroutineScope(Dispatchers.IO).launch { //lanza una corrutina en segundo plano y así no bloquea la interfaz
+//Hace una petición GET a Spoonacular y obtiene un JSON
             val url = "https://api.spoonacular.com/recipes/$id/information?apiKey=$apiKey"
             val respuesta = URL(url).readText()
 
             val json = JSONObject(respuesta)
-
+//Extrae título y resumen
             val title = json.getString("title")
             val summary = json.getString("summary")
 
+            //obtener la lista de ingredientes
             val ingredientsArray = json.getJSONArray("extendedIngredients")
-
             val ingredientes = StringBuilder()
 
+//Esto es para construir la lista de ingredientes
             for (i in 0 until ingredientsArray.length()) {
                 val ingrediente = ingredientsArray.getJSONObject(i)
                 ingredientes.append("• ")
