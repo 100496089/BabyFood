@@ -1,8 +1,11 @@
 package com.uc3m.it.babyfood
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -52,7 +55,16 @@ class HomeActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
+
+        scheduleWeeklyNotification()
+        //AYUDA DE LA IA DE ANDROID STUDIO
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) !=
+                android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+            }
+        }
+        }
 
     fun addFood(view: View?){
         startActivity(Intent(this, AddFoodActivity::class.java))
@@ -75,5 +87,30 @@ class HomeActivity : AppCompatActivity() {
     // Nuevo método para abrir la pantalla de recetas/alimentos
     fun openRecipes(view: View?) {
         startActivity(Intent(this, FoodActivity::class.java))
+    }
+
+    //notificacion
+    private fun scheduleWeeklyNotification() {
+        val intent = Intent(this, NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this, 0, intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Configuramos para que empiece, por ejemplo, ahora mismo
+        val startTime = System.currentTimeMillis()
+
+        // Intervalo de una semana en milisegundos
+        //val intervalWeek = AlarmManager.INTERVAL_DAY * 7
+        val intervalWeek = 60000L
+
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            startTime + 10000, // Empieza en 10 segundos para probar
+            intervalWeek,
+            pendingIntent
+        )
     }
 }

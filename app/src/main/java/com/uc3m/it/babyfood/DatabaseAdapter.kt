@@ -72,13 +72,32 @@ class DatabaseAdapter (private val mCtx: Context) {
         return mCursor
     }
 
-    //buscar nota por nombre
-    fun fetchNotesBySearch(query: String): Cursor {
+    //buscar nota por nombre y/o categoria
+    fun fetchNotesBySearchAndCategory(searchQuery: String, category: String?): Cursor {
+        val selectionParts = mutableListOf<String>()
+        val selectionArgs = mutableListOf<String>()
+
+        if (searchQuery.isNotBlank()) {
+            selectionParts.add("${KEY_NAME} LIKE ?")
+            selectionArgs.add("%$searchQuery%")
+        }
+
+        if (!category.isNullOrBlank()) {
+            selectionParts.add("${KEY_CATEGORY} = ?")
+            selectionArgs.add(category)
+        }
+
+        val selection = if (selectionParts.isNotEmpty()) {
+            selectionParts.joinToString(" AND ")
+        } else {
+            null
+        }
+
         return mDb!!.query(
             REGISTER_TABLE,
             arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
-            "$KEY_NAME LIKE ?",
-            arrayOf("%$query%"),
+            selection,
+            selectionArgs.toTypedArray(),
             null,
             null,
             null

@@ -94,7 +94,7 @@ class AddFoodActivity : AppCompatActivity(){
                 note.getColumnIndexOrThrow(DatabaseAdapter.KEY_RATE)
             )
             if (!ratingValue.isNullOrEmpty()) {
-                val ratingBar = findViewById<RatingBar>(R.id.ratingBar)
+                val ratingBar = findViewById<RatingBar>(R.id.rate)
                 ratingBar?.rating = ratingValue.toFloat() // Convertimos de String a Float
             }
                 val category =
@@ -116,7 +116,7 @@ class AddFoodActivity : AppCompatActivity(){
         val categoryDropdown = findViewById<AutoCompleteTextView>(R.id.category)
         val category = categoryDropdown.text.toString()
         //estrellas
-        val ratingBar = findViewById<RatingBar?>(R.id.ratingBar)
+        val ratingBar = findViewById<RatingBar?>(R.id.rate)
         val rate = ratingBar?.rating.toString()
 
         if (name==""){

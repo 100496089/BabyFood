@@ -11,6 +11,8 @@ import android.widget.TextView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.SimpleCursorAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -20,6 +22,10 @@ class FoodRegisterActivity : AppCompatActivity(){
 
     private var dbAdapter: DatabaseAdapter? = null // sirve para manipular la BD
     private var m_listview: ListView? = null
+
+    // Variables para mantener el estado del filtro
+    private var currentSearchQuery: String = ""
+    private var currentCategory: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,21 +54,35 @@ class FoodRegisterActivity : AppCompatActivity(){
         fillData()
 
         //buscador de notas
+        //AYUDA DE GEMINI
         val searchView = findViewById<androidx.appcompat.widget.SearchView>(R.id.search_view)
         searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
+                currentSearchQuery = query ?: ""
+                fillData()
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // Cada vez que escribas, filtramos la lista
-                val cursor = dbAdapter!!.fetchNotesBySearch(newText ?: "")
-                // Actualizamos el cursor del adaptador que ya tienes
-                (m_listview?.adapter as? SimpleCursorAdapter)?.changeCursor(cursor)
+                currentSearchQuery = newText ?: ""
+                fillData()
                 return true
             }
         })
 
+        //desplegable categorias
+        val categories = resources.getStringArray(R.array.food_categories) //string de palabras
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categories)// como dibujar cada palabra en la lista
+        val categoryDropdown = findViewById<AutoCompleteTextView>(R.id.category_search)// componente en el xml
+        categoryDropdown.setAdapter(adapter)// le pasamos al adaptador la lista de palabras para que se llene
+        // ESCUCHADOR PARA EL FILTRADO POR CATEGORÍA
+        categoryDropdown.setOnItemClickListener { parent, view, position, id ->
+            currentCategory = parent.getItemAtPosition(position).toString()
+            currentCategory = if (currentCategory == "Todas") null else currentCategory
+            categoryDropdown.setText(currentCategory, false)
+            fillData()
+        }
+        //AYUDA DE GEMINI
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->
 
@@ -73,6 +93,7 @@ class FoodRegisterActivity : AppCompatActivity(){
                 }
 
                 R.id.search_button -> {
+                    //SACADO DE CLASE
                     // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
                     val intent = Intent(
                         this,
@@ -118,15 +139,31 @@ class FoodRegisterActivity : AppCompatActivity(){
         startActivity(intent)
     }
 
-    private fun fillData() { // rellenamos el listview con los títulos de todas las notas
-        val notesCursor = dbAdapter!!.fetchAllNotes() //puntero de todas las notas
+    private fun fillData() {
+        val notesCursor = dbAdapter!!.fetchNotesBySearchAndCategory(
+            currentSearchQuery,
+            currentCategory
+        )
+
         startManagingCursor(notesCursor)
 
-        val from = arrayOf(DatabaseAdapter.KEY_NAME, DatabaseAdapter.KEY_COMMENT, DatabaseAdapter.KEY_DATE,
-            DatabaseAdapter.KEY_PHOTO, DatabaseAdapter.KEY_RATE) //que columnas quieres mostrar
-        val to = intArrayOf(R.id.name, R.id.comment, R.id.date, R.id.photo) //a que vistas del diseño van
+        val from = arrayOf(
+            DatabaseAdapter.KEY_NAME,
+            DatabaseAdapter.KEY_COMMENT,
+            DatabaseAdapter.KEY_DATE,
+            DatabaseAdapter.KEY_PHOTO,
+            DatabaseAdapter.KEY_RATE
+        )
 
-        val adapter = SimpleCursorAdapter( // recorre cada fila de notesCursor y la muestra en el listview
+        val to = intArrayOf(
+            R.id.name,
+            R.id.comment,
+            R.id.date,
+            R.id.photo,
+            R.id.rate
+        )
+
+        val adapter = SimpleCursorAdapter(
             this,
             R.layout.list_item_food,
             notesCursor,
@@ -139,13 +176,13 @@ class FoodRegisterActivity : AppCompatActivity(){
     }
 
     fun deleteNoteClick(view: View) {
-        // 1. Obtenemos la posición del elemento en la lista a través de su vista padre
+        // Obtenemos la posición del elemento en la lista a través de su vista padre
         val position = m_listview!!.getPositionForView(view)
 
-        // 2. Obtenemos el ID de la base de datos de esa posición
+        // Obtenemos el ID de la base de datos de esa posición
         val id = m_listview!!.getItemIdAtPosition(position)
 
-        // 3. Mostramos un diálogo de confirmación
+        // Mostramos un diálogo de confirmación
         val ad= com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
         ad.setTitle("Eliminar nota")
         ad.setMessage("¿Estás seguro de que quieres eliminar esta nota?")

@@ -75,7 +75,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp"
             android:hint="@string/category"
-            android:inputType="none" />
+            android:inputType="none"
+            android:textSize="14sp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 

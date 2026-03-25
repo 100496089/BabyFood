@@ -15,12 +15,26 @@
     <string name="alergias_intolerancias">Alergias o intolerancias</string>
     <string name="enviar_button">Enviar</string>
     <string-array name="food_categories">
-        <item>Verduras y frutas</item>
+        <item>Todas</item>
+        <item>Verduras </item>
+        <item>Frutas</item>
+        <item>Cereales</item>
+        <item>Huevos </item>
+        <item>Lacteos</item>
         <item>Carnes</item>
         <item>Pescado</item>
-        <item>Leguminosas</item>
-        <item>Postre</item>
-        <item>Bebida</item>
+        <item>Legumbres</item>
+        <item>Bolleria</item>
+    </string-array>
+    <string-array name="notification_foods">
+        <item>Zanahoria</item>
+        <item>Manzana</item>
+        <item>Pollo</item>
+        <item>Pera</item>
+        <item>Merluza</item>
+        <item>Plátano</item>
+        <item>Ternera</item>
+        <item>Guisantes</item>
     </string-array>
     <string name="Plus">+</string>
     <string name="Breakfast">Desayuno</string>
