@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 class FoodActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        BabyUtils.updateAge(this) //que actualiza la edad del bebé
+
         enableEdgeToEdge() //, para que el contenido pueda ir hasta los bordes de la pantalla.
         setContentView(R.layout.activity_food) //este será el layout que se sará como interfaz
         //R.layout  Para acceder a los recursos desde el código
@@ -121,15 +124,34 @@ class FoodActivity : AppCompatActivity() {
             // Otros
             Food("Aceite de oliva",R.drawable.z_aceite)
         )
+        val excludedFoods = BabyUtils.getExcludedFoods() // Lista de alimentos excluidos
+        val allowedFoods = BabyUtils.getAllowedFoods()// Lista de alimentos permitidos
 
 // Adapter
-        val foodAdapter = FoodAdapter(foodList) //el adapter le meto la lista
+        val filteredFoodList = foodList.filter { food ->
+            val isNotExcluded = !excludedFoods.contains(food.name)
+            val isAllowed = allowedFoods.isEmpty() || allowedFoods.contains(food.name)
+
+            isNotExcluded && isAllowed
+        }
+
+        val foodAdapter = FoodAdapter(filteredFoodList)//el adapter le meto la lista
 
 //GEMINI
         val btnContinue = findViewById<Button>(R.id.btnContinue)//Es una función que busca en tu archivo XML (activity_food.xml) un elemento que tenga el ID btnContinue
         // Para devolver un resultado a su actividad
+
         btnContinue.setOnClickListener {//listener que se activa cuando tocas el botón
+            val selectedFoods = foodList
+                .filter { it.isSelected }
+                .map { it.name }
+            if (selectedFoods.size > 2) {
+                Toast.makeText(this, "Selecciona máximo 2 alimentos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             val intent = Intent(this, ApiActivity::class.java)//El .class.java es necesario porque Android (que corre sobre una base de Java) necesita la referencia técnica de esa clase para poder abrirla.
+            intent.putStringArrayListExtra("includeIngredients", ArrayList(selectedFoods)) //pasar la lista de alimentos seleccionados a ApiActivity
+
             startActivity(intent)
         }
 
@@ -141,10 +163,14 @@ class FoodActivity : AppCompatActivity() {
         searchEditText.addTextChangedListener { text ->
 
             val filteredList = foodList.filter { food ->
-                food.name.contains(
+                val matchesSearch = food.name.contains(
                     text.toString(),
                     ignoreCase = true //hace que no importe mayúsculas/minúsculas
                 )
+                val isNotExcluded = !excludedFoods.contains(food.name)
+                val isAllowed = allowedFoods.isEmpty() || allowedFoods.contains(food.name)
+
+                matchesSearch && isNotExcluded && isAllowed
             }
             foodAdapter.updateList(filteredList)//AVISA al adapter que la lista ha cambiado
 

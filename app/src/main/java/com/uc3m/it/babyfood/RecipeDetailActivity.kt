@@ -7,6 +7,7 @@ import org.json.JSONObject
 import java.net.URL
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -17,9 +18,19 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private val apiKey = "6f63320e184e43b6b4f1c6ffbb74528c"
 
+    private lateinit var db: DatabaseAdapter
+    private var isFav = false
+    private var recipeTitle = ""
+    private var recipeImage = ""
+    private var recipeId = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe_detail)
+        db = DatabaseAdapter(this).open()
+
+        val btnLikeLayout = findViewById<LinearLayout>(R.id.btnLikeLayout)
+        val imgLike = findViewById<android.widget.ImageView>(R.id.imgLike)
 
         // Botón volver a ApiActivity
         val btnBack = findViewById<ImageButton>(R.id.btnBack)
@@ -30,14 +41,41 @@ class RecipeDetailActivity : AppCompatActivity() {
             onBackPressedDispatcher.onBackPressed() //cierra la actividad actual y vuelve a la anterior (ApiActivity)
         }
 
-        val recipeId = intent.getIntExtra("recipeId", -1)  // Recoge el ID que se envió desde la pantalla anterior
+        val recipeIdIntent  = intent.getIntExtra("recipeId", -1)  // Recoge el ID que se envió desde la pantalla anterior
 
-        if (recipeId != -1) {
+        if (recipeIdIntent != -1) {
+            recipeId = recipeIdIntent
             cargarReceta(recipeId) //Llama a la función que descarga la receta
+            
+            // Estado inicial
+            isFav = db.isFavorite(recipeId)
+            actualizarIconoFavorito(imgLike)
+        }
+
+        btnLikeLayout.setOnClickListener {
+            if (recipeId == -1 || recipeTitle.isEmpty()) return@setOnClickListener
+            
+            isFav = !isFav
+
+            if (isFav) {
+                db.addFavorite(recipeId, recipeTitle, recipeImage)
+            } else {
+                db.removeFavorite(recipeId)
+            }
+            actualizarIconoFavorito(imgLike)
         }
 
         setupBottomNavigation()
     }
+
+    private fun actualizarIconoFavorito(img: android.widget.ImageView) {
+        if (isFav) {
+            img.setColorFilter(android.graphics.Color.RED)
+        } else {
+            img.setColorFilter(android.graphics.Color.BLACK)
+        }
+    }
+
 //ChatGPT
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
@@ -81,6 +119,7 @@ class RecipeDetailActivity : AppCompatActivity() {
 //Extrae título y resumen
             val title = json.getString("title")
             val summary = json.getString("summary")
+            val image = json.optString("image", "")
 
             //obtener la lista de ingredientes
             val ingredientsArray = json.getJSONArray("extendedIngredients")
@@ -95,7 +134,8 @@ class RecipeDetailActivity : AppCompatActivity() {
             }
 
             withContext(Dispatchers.Main) {
-
+                recipeTitle = title
+                recipeImage = image
                 findViewById<TextView>(R.id.txtTitle).text = title
                 findViewById<TextView>(R.id.txtIngredients).text = ingredientes.toString()
                 findViewById<TextView>(R.id.txtSummary).text = summary
@@ -103,5 +143,7 @@ class RecipeDetailActivity : AppCompatActivity() {
             }
 
         }
+
     }
+
 }

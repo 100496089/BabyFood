@@ -7,7 +7,23 @@ import java.util.*
 object BabyUtils {
     // Variable global para almacenar la edad del bebé: BabyUtils.babyAge
     var babyAge: String = "Edad del bebé"
+    val foodNames = listOf(
+        "Zanahoria", "Brócoli", "Patata", "Tomate", "Calabaza", "Calabacín",
+        "Berenjena", "Guisantes", "Judías verdes", "Puerro", "Batata",
+        "Coliflor", "Pepino",
 
+        "Plátano", "Manzana", "Pera", "Naranja", "Uva", "Aguacate", "Mango",
+        "Papaya", "Fresa", "Arándanos", "Ciruela", "Melocotón", "Sandía",
+        "Melón", "Limon", "Kiwi",
+
+        "Pollo", "Vacuno", "Cerdo", "Pavo", "Conejo", "Huevo",
+        "Merluza", "Salmón", "Lentejas", "Garbanzos", "Alubias", "Tofu",
+
+        "Maíz", "Arroz", "Avena", "Pasta", "Quinoa", "Cuscús", "Pan",
+        "Leche", "Yogur natural", "Queso fresco",
+
+        "Aceite de oliva"
+    )
     fun updateAge(context: Context) {
         val prefs = context.getSharedPreferences("BabyFoodPrefs", Context.MODE_PRIVATE)
         val birthDateStr = prefs.getString("fecha", null)
@@ -45,8 +61,64 @@ object BabyUtils {
                 months >= 1 -> "$months meses"
                 else -> "Recién nacido"
             }
+
         } catch (e: Exception) {
             babyAge = "Error en formato"
+        }
+    }
+
+    //añadido para filtrar según la edad del bebé
+    fun getAgeInMonths(): Int {
+        return when {
+            babyAge.contains("Recién") -> 0
+            babyAge.contains("meses") -> {
+                babyAge.split(" ")[0].toIntOrNull() ?: 0
+            }
+            babyAge.contains("años") -> {
+                val years = babyAge.split(" ")[0].toIntOrNull() ?: 0
+                years * 12
+            }
+            else -> 0
+        }
+    }
+    fun getMinAgeForFood(food: String): Int {
+        return when (food) {
+
+            // 6 meses -> papillas suaves de frutas y verduras
+            "Zanahoria", "Brócoli", "Patata", "Tomate", "Calabaza", "Calabacín",
+            "Berenjena", "Guisantes", "Judías verdes", "Puerro", "Batata",
+            "Coliflor", "Pepino",
+            "Plátano", "Manzana", "Pera", "Naranja", "Aguacate", "Mango",
+            "Papaya", "Ciruela", "Melocotón", "Sandía", "Melón",
+            "Arroz", "Leche", "Aceite de oliva" -> 6
+
+            // 7-8 meses -> carnes, huevo, papillas más espesas
+            "Pollo", "Vacuno", "Cerdo", "Pavo", "Conejo", "Huevo",
+            "Avena" -> 7
+
+            // 9-10 meses -> alimentos blandos en trozos
+            "Merluza", "Salmón", "Lentejas", "Garbanzos", "Alubias", "Tofu",
+            "Maíz", "Quinoa", "Cuscús", "Pan", "Uva", "Fresa", "Arándanos",
+            "Kiwi", "Limon" -> 9
+
+            // 11-12 meses -> pasta, verduras cocidas, quesos suaves, más variedad
+            "Pasta", "Yogur natural", "Queso fresco" -> 11
+
+            else -> 12
+        }
+    }
+    fun getExcludedFoods(): List<String> {
+        val months = getAgeInMonths()
+
+        return foodNames.filter { food ->
+            months < getMinAgeForFood(food)
+        }
+    }
+    fun getAllowedFoods(): List<String> {
+        val months = getAgeInMonths()
+
+        return foodNames.filter { food ->
+            months >= getMinAgeForFood(food)
         }
     }
 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+import java.net.URLEncoder
 
 class ApiActivity : AppCompatActivity() {
 
@@ -27,6 +28,7 @@ class ApiActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {//carga layout y componentes
         super.onCreate(savedInstanceState)
+        BabyUtils.updateAge(this)
         setContentView(R.layout.activity_api)
 
         // Botón volver al foodActivity
@@ -82,42 +84,129 @@ class ApiActivity : AppCompatActivity() {
         bottomNav.selectedItemId = R.id.search_button
     }
 
-    private fun obtenerTodasLasRecetas() {
-        val queries = listOf(
-            /*"puree",
-            "baby porridge",
-            "mashed vegetables",
-            "fruit puree",
-            "soft food",
-            "baby food",
-            "baby",
-            "baby pancakes",
-            "baby cakes",
-            "baby muffins",
-            "baby snacks",
-            "baby biscuits",*/
-            "baby finger food"
+    private fun translate(food: String): String {
+        return when (food.lowercase()) {
+            // Verduras y hortalizas
+            "zanahoria" -> "carrot"
+            "brócoli" -> "broccoli"
+            "patata" -> "potato"
+            "tomate" -> "tomato"
+            "calabaza" -> "pumpkin"
+            "calabacín" -> "zucchini"
+            "berenjena" -> "eggplant"
+            "guisantes" -> "peas"
+            "judías verdes" -> "green beans"
+            "puerro" -> "leek"
+            "batata" -> "sweet potato"
+            "coliflor" -> "cauliflower"
+            "pepino" -> "cucumber"
 
-        )
+            // Frutas
+            "plátano" -> "banana"
+            "manzana" -> "apple"
+            "pera" -> "pear"
+            "naranja" -> "orange"
+            "uva" -> "grape"
+            "aguacate" -> "avocado"
+            "mango" -> "mango"
+            "papaya" -> "papaya"
+            "fresa" -> "strawberry"
+            "arándanos" -> "blueberries"
+            "ciruela" -> "plum"
+            "melocotón" -> "peach"
+            "sandía" -> "watermelon"
+            "melón" -> "melon"
+            "limon" -> "lemon"
+            "limón" -> "lemon"
+            "kiwi" -> "kiwi"
+
+            // Proteínas
+            "pollo" -> "chicken"
+            "vacuno" -> "beef"
+            "cerdo" -> "pork"
+            "pavo" -> "turkey"
+            "conejo" -> "rabbit"
+            "huevo" -> "egg"
+            "merluza" -> "hake"
+            "salmón" -> "salmon"
+            "lentejas" -> "lentils"
+            "garbanzos" -> "chickpeas"
+            "alubias" -> "beans"
+            "tofu" -> "tofu"
+
+            // Cereales y lácteos
+            "maíz" -> "corn"
+            "arroz" -> "rice"
+            "avena" -> "oats"
+            "pasta" -> "pasta"
+            "quinoa" -> "quinoa"
+            "cuscús" -> "couscous"
+            "pan" -> "bread"
+            "leche" -> "milk"
+            "yogur natural" -> "plain yogurt"
+            "queso fresco" -> "fresh cheese"
+
+            // Otros
+            "aceite de oliva" -> "olive oil"
+
+            else -> food.lowercase()
+        }
+    }
+
+    private fun obtenerTodasLasRecetas() {
+        val includeIngredients = intent.getStringArrayListExtra("includeIngredients") ?: arrayListOf()
+        val excludeIngredients = BabyUtils.getExcludedFoods()
+        
+        // Categorías que buscamos para dar variedad (purés, muffins, gachas, tortitas)
+        val types = listOf("puree", "muffins", "porridge", "pancakes")
+
 //Android no permite hacer llamadas a internet en el hilo principal, porque bloquearía la app.
         CoroutineScope(Dispatchers.IO).launch { //forma de ejecutar tareas en segundo plano sin bloquear la app
             try {
                 val allRecipes = mutableListOf<Recipe>()
+                val seenIds = mutableSetOf<Int>()
 
-                for (q in queries) {//bucle para cada palabra
-                    //busqueda de palabra, devuelve 10 resultados de la api
-                    val url = "https://api.spoonacular.com/recipes/complexSearch?query=$q&number=1&apiKey=$apiKey"
-                    val respuesta = URL(url).readText()//leemos la respuesta de la api- descarga json-lee texto
-                    Log.d("API_RESPUESTA", respuesta)
-                    val json = JSONObject(respuesta)//texto a json
+                // Traducimos ingredientes seleccionados
+                val ingredientsQuery = includeIngredients.joinToString(" ") { translate(it) }
+                
+                // Preparamos los excluidos (evitando excluir lo que el usuario ha seleccionado)
+                val translatedSelected = includeIngredients.map { translate(it).lowercase() }
+                val excludeParam = excludeIngredients
+                    .map { translate(it).lowercase() }
+                    .filter { it !in translatedSelected }
+                    .joinToString(",")
+
+                for (type in types) {
+                    // Formato de búsqueda: "manzana puree", "manzana muffins", etc.
+                    val finalQuery = "$ingredientsQuery $type".trim()
+                    
+                    // Si no hay nada seleccionado, buscamos por categoría genérica de bebé
+                    val searchQuery = if (finalQuery.isEmpty()) "baby $type" else finalQuery
+
+                    // Usamos solo la 'query' para que la búsqueda sea flexible como antes
+                    val urlString = "https://api.spoonacular.com/recipes/complexSearch?" +
+                            "query=${URLEncoder.encode(searchQuery, "UTF-8")}" +
+                            "&excludeIngredients=${URLEncoder.encode(excludeParam, "UTF-8")}" +
+                            "&number=5" + 
+                            "&apiKey=$apiKey"
+
+                    val respuesta = URL(urlString).readText()
+                    Log.d("API_RESPUESTA", "Buscando $type: $respuesta")
+                    
+                    val json = JSONObject(respuesta)
                     val listaJson = json.getJSONArray("results")
 
                     for (i in 0 until listaJson.length()) {
                         val item = listaJson.getJSONObject(i)
-                        val title = item.getString("title")
-                        val image = item.getString("image")
                         val id = item.getInt("id")
-                        allRecipes.add(Recipe(title, image, id))
+                        if (!seenIds.contains(id)) {
+                            seenIds.add(id)
+                            allRecipes.add(Recipe(
+                                item.getString("title"),
+                                item.getString("image"),
+                                id
+                            ))
+                        }
                     }
                 }
 
@@ -125,11 +214,16 @@ class ApiActivity : AppCompatActivity() {
                     recipeList.clear()
                     recipeList.addAll(allRecipes)
                     adapter.notifyDataSetChanged()
+                    
+                    if (allRecipes.isEmpty()) {
+                        Toast.makeText(this@ApiActivity, "No se encontraron recetas", Toast.LENGTH_LONG).show()
+                    }
                 }
 
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@ApiActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    Log.e("API_ERROR", "Error en la llamada", e)
                 }
             }
         }

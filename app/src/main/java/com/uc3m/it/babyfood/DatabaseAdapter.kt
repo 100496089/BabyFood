@@ -18,6 +18,7 @@ class DatabaseAdapter (private val mCtx: Context) {
         override fun onCreate(db: SQLiteDatabase) {
             db.execSQL(DATABASE_CREATE)
             db.execSQL(DATABASE_CREATE_WEIGHTS)
+            db.execSQL(DATABASE_CREATE_FAVORITES)
         }
 
         override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -26,6 +27,7 @@ class DatabaseAdapter (private val mCtx: Context) {
             // pero para desarrollo simplificamos borrando y creando.
             db.execSQL("DROP TABLE IF EXISTS $REGISTER_TABLE")
             db.execSQL("DROP TABLE IF EXISTS $TABLE_WEIGHTS")
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_FAVORITES")
             onCreate(db)
         }
     }
@@ -39,7 +41,7 @@ class DatabaseAdapter (private val mCtx: Context) {
     }
 
     fun close() {
-        mDbHelper!!.close()
+        mDbHelper?.close()
     }
 
     // --- MÉTODOS PARA ALIMENTOS ---
@@ -114,12 +116,38 @@ class DatabaseAdapter (private val mCtx: Context) {
         return mDb!!.delete(TABLE_WEIGHTS, "$KEY_WEIGHT_ID=$id", null) > 0 //> 0 si se ha borrado alguna fila
     }
 
+    // --- MÉTODOS PARA FAVORITOS ---
+
+    fun addFavorite(id: Int, title: String, image: String): Long {
+        val values = ContentValues()
+        values.put(KEY_FAV_ID, id)
+        values.put(KEY_FAV_TITLE, title)
+        values.put(KEY_FAV_IMAGE, image)
+        return mDb!!.insert(TABLE_FAVORITES, null, values)
+    }
+
+    fun removeFavorite(id: Int): Boolean {
+        return mDb!!.delete(TABLE_FAVORITES, "$KEY_FAV_ID=$id", null) > 0
+    }
+
+    fun isFavorite(id: Int): Boolean {
+        val cursor = mDb!!.query(TABLE_FAVORITES, arrayOf(KEY_FAV_ID), "$KEY_FAV_ID=$id", null, null, null, null)
+        val exists = cursor != null && cursor.count > 0
+        cursor?.close()
+        return exists
+    }
+
+    fun fetchAllFavorites(): Cursor {
+        return mDb!!.query(TABLE_FAVORITES, arrayOf(KEY_FAV_ID, KEY_FAV_TITLE, KEY_FAV_IMAGE), null, null, null, null, null)
+    }
+
     companion object {
         private const val TAG = "DatabaseAdapter"
         private const val DATABASE_NAME = "AppDatabase"
         private const val REGISTER_TABLE = "Food"
         private const val TABLE_WEIGHTS = "Pesos"
-        private const val DATABASE_VERSION = 7 // Incrementado de 6 a 7
+        private const val TABLE_FAVORITES = "Favoritos"
+        private const val DATABASE_VERSION = 8 // Incrementado para Favoritos
 
         // Campos Alimentos
         const val KEY_ROWID = "_id"
@@ -135,6 +163,11 @@ class DatabaseAdapter (private val mCtx: Context) {
         const val KEY_WEIGHT_VALUE = "valor"
         const val KEY_WEIGHT_DATE = "fecha"
 
+        // Campos Favoritos
+        const val KEY_FAV_ID = "recipe_id"
+        const val KEY_FAV_TITLE = "titulo"
+        const val KEY_FAV_IMAGE = "imagen"
+
         private const val DATABASE_CREATE = "create table $REGISTER_TABLE (" +
                 "$KEY_ROWID integer primary key autoincrement, " +
                 "$KEY_NAME text not null, " +
@@ -148,5 +181,11 @@ class DatabaseAdapter (private val mCtx: Context) {
                 "$KEY_WEIGHT_ID integer primary key autoincrement, " +
                 "$KEY_WEIGHT_VALUE real not null, " +
                 "$KEY_WEIGHT_DATE text not null);"
+
+        //Favoritos
+        private const val DATABASE_CREATE_FAVORITES = "create table $TABLE_FAVORITES (" +
+                "$KEY_FAV_ID integer primary key, " +
+                "$KEY_FAV_TITLE text not null, " +
+                "$KEY_FAV_IMAGE text not null);"
     }
 }
