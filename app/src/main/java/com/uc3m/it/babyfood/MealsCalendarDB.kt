@@ -15,7 +15,8 @@ class MealsCalendarDB(context: Context) :SQLiteOpenHelper(context, "meals.db", n
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date TEXT NOT NULL,
                 type TEXT NOT NULL,
-                text TEXT NOT NULL
+                text TEXT NOT NULL,
+                recipeId INTEGER 
             )
         """)
     }
@@ -27,23 +28,24 @@ class MealsCalendarDB(context: Context) :SQLiteOpenHelper(context, "meals.db", n
     }
 
     //Guardamos una comida en la BD
-    fun insertMeal(date: String, type: String, text: String) {
+    fun insertMeal(date: String, type: String, text: String, recipeId: Int? = null) {
         val db = writableDatabase  //Abrimos en modo escritura
         val values = ContentValues()
         values.put("date", date)  //Añadimos valores
         values.put("type", type)
         values.put("text", text)
+        values.put("recipeId", recipeId)
         db.insert("meals", null, values)  //Insertamos fila en tabla
     }
 
     //Comida que se lee de la BD
-    data class Meal(val id: Int, val text: String)
+    data class Meal(val id: Int, val text: String,val recipeId: Int? = null)
 
     //Leemos comidas de la BD
     fun getMeals(date: String, type: String): List<Meal> {
         val db = readableDatabase  //Abrimos en modo lectura
         val cursor = db.rawQuery(
-            "SELECT id, text FROM meals WHERE date=? AND type=?",
+            "SELECT id, text, recipeId FROM meals WHERE date=? AND type=?",
             arrayOf(date, type)
         )//Buscamos en filas por "date" y "type"
 
@@ -51,7 +53,9 @@ class MealsCalendarDB(context: Context) :SQLiteOpenHelper(context, "meals.db", n
         while (cursor.moveToNext()) {
             val id = cursor.getInt(0)
             val text = cursor.getString(1)
-            list.add(Meal(id, text)) //Añadimos
+            val recipeId = if (!cursor.isNull(2)) cursor.getInt(2) else null
+
+            list.add(Meal(id, text, recipeId))
         }
         cursor.close()
         return list

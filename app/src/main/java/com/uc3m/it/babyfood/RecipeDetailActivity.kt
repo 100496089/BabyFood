@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.widget.Toast
+
 //GEMINI
 class RecipeDetailActivity : AppCompatActivity() {
 
@@ -42,6 +44,10 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
 
         val recipeIdIntent  = intent.getIntExtra("recipeId", -1)  // Recoge el ID que se envió desde la pantalla anterior
+        val selectedDate = intent.getStringExtra("selectedDate")//Fecha seleccionada calendario
+        val mealType = intent.getStringExtra("mealType")//Tipo comida de calendario
+
+
 
         if (recipeIdIntent != -1) {
             recipeId = recipeIdIntent
@@ -65,8 +71,31 @@ class RecipeDetailActivity : AppCompatActivity() {
             actualizarIconoFavorito(imgLike)
         }
 
+        // Botón para añadir a calendario
+        //ayuda IA (COPILOT)
+        val btnCalendar = findViewById<LinearLayout>(R.id.btnAddCalendarLayout)
+
+        btnCalendar.setOnClickListener {
+            if (selectedDate != null && mealType != null) {
+
+                val dbCalendar = MealsCalendarDB(this)
+                dbCalendar.insertMeal(selectedDate, mealType, recipeTitle, recipeId)
+
+                Toast.makeText(this, "Receta añadida al calendario", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(this, CalendarActivity::class.java)
+                startActivity(intent)
+                finish()
+
+            } else {
+                Toast.makeText(this, "Debes entrar desde el calendario para guardar la receta", Toast.LENGTH_LONG).show()
+            }
+        }
+
         setupBottomNavigation()
     }
+
+
 
     private fun actualizarIconoFavorito(img: android.widget.ImageView) {
         if (isFav) {

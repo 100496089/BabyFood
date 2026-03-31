@@ -152,6 +152,9 @@ class FoodActivity : AppCompatActivity() {
             val intent = Intent(this, ApiActivity::class.java)//El .class.java es necesario porque Android (que corre sobre una base de Java) necesita la referencia técnica de esa clase para poder abrirla.
             intent.putStringArrayListExtra("includeIngredients", ArrayList(selectedFoods)) //pasar la lista de alimentos seleccionados a ApiActivity
 
+            intent.putExtra("selectedDate", getIntent().getStringExtra("selectedDate"))//enviamos fecha calendario
+            intent.putExtra("mealType", getIntent().getStringExtra("mealType"))//enviamos tipo comida calendario
+
             startActivity(intent)
         }
 

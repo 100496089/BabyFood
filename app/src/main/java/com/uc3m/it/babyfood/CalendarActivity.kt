@@ -114,7 +114,11 @@ class CalendarActivity : AppCompatActivity() {
         }
 
         exploreButton.setOnClickListener { //cuando se pulsa botón nos lleva a otra pantalla
-            startActivity(Intent(this, FoodActivity::class.java))
+            //startActivity(Intent(this, FoodActivity::class.java))
+            val intent = Intent(this, FoodActivity::class.java)
+            intent.putExtra("selectedDate", selectedDate)
+            intent.putExtra("mealType", type)
+            startActivity(intent)
         }
     }
 
@@ -151,7 +155,15 @@ class CalendarActivity : AppCompatActivity() {
             button.layoutParams = params
 
             //Definimos que es lo que pasa al pulsar recuadro comida: editar o eliminar
-            button.setOnClickListener { showEditDeleteDialog(meal.id, meal.text, type) }
+            button.setOnClickListener {
+                if (meal.recipeId != null) {
+                    val intent = Intent(this, RecipeDetailActivity::class.java)
+                    intent.putExtra("recipeId", meal.recipeId)
+                    startActivity(intent)
+                } else {
+                    showEditDeleteDialog(meal.id, meal.text, type)
+                }
+            }
             container.addView(button) //Añadimos botón al LinearLayout
         }
     }

@@ -46,6 +46,11 @@ class ApiActivity : AppCompatActivity() {
 
             val intent = Intent(this, RecipeDetailActivity::class.java)
             intent.putExtra("recipeId", receta.id)
+
+        //Fecha y tipo de comida que vienen desde FoodActivity
+            intent.putExtra("selectedDate", getIntent().getStringExtra("selectedDate"))
+            intent.putExtra("mealType", getIntent().getStringExtra("mealType"))
+
             startActivity(intent)
 
         }
