@@ -152,13 +152,65 @@ class ApiActivity : AppCompatActivity() {
             else -> food.lowercase()
         }
     }
+    private suspend fun translateText(text: String): String = withContext(Dispatchers.IO) {
+        try {
+            //api de google translate
+            val apiKey = "AIzaSyCAhBs1r-gwGr3LZQhjpvbzUVq6h9wB5L4"
+
+            val url = "https://translation.googleapis.com/language/translate/v2?key=$apiKey"
+            //lo que le mando a google para que traduzca
+            val body = JSONObject().apply {
+                put("q", text) //el texto que quiero traducir
+                put("source", "en") //el idioma original
+                put("target", "es") //al que lo quiero traducir
+                put("format", "text") //el formato
+            }
+            //conectamos con la api
+            val connection = URL(url).openConnection() as java.net.HttpURLConnection
+            //Le dices que vas a enviar datos, no solo leer una URL
+            connection.requestMethod = "POST"
+            //manda un json
+            connection.setRequestProperty("Content-Type", "application/json")
+            //Esto habilita enviar datos en el cuerpo de la petición
+            connection.doOutput = true
+            //enviamos los datos
+            connection.outputStream.use {
+                it.write(body.toString().toByteArray())
+            }
+            //recoge la respuesta de Google como texto
+            val response = connection.inputStream.bufferedReader().use { it.readText() }
+
+            val json = JSONObject(response)
+
+            json.getJSONObject("data") //entras en data
+                .getJSONArray("translations") //entras en translation
+                .getJSONObject(0) //coges la primera traduccion
+                .getString("translatedText") //sacas el texto traducido
+
+        } catch (e: Exception) {
+            text // si falla, devuelve original
+        }
+    }
 
     private fun obtenerTodasLasRecetas() {
+        //Coge los ingredientes que vienen de la pantalla anterior, y si no hay, usa una lista vacía
+        //Usa esto porquese necesitan traducir
         val includeIngredients = intent.getStringArrayListExtra("includeIngredients") ?: arrayListOf()
+        //excluye los ingredientes directamente de BabyUtils
         val excludeIngredients = BabyUtils.getExcludedFoods()
         
         // Categorías que buscamos para dar variedad (purés, muffins, gachas, tortitas)
-        val types = listOf("puree", "muffins", "porridge", "pancakes")
+        val types = listOf(
+            "puree",
+            "baby food",
+            "porridge",
+            "soup",
+            "stew",
+            "mash",
+            "finger food",
+            "pancakes",
+            "muffins"
+        )
 
 //Android no permite hacer llamadas a internet en el hilo principal, porque bloquearía la app.
         CoroutineScope(Dispatchers.IO).launch { //forma de ejecutar tareas en segundo plano sin bloquear la app
@@ -166,11 +218,12 @@ class ApiActivity : AppCompatActivity() {
                 val allRecipes = mutableListOf<Recipe>()
                 val seenIds = mutableSetOf<Int>()
 
-                // Traducimos ingredientes seleccionados
+                // Traducimos ingredientes seleccionados y los juntamos en una cadena
                 val ingredientsQuery = includeIngredients.joinToString(" ") { translate(it) }
                 
                 // Preparamos los excluidos (evitando excluir lo que el usuario ha seleccionado)
                 val translatedSelected = includeIngredients.map { translate(it).lowercase() }
+                // Filtramos para excluir lo que el usuario ha seleccionado para la URL
                 val excludeParam = excludeIngredients
                     .map { translate(it).lowercase() }
                     .filter { it !in translatedSelected }
@@ -201,8 +254,11 @@ class ApiActivity : AppCompatActivity() {
                         val id = item.getInt("id")
                         if (!seenIds.contains(id)) {
                             seenIds.add(id)
+                            val originalTitle = item.getString("title")
+                            val translatedTitle = translateText(originalTitle)
                             allRecipes.add(Recipe(
-                                item.getString("title"),
+                                originalTitle,
+                                translatedTitle,
                                 item.getString("image"),
                                 id
                             ))

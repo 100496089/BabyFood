@@ -7,6 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.net.URL
 
 class FavoritesActivity : AppCompatActivity() {
 
@@ -43,21 +49,40 @@ class FavoritesActivity : AppCompatActivity() {
         super.onResume()
         cargarFavoritos()
     }
-
-    private fun cargarFavoritos() {
-        favoriteList.clear()
+//carga la base de datos
+private fun cargarFavoritos() {
+    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+        val tempList = mutableListOf<Recipe>()
         val cursor = db.fetchAllFavorites()
+
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_ID))
                 val title = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_TITLE))
                 val image = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_IMAGE))
-                favoriteList.add(Recipe(title, image, id))
+
+                val translatedTitle = translateText(title)
+
+                tempList.add(
+                    Recipe(
+                        title = title,
+                        translatedTitle = translatedTitle,
+                        image = image,
+                        id = id
+                    )
+                )
             } while (cursor.moveToNext())
         }
-        cursor?.close()
-        adapter.notifyDataSetChanged()
+
+        cursor?.close() //cierra recursos
+
+        withContext(kotlinx.coroutines.Dispatchers.Main) {
+            favoriteList.clear()
+            favoriteList.addAll(tempList)
+            adapter.notifyDataSetChanged()
+        }
     }
+}
 
 //ChatGPT
     private fun setupBottomNavigation() {
@@ -85,6 +110,45 @@ class FavoritesActivity : AppCompatActivity() {
         }
         // Marcar el ítem de favoritos como seleccionado (corazón)
         bottomNav.selectedItemId = R.id.favorites_button
+    }
+    private suspend fun translateText(text: String): String = withContext(Dispatchers.IO) {
+        try {
+            //api de google translate
+            val apiKey = "AIzaSyCAhBs1r-gwGr3LZQhjpvbzUVq6h9wB5L4"
+
+            val url = "https://translation.googleapis.com/language/translate/v2?key=$apiKey"
+            //lo que le mando a google para que traduzca
+            val body = JSONObject().apply {
+                put("q", text) //el texto que quiero traducir
+                put("source", "en") //el idioma original
+                put("target", "es") //al que lo quiero traducir
+                put("format", "text") //el formato
+            }
+            //conectamos con la api
+            val connection = URL(url).openConnection() as java.net.HttpURLConnection
+            //Le dices que vas a enviar datos, no solo leer una URL
+            connection.requestMethod = "POST"
+            //manda un json
+            connection.setRequestProperty("Content-Type", "application/json")
+            //Esto habilita enviar datos en el cuerpo de la petición
+            connection.doOutput = true
+            //enviamos los datos
+            connection.outputStream.use {
+                it.write(body.toString().toByteArray())
+            }
+            //recoge la respuesta de Google como texto
+            val response = connection.inputStream.bufferedReader().use { it.readText() }
+
+            val json = JSONObject(response)
+
+            json.getJSONObject("data") //entras en data
+                .getJSONArray("translations") //entras en translation
+                .getJSONObject(0) //coges la primera traduccion
+                .getString("translatedText") //sacas el texto traducido
+
+        } catch (e: Exception) {
+            text // si falla, devuelve original
+        }
     }
 
     override fun onDestroy() {

@@ -27,7 +27,7 @@ class RecipeAdapter(private val recipeList: List<Recipe>, private val onClick: (
 
         val receta = recipeList[position] //obtiene la receta correspondiente
         Log.d("RECETA_IMG", receta.image)
-        holder.titulo.text = receta.title //muestra el titulo
+        holder.titulo.text = receta.translatedTitle //muestra el titulo
 
         holder.itemView.setOnClickListener {
             onClick(receta)

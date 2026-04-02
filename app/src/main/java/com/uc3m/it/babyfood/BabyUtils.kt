@@ -67,11 +67,13 @@ object BabyUtils {
         }
     }
 
-    //añadido para filtrar según la edad del bebé
+    //añadido para filtrar según la edad del bebé: ChatGPT
     fun getAgeInMonths(): Int {
         return when {
+            //asociemos la edad calculada a meses
             babyAge.contains("Recién") -> 0
             babyAge.contains("meses") -> {
+                //divide en partes el texto y se queda con el priemr elemento
                 babyAge.split(" ")[0].toIntOrNull() ?: 0
             }
             babyAge.contains("años") -> {
@@ -106,17 +108,58 @@ object BabyUtils {
 
             else -> 12
         }
+
+        //SEGÚN LA IMAGEN DE QUE PUEDEN COMER LOS BEBES
+        /*
+        fun getRecipeTypes(): List<String> {
+    val months = BabyUtils.getAgeInMonths()
+
+    return when {
+        months < 6 -> listOf() // solo leche, no recetas
+
+        months in 6..7 -> listOf(
+            "puree",
+            "baby food",
+            "porridge"
+        )
+
+        months in 8..9 -> listOf(
+            "puree",
+            "porridge",
+            "soup",
+            "mash",
+            "baby food"
+        )
+
+        months in 10..12 -> listOf(
+            "puree",
+            "porridge",
+            "soup",
+            "mash",
+            "finger food",
+            "pancakes",
+            "muffins"
+        )
+
+        else -> listOf(
+            "main course",
+            "side dish",
+            "breakfast"
+        )
+    }
+}
+         */
     }
     fun getExcludedFoods(): List<String> {
-        val months = getAgeInMonths()
-
+        val months = getAgeInMonths() //sacamos los meses del bebé
+//devuelve los alimento cuando el mes sea menor que la edad mínima para ese alimento
         return foodNames.filter { food ->
             months < getMinAgeForFood(food)
         }
     }
     fun getAllowedFoods(): List<String> {
         val months = getAgeInMonths()
-
+//si ya tiene la edad devuelve los alimentos
         return foodNames.filter { food ->
             months >= getMinAgeForFood(food)
         }

@@ -184,7 +184,7 @@ class DatabaseAdapter (private val mCtx: Context) {
 
         //Favoritos
         private const val DATABASE_CREATE_FAVORITES = "create table $TABLE_FAVORITES (" +
-                "$KEY_FAV_ID integer primary key, " +
+                "$KEY_FAV_ID integer primary key, " + //no puede haber dos recetas favoritas con el mismo ID
                 "$KEY_FAV_TITLE text not null, " +
                 "$KEY_FAV_IMAGE text not null);"
     }
