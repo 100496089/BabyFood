@@ -17,6 +17,7 @@ import java.net.URL
 class FavoritesActivity : AppCompatActivity() {
 
     private lateinit var db: DatabaseAdapter
+    private val apiKeyGoogle = BuildConfig.GOOGLE_TRANSLATE_API_KEY
     private lateinit var adapter: RecipeAdapter
     private val favoriteList = mutableListOf<Recipe>()
 
@@ -114,7 +115,7 @@ private fun cargarFavoritos() {
     private suspend fun translateText(text: String): String = withContext(Dispatchers.IO) {
         try {
             //api de google translate
-            val apiKey = "AIzaSyCAhBs1r-gwGr3LZQhjpvbzUVq6h9wB5L4"
+            val apiKey = apiKeyGoogle
 
             val url = "https://translation.googleapis.com/language/translate/v2?key=$apiKey"
             //lo que le mando a google para que traduzca

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.*
-import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
 import java.net.URLEncoder
@@ -19,8 +18,11 @@ class ApiActivity : AppCompatActivity() {
 
 //Ayuda de Gemini y de la pagina web de Spoonacular
 
-    //private val apiKey = "0b42d0c40af044c8a21ee108e502dd6b"
-    private val apiKey ="6f63320e184e43b6b4f1c6ffbb74528c"
+    private val apiKeyGoogle = BuildConfig.GOOGLE_TRANSLATE_API_KEY
+    private val apiKeySpoonacular = BuildConfig.SPOONACULAR_API_KEY
+    private val apiKeySpoonacular2 = BuildConfig.SPOONACULAR_API_KEY_2
+    private val apiKeySpoonacular3 = BuildConfig.SPOONACULAR_API_KEY_3
+    private val apiKey = apiKeySpoonacular3
     private lateinit var adapter: RecipeAdapter //declaro el adapter pero se inicializará mas tarde
     private val recipeList = mutableListOf<Recipe>() // Lista de recetas que llegan de la api
     //se trata de una lista que se puede modificar
@@ -155,9 +157,9 @@ class ApiActivity : AppCompatActivity() {
     private suspend fun translateText(text: String): String = withContext(Dispatchers.IO) {
         try {
             //api de google translate
-            val apiKey = "AIzaSyCAhBs1r-gwGr3LZQhjpvbzUVq6h9wB5L4"
+            val key = apiKeyGoogle
 
-            val url = "https://translation.googleapis.com/language/translate/v2?key=$apiKey"
+            val url = "https://translation.googleapis.com/language/translate/v2?key=$key"
             //lo que le mando a google para que traduzca
             val body = JSONObject().apply {
                 put("q", text) //el texto que quiero traducir
@@ -241,7 +243,7 @@ class ApiActivity : AppCompatActivity() {
                             "query=${URLEncoder.encode(searchQuery, "UTF-8")}" +
                             "&excludeIngredients=${URLEncoder.encode(excludeParam, "UTF-8")}" +
                             "&number=5" + 
-                            "&apiKey=$apiKey"
+                            "&apiKey=$apiKeySpoonacular3"
 
                     val respuesta = URL(urlString).readText()
                     Log.d("API_RESPUESTA", "Buscando $type: $respuesta")

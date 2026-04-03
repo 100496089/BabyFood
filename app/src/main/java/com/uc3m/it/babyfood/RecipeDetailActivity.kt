@@ -13,10 +13,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.widget.ImageView
+import com.bumptech.glide.Glide
 //GEMINI
 class RecipeDetailActivity : AppCompatActivity() {
 
-    private val apiKey = "6f63320e184e43b6b4f1c6ffbb74528c"
+    private val apiKey = BuildConfig.SPOONACULAR_API_KEY_3
+    private val apiKeyGoogle = BuildConfig.GOOGLE_TRANSLATE_API_KEY
 
     private lateinit var db: DatabaseAdapter
     private var isFav = false
@@ -119,7 +122,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     private suspend fun translateText(text: String): String = withContext(Dispatchers.IO) {
         try {
             //api de google translate
-            val apiKey = "AIzaSyCAhBs1r-gwGr3LZQhjpvbzUVq6h9wB5L4"
+            val apiKey = apiKeyGoogle
 
             val url = "https://translation.googleapis.com/language/translate/v2?key=$apiKey"
             //lo que le mando a google para que traduzca
@@ -179,15 +182,25 @@ class RecipeDetailActivity : AppCompatActivity() {
                 val ingrediente = ingredientsArray.getJSONObject(i)
                 ingredientesList.add(ingrediente.getString("original"))
             }
-            val ingredientesTexto = ingredientesList.joinToString(" \n• ", prefix = "\n• ")
-            val ingredientesTraducidos = translateText(cleanHtml(ingredientesTexto))
+            val ingredientesTraducidosList = mutableListOf<String>()
 
+            for (ingrediente in ingredientesList) {
+                val traducido = translateText(ingrediente)
+                ingredientesTraducidosList.add("• $traducido")
+            }
+
+            val ingredientesTraducidos = ingredientesTraducidosList.joinToString("\n")
             withContext(Dispatchers.Main) {
                 recipeTitle = title
                 recipeImage = image
                 findViewById<TextView>(R.id.txtTitle).text = translatedTitle
                 findViewById<TextView>(R.id.txtIngredients).text = ingredientesTraducidos
                 findViewById<TextView>(R.id.txtSummary).text = translatedSummary
+
+                val imgRecipe = findViewById<ImageView>(R.id.imgRecipe)
+                Glide.with(this@RecipeDetailActivity)
+                    .load(image)
+                    .into(imgRecipe)
 
             }
 
