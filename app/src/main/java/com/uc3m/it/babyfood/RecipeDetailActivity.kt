@@ -15,10 +15,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.widget.Toast
 
+import android.widget.ImageView
+import com.bumptech.glide.Glide
 //GEMINI
 class RecipeDetailActivity : AppCompatActivity() {
 
-    private val apiKey = "6f63320e184e43b6b4f1c6ffbb74528c"
+    private val apiKey = BuildConfig.SPOONACULAR_API_KEY_3
+    private val apiKeyGoogle = BuildConfig.GOOGLE_TRANSLATE_API_KEY
 
     private lateinit var db: DatabaseAdapter
     private var isFav = false
@@ -93,9 +96,8 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
 
         setupBottomNavigation()
+
     }
-
-
 
     private fun actualizarIconoFavorito(img: android.widget.ImageView) {
         if (isFav) {
@@ -136,7 +138,53 @@ class RecipeDetailActivity : AppCompatActivity() {
         //Dentro del menú buscamos el botón de buscar y con 'isChecked' lo marcamos como seleccionado
 
     }
+//para que no salga en formato html
+    private fun cleanHtml(text: String): String {
+        return android.text.Html.fromHtml(
+            text,
+            android.text.Html.FROM_HTML_MODE_LEGACY
+        ).toString()
+    }
 
+    private suspend fun translateText(text: String): String = withContext(Dispatchers.IO) {
+        try {
+            //api de google translate
+            val apiKey = apiKeyGoogle
+
+            val url = "https://translation.googleapis.com/language/translate/v2?key=$apiKey"
+            //lo que le mando a google para que traduzca
+            val body = JSONObject().apply {
+                put("q", text) //el texto que quiero traducir
+                put("source", "en") //el idioma original
+                put("target", "es") //al que lo quiero traducir
+                put("format", "text") //el formato
+            }
+            //conectamos con la api
+            val connection = URL(url).openConnection() as java.net.HttpURLConnection
+            //Le dices que vas a enviar datos, no solo leer una URL
+            connection.requestMethod = "POST"
+            //manda un json
+            connection.setRequestProperty("Content-Type", "application/json")
+            //Esto habilita enviar datos en el cuerpo de la petición
+            connection.doOutput = true
+            //enviamos los datos
+            connection.outputStream.use {
+                it.write(body.toString().toByteArray())
+            }
+            //recoge la respuesta de Google como texto
+            val response = connection.inputStream.bufferedReader().use { it.readText() }
+
+            val json = JSONObject(response)
+
+            json.getJSONObject("data") //entras en data
+                .getJSONArray("translations") //entras en translation
+                .getJSONObject(0) //coges la primera traduccion
+                .getString("translatedText") //sacas el texto traducido
+
+        } catch (e: Exception) {
+            text // si falla, devuelve original
+        }
+    }
     private fun cargarReceta(id: Int) {
 
         CoroutineScope(Dispatchers.IO).launch { //lanza una corrutina en segundo plano y así no bloquea la interfaz
@@ -147,27 +195,39 @@ class RecipeDetailActivity : AppCompatActivity() {
             val json = JSONObject(respuesta)
 //Extrae título y resumen
             val title = json.getString("title")
+            val translatedTitle = translateText(title)
             val summary = json.getString("summary")
+            val translatedSummary = translateText(cleanHtml(summary))
             val image = json.optString("image", "")
 
             //obtener la lista de ingredientes
             val ingredientsArray = json.getJSONArray("extendedIngredients")
-            val ingredientes = StringBuilder()
 
-//Esto es para construir la lista de ingredientes
+            val ingredientesList = mutableListOf<String>()
+
             for (i in 0 until ingredientsArray.length()) {
                 val ingrediente = ingredientsArray.getJSONObject(i)
-                ingredientes.append("• ")
-                ingredientes.append(ingrediente.getString("original"))
-                ingredientes.append("\n")
+                ingredientesList.add(ingrediente.getString("original"))
+            }
+            val ingredientesTraducidosList = mutableListOf<String>()
+
+            for (ingrediente in ingredientesList) {
+                val traducido = translateText(ingrediente)
+                ingredientesTraducidosList.add("• $traducido")
             }
 
+            val ingredientesTraducidos = ingredientesTraducidosList.joinToString("\n")
             withContext(Dispatchers.Main) {
                 recipeTitle = title
                 recipeImage = image
-                findViewById<TextView>(R.id.txtTitle).text = title
-                findViewById<TextView>(R.id.txtIngredients).text = ingredientes.toString()
-                findViewById<TextView>(R.id.txtSummary).text = summary
+                findViewById<TextView>(R.id.txtTitle).text = translatedTitle
+                findViewById<TextView>(R.id.txtIngredients).text = ingredientesTraducidos
+                findViewById<TextView>(R.id.txtSummary).text = translatedSummary
+
+                val imgRecipe = findViewById<ImageView>(R.id.imgRecipe)
+                Glide.with(this@RecipeDetailActivity)
+                    .load(image)
+                    .into(imgRecipe)
 
             }
 
