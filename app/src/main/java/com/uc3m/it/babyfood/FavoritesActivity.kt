@@ -12,17 +12,15 @@ class FavoritesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_favorites)
 
-        // Botón volver a Home
-        val btnBack = findViewById<ImageButton>(R.id.btnBack)
+        // Botón volver
+        val btnBack: ImageButton = findViewById(R.id.btnBack)
         btnBack.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            finish()
+            onBackPressedDispatcher.onBackPressed()
         }
 
         setupBottomNavigation()
     }
-
+//ChatGPT
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->
@@ -36,7 +34,7 @@ class FavoritesActivity : AppCompatActivity() {
                     true
                 }
                 R.id.search_button -> {
-                    startActivity(Intent(this, ApiActivity::class.java))
+                    startActivity(Intent(this, FoodActivity::class.java))
                     true
                 }
                 R.id.favorites_button -> {

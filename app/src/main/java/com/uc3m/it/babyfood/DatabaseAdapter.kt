@@ -118,7 +118,7 @@ class DatabaseAdapter (private val mCtx: Context) {
     // --- MÉTODOS PARA PESOS ---
 
     fun insertWeight(weight: Double, date: String): Long {
-        val values = ContentValues()
+        val values = ContentValues() //mapeamos los valores
         values.put(KEY_WEIGHT_VALUE, weight)
         values.put(KEY_WEIGHT_DATE, date)
         return mDb!!.insert(TABLE_WEIGHTS, null, values)
@@ -130,7 +130,7 @@ class DatabaseAdapter (private val mCtx: Context) {
     }
 
     fun deleteWeight(id: Long): Boolean {
-        return mDb!!.delete(TABLE_WEIGHTS, "$KEY_WEIGHT_ID=$id", null) > 0
+        return mDb!!.delete(TABLE_WEIGHTS, "$KEY_WEIGHT_ID=$id", null) > 0 //> 0 si se ha borrado alguna fila
     }
 
     companion object {

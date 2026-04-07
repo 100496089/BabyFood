@@ -2,42 +2,45 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#EFDAF8">
+    android:layout_height="match_parent">
 
+    <!-- Botón de volver: Clase -->
     <ImageButton
         android:id="@+id/btnBack"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="@null"
         android:src="@drawable/arrow_backward"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="Volver" />
 
+    <!-- Buscador título: Clase -->
     <TextView
         android:id="@+id/txtBuscadorTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Buscador"
+        android:text="@string/buscador"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#000000"
+        android:textColor="@color/textDayCalendar"
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="@id/btnBack"
         app:layout_constraintBottom_toBottomOf="@id/btnBack" />
 
+    <!-- Línea de división: GEMINI -->
     <View
         android:id="@+id/headerDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        android:background="#000000"
+        android:background="@color/textDayCalendar"
         app:layout_constraintTop_toBottomOf="@id/btnBack" />
 
+    <!-- Scroll de la pantalla: GEMINI -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -56,7 +59,7 @@
                 android:id="@+id/txtTitle"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -64,14 +67,14 @@
                 android:text="Ingredientes"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/txtIngredients"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -79,14 +82,14 @@
                 android:text="Preparación"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/txtSummary"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -94,6 +97,7 @@
 
     </ScrollView>
 
+    <!-- Botones de me gusta y calendario: Gemini -->
     <LinearLayout
         android:id="@+id/actionButtons"
         android:layout_width="match_parent"
@@ -101,7 +105,6 @@
         android:orientation="horizontal"
         android:padding="12dp"
         android:gravity="center"
-        android:background="#EFDAF8"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
 
         <LinearLayout
@@ -119,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:text="Me gusta"
                 android:layout_marginStart="8dp"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -138,12 +141,13 @@
                 android:layout_height="wrap_content"
                 android:text="Añadir al calendario"
                 android:layout_marginStart="8dp"
-                android:textColor="#000000"
+                android:textColor="@color/textDayCalendar"
                 android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- Botón de navegación: ChatGPT -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
