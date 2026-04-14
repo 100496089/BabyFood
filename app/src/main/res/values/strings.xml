@@ -11,18 +11,29 @@
     <string name="comment">Comentario</string>
     <string name="date">Fecha</string>
     <string name="category">Categoría</string>
+    <string name="ordenar">Ordenar</string>
     <string name="foodRegister">Registro de alimentos</string>
     <string name="peso">Peso</string>
     <string name="alergias_intolerancias">Alergias o intolerancias</string>
     <string name="enviar_button">Enviar</string>
 
     <string-array name="food_categories">
-        <item>Verduras y frutas</item>
+        <item>Todas</item>
+        <item>Verduras </item>
+        <item>Frutas</item>
+        <item>Cereales</item>
+        <item>Huevos </item>
+        <item>Lacteos</item>
         <item>Carnes</item>
         <item>Pescado</item>
-        <item>Leguminosas</item>
-        <item>Postre</item>
-        <item>Bebida</item>
+        <item>Legumbres</item>
+        <item>Bolleria</item>
+    </string-array>
+    <string-array name="sort_by">
+        <item>Más recientes</item>
+        <item>Más antiguos </item>
+        <item>Mejor valorados</item>
+        <item>Peor valorados</item>
     </string-array>
 
     <string name="Plus">+</string>
