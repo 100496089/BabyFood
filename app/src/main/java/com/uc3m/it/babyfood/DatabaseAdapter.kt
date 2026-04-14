@@ -74,16 +74,47 @@ class DatabaseAdapter (private val mCtx: Context) {
         return mCursor
     }
 
-    //buscar nota por nombre
-    fun fetchNotesBySearch(query: String): Cursor {
+    //GEMINI
+    // Método UNIFICADO para buscar por nombre, filtrar por categoría y ordenar
+    fun fetchNotes(searchQuery: String = "", category: String? = null, sortOrder: String? = null): Cursor {
+        val selectionParts = mutableListOf<String>()
+        val selectionArgs = mutableListOf<String>()
+
+        // Filtro de búsqueda (Nombre)
+        if (searchQuery.isNotBlank()) {
+            selectionParts.add("$KEY_NAME LIKE ?")
+            selectionArgs.add("%$searchQuery%")
+        }
+
+        // Filtro de categoría (Si no es null ni "Todas")
+        if (!category.isNullOrBlank() && category != "Todas") {
+            selectionParts.add("$KEY_CATEGORY = ?")
+            selectionArgs.add(category)
+        }
+
+        val selection = if (selectionParts.isNotEmpty()) {
+            selectionParts.joinToString(" AND ")
+        } else {
+            null
+        }
+
+        // Lógica de ordenación
+        val orderBy = when (sortOrder) {
+            "Más recientes" -> "$KEY_DATE DESC"
+            "Más antiguos" -> "$KEY_DATE ASC"
+            "Mejor valorados" -> "$KEY_RATE DESC"
+            "Peor valorados" -> "$KEY_RATE ASC"
+            else -> "$KEY_DATE DESC" // Por defecto los más nuevos arriba
+        }
+
         return mDb!!.query(
             REGISTER_TABLE,
             arrayOf(KEY_ROWID, KEY_NAME, KEY_COMMENT, KEY_DATE, KEY_PHOTO, KEY_RATE, KEY_CATEGORY),
-            "$KEY_NAME LIKE ?",
-            arrayOf("%$query%"),
+            selection,
+            selectionArgs.toTypedArray(),
             null,
             null,
-            null
+            orderBy
         )
     }
 
@@ -101,7 +132,7 @@ class DatabaseAdapter (private val mCtx: Context) {
     // --- MÉTODOS PARA PESOS ---
 
     fun insertWeight(weight: Double, date: String): Long {
-        val values = ContentValues() //mapeamos los valores
+        val values = ContentValues()
         values.put(KEY_WEIGHT_VALUE, weight)
         values.put(KEY_WEIGHT_DATE, date)
         return mDb!!.insert(TABLE_WEIGHTS, null, values)
@@ -113,7 +144,7 @@ class DatabaseAdapter (private val mCtx: Context) {
     }
 
     fun deleteWeight(id: Long): Boolean {
-        return mDb!!.delete(TABLE_WEIGHTS, "$KEY_WEIGHT_ID=$id", null) > 0 //> 0 si se ha borrado alguna fila
+        return mDb!!.delete(TABLE_WEIGHTS, "$KEY_WEIGHT_ID=$id", null) > 0
     }
 
     // --- MÉTODOS PARA FAVORITOS ---

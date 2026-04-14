@@ -19,8 +19,9 @@ import com.google.android.material.textfield.TextInputLayout
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
-
-
+import android.view.inputmethod.EditorInfo
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
 class AddFoodActivity : AppCompatActivity(){
 
     private var ubicacion: File? = null // File que apunta a la ubicación de la imagen tomada
@@ -33,6 +34,10 @@ class AddFoodActivity : AppCompatActivity(){
     private var dateText: TextView? = null // Para mostrar la fecha seleccionada
     private var selectedDate: String = ""  // Para guardar el valor que irá a la BD
 
+    private fun hideKeyboard(view: View?) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +58,18 @@ class AddFoodActivity : AppCompatActivity(){
         NameText = findViewById<View>(R.id.Name) as EditText
         commentText = findViewById<View>(R.id.Comment) as EditText
         dateText = findViewById<View>(R.id.Calendar) as TextView
+
+
+        commentText?.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+
+                hideKeyboard(v)
+
+                true
+            } else {
+                false
+            }
+        }
 
         //creamos el adaptador de la BD y la abrimos
         dbAdapter = DatabaseAdapter(this)
@@ -94,7 +111,7 @@ class AddFoodActivity : AppCompatActivity(){
                 note.getColumnIndexOrThrow(DatabaseAdapter.KEY_RATE)
             )
             if (!ratingValue.isNullOrEmpty()) {
-                val ratingBar = findViewById<RatingBar>(R.id.ratingBar)
+                val ratingBar = findViewById<RatingBar>(R.id.rate)
                 ratingBar?.rating = ratingValue.toFloat() // Convertimos de String a Float
             }
                 val category =
@@ -116,7 +133,7 @@ class AddFoodActivity : AppCompatActivity(){
         val categoryDropdown = findViewById<AutoCompleteTextView>(R.id.category)
         val category = categoryDropdown.text.toString()
         //estrellas
-        val ratingBar = findViewById<RatingBar?>(R.id.ratingBar)
+        val ratingBar = findViewById<RatingBar?>(R.id.rate)
         val rate = ratingBar?.rating.toString()
 
         if (name==""){
