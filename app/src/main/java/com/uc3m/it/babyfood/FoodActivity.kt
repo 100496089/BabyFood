@@ -38,7 +38,7 @@ class FoodActivity : AppCompatActivity() {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        // Configuración del spinner de meses
+        // Configuración del spinner de meses basada en BabyUtils.kt
         val optionsMonths = arrayOf(
             "tercer-quinto mes",
             "sexto mes",
@@ -47,13 +47,29 @@ class FoodActivity : AppCompatActivity() {
             "noveno mes",
             "décimo mes",
             "undécimo mes",
-            "duodécimo mes"
+            "duodécimo mes",
+            "más de un año"
         )
-//adapter que mostrará las opciones en el spinner
+        
         val adapterMonths = ArrayAdapter(this, android.R.layout.simple_spinner_item, optionsMonths)
         val selectOpts: Spinner = findViewById(R.id.spinnerMonths)
         adapterMonths.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         selectOpts.adapter = adapterMonths
+
+        // Ponemos la selección automática según la edad real del bebé
+        val currentAge = BabyUtils.getAgeInMonths()
+        val selectionIndex = when (currentAge) {
+            in 0..5 -> 0
+            6 -> 1
+            7 -> 2
+            8 -> 3
+            9 -> 4
+            10 -> 5
+            11 -> 6
+            12 -> 7
+            else -> 8 // 12 meses o más
+        }
+        selectOpts.setSelection(selectionIndex)
 
 
         val recyclerView: RecyclerView = findViewById<RecyclerView>(R.id.recyclerFoods)

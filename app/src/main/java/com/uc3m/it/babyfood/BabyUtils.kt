@@ -92,21 +92,21 @@ object BabyUtils {
             "Coliflor", "Pepino",
             "Plátano", "Manzana", "Pera", "Naranja", "Aguacate", "Mango",
             "Papaya", "Ciruela", "Melocotón", "Sandía", "Melón",
-            "Arroz", "Leche", "Aceite de oliva" -> 6
+            "Arroz", "Leche", "Aceite de oliva" -> 5
 
             // 7-8 meses -> carnes, huevo, papillas más espesas
             "Pollo", "Vacuno", "Cerdo", "Pavo", "Conejo", "Huevo",
-            "Avena" -> 7
+            "Avena" -> 6
 
             // 9-10 meses -> alimentos blandos en trozos
             "Merluza", "Salmón", "Lentejas", "Garbanzos", "Alubias", "Tofu",
             "Maíz", "Quinoa", "Cuscús", "Pan", "Uva", "Fresa", "Arándanos",
-            "Kiwi", "Limon" -> 9
+            "Kiwi", "Limon" -> 8
 
             // 11-12 meses -> pasta, verduras cocidas, quesos suaves, más variedad
-            "Pasta", "Yogur natural", "Queso fresco" -> 11
+            "Pasta", "Yogur natural", "Queso fresco" -> 10
 
-            else -> 12
+            else -> 11
         }
 
         //SEGÚN LA IMAGEN DE QUE PUEDEN COMER LOS BEBES
