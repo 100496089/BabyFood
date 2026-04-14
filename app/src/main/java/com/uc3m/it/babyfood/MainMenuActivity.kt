@@ -20,7 +20,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 class MainMenuActivity : AppCompatActivity() {
 
     private lateinit var imageViewProfile: ShapeableImageView
@@ -48,6 +52,7 @@ class MainMenuActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestNotificationPermission()
 
         // Inicializar DB
         dbAdapter = DatabaseAdapter(this)
@@ -168,6 +173,8 @@ class MainMenuActivity : AppCompatActivity() {
                 editor.apply()
 
                 BabyUtils.updateAge(this)
+                // Actualizar la alarma
+                AlarmUtils.scheduleAllNotifications(this)
 
                 // 2. Guardar en Base de Datos (Historial para la gráfica)
                 val todayDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
@@ -221,6 +228,22 @@ class MainMenuActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         dbAdapter.close()
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    100
+                )
+            }
+        }
     }
 
     private fun showImagePickerOptions() {

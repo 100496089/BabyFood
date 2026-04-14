@@ -14,7 +14,8 @@
         android:layout_marginEnd="7dp"
         android:layout_marginStart="7dp"
         app:cardCornerRadius="15dp"
-        app:cardElevation="4dp"
+        app:cardElevation="5dp"
+        app:cardBackgroundColor="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +23,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-            android:padding="5dp">
+            android:padding="7dp">
             <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/photo"
                     android:layout_width="64dp"
@@ -61,12 +62,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="11/03/2026"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:textColor="@color/grey"
                     app:layout_constraintStart_toEndOf="@id/photo"
                     app:layout_constraintTop_toBottomOf="@id/comment"
                     android:layout_marginStart="20dp"
                     tools:ignore="MissingConstraints" />
+            <TextView
+                android:id="@+id/rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="♥♥♥♥♡"
+                android:textSize="13sp"
+                app:layout_constraintStart_toEndOf="@id/date"
+                app:layout_constraintTop_toBottomOf="@id/comment" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/delete"

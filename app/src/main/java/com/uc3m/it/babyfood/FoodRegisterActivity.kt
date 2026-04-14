@@ -26,6 +26,7 @@ class FoodRegisterActivity : AppCompatActivity(){
     // Variables para mantener el estado del filtro
     private var currentSearchQuery: String = ""
     private var currentCategory: String? = null
+    private var currentSort: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +81,23 @@ class FoodRegisterActivity : AppCompatActivity(){
             currentCategory = parent.getItemAtPosition(position).toString()
             currentCategory = if (currentCategory == "Todas") null else currentCategory
             categoryDropdown.setText(currentCategory, false)
+            fillData()
+        }
+        // Desplegable ordenar por
+        val sortOptions = resources.getStringArray(R.array.sort_by)
+        val sortAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            sortOptions
+        )
+
+        val sortDropdown = findViewById<AutoCompleteTextView>(R.id.date_search)
+        sortDropdown.setAdapter(sortAdapter)
+
+        // Escuchador para ordenar
+        sortDropdown.setOnItemClickListener { parent, _, position, _ ->
+            currentSort = parent.getItemAtPosition(position).toString()
+            sortDropdown.setText(currentSort, false)
             fillData()
         }
         //AYUDA DE GEMINI
@@ -140,9 +158,10 @@ class FoodRegisterActivity : AppCompatActivity(){
     }
 
     private fun fillData() {
-        val notesCursor = dbAdapter!!.fetchNotesBySearchAndCategory(
+        val notesCursor = dbAdapter!!.fetchNotes(
             currentSearchQuery,
-            currentCategory
+            currentCategory,
+            currentSort
         )
 
         startManagingCursor(notesCursor)
@@ -171,6 +190,21 @@ class FoodRegisterActivity : AppCompatActivity(){
             to,
             0
         )
+        //Gemini
+        adapter.viewBinder = SimpleCursorAdapter.ViewBinder { view, cursor, columnIndex ->
+            if (view.id == R.id.rate) {
+                val ratingValue = cursor.getString(columnIndex)
+                val rating = ratingValue?.toFloatOrNull() ?: 0f
+                val numStars = rating.toInt()
+                // Crea un string con estrellas rellenas y vacías
+                val stars = "★".repeat(numStars) + "☆".repeat(5 - numStars)
+                (view as TextView).text = stars
+                true // Indica que ya hemos gestionado nosotros esta vista
+            } else {
+                false // Deja que el adaptador maneje el resto (nombre, fecha, etc.)
+            }
+        }
+        // ------------------------------
 
         m_listview!!.adapter = adapter
     }

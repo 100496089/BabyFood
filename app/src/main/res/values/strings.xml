@@ -11,6 +11,7 @@
     <string name="comment">Comentario</string>
     <string name="date">Fecha</string>
     <string name="category">Categoría</string>
+    <string name="ordenar">Ordenar</string>
     <string name="foodRegister">Registro de alimentos</string>
     <string name="peso">Peso</string>
     <string name="alergias_intolerancias">Alergias o intolerancias</string>
@@ -28,15 +29,11 @@
         <item>Legumbres</item>
         <item>Bolleria</item>
     </string-array>
-    <string-array name="notification_foods">
-        <item>Zanahoria</item>
-        <item>Manzana</item>
-        <item>Pollo</item>
-        <item>Pera</item>
-        <item>Merluza</item>
-        <item>Plátano</item>
-        <item>Ternera</item>
-        <item>Guisantes</item>
+    <string-array name="sort_by">
+        <item>Más recientes</item>
+        <item>Más antiguos </item>
+        <item>Mejor valorados</item>
+        <item>Peor valorados</item>
     </string-array>
 
     <string name="Plus">+</string>
