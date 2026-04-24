@@ -34,13 +34,10 @@ class ApiActivity : AppCompatActivity() {
         BabyUtils.updateAge(this)
         setContentView(R.layout.activity_api)
 
-        // Botón volver al foodActivity
+        // Botón volver
         val btnBack = findViewById<ImageButton>(R.id.btnBack)
         btnBack.setOnClickListener {
-            val intent = Intent(this, FoodActivity::class.java)
-            startActivity(intent)
             finish()
-
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerRecetas)
@@ -92,6 +89,74 @@ class ApiActivity : AppCompatActivity() {
         bottomNav.selectedItemId = R.id.search_button
     }
 
+    private fun translate(food: String): String {
+        return when (food.lowercase()) {
+            // Verduras y hortalizas
+            "zanahoria" -> "carrot"
+            "brócoli" -> "broccoli"
+            "patata" -> "potato"
+            "tomate" -> "tomato"
+            "calabaza" -> "pumpkin"
+            "calabacín" -> "zucchini"
+            "berenjena" -> "eggplant"
+            "guisantes" -> "peas"
+            "judías verdes" -> "green beans"
+            "puerro" -> "leek"
+            "batata" -> "sweet potato"
+            "coliflor" -> "cauliflower"
+            "pepino" -> "cucumber"
+
+            // Frutas
+            "plátano" -> "banana"
+            "manzana" -> "apple"
+            "pera" -> "pear"
+            "naranja" -> "orange"
+            "uva" -> "grape"
+            "aguacate" -> "avocado"
+            "mango" -> "mango"
+            "papaya" -> "papaya"
+            "fresa" -> "strawberry"
+            "arándanos" -> "blueberries"
+            "ciruela" -> "plum"
+            "melocotón" -> "peach"
+            "sandía" -> "watermelon"
+            "melón" -> "melon"
+            "limon" -> "lemon"
+            "limón" -> "lemon"
+            "kiwi" -> "kiwi"
+
+            // Proteínas
+            "pollo" -> "chicken"
+            "vacuno" -> "beef"
+            "cerdo" -> "pork"
+            "pavo" -> "turkey"
+            "conejo" -> "rabbit"
+            "huevo" -> "egg"
+            "merluza" -> "hake"
+            "salmón" -> "salmon"
+            "lentejas" -> "lentils"
+            "garbanzos" -> "chickpeas"
+            "alubias" -> "beans"
+            "tofu" -> "tofu"
+
+            // Cereales y lácteos
+            "maíz" -> "corn"
+            "arroz" -> "rice"
+            "avena" -> "oats"
+            "pasta" -> "pasta"
+            "quinoa" -> "quinoa"
+            "cuscús" -> "couscous"
+            "pan" -> "bread"
+            "leche" -> "milk"
+            "yogur natural" -> "plain yogurt"
+            "queso fresco" -> "fresh cheese"
+
+            // Otros
+            "aceite de oliva" -> "olive oil"
+
+            else -> food.lowercase()
+        }
+    }
     private suspend fun translateText(text: String, source: String = "en", target: String = "es"): String = withContext(Dispatchers.IO) {
         if (text.isEmpty()) return@withContext ""
         try {
@@ -159,17 +224,17 @@ class ApiActivity : AppCompatActivity() {
                 val allRecipes = mutableListOf<Recipe>()
                 val seenIds = mutableSetOf<Int>()
 
-                // Traducimos ingredientes de ES a EN
-                val ingredientsEs = includeIngredients.joinToString(" ")
-                val ingredientsEn = if (ingredientsEs.isNotEmpty()) translateText(ingredientsEs, "es", "en") else ""
+                // TRADUCCIÓN ES -> EN: Traducimos los ingredientes seleccionados para la búsqueda
+                val ingredientsEs = includeIngredients.joinToString(", ")
+                val ingredientsEn = translateText(ingredientsEs, "es", "en")
                 
-                // Traducimos excluidos de ES a EN
-                val excludeEs = excludeIngredients.joinToString(",")
-                val excludeEn = if (excludeEs.isNotEmpty()) translateText(excludeEs, "es", "en") else ""
-                val excludeParam = excludeEn.replace(" ", "")
+                // Traducimos también los excluidos para que la API de Spoonacular los entienda
+                val excludeEs = excludeIngredients.joinToString(", ")
+                val excludeEn = translateText(excludeEs, "es", "en")
+                val excludeParam = excludeEn.replace(" ", "") // Limpiamos espacios para la URL
 
                 for (type in types) {
-                    // Formato de búsqueda: "apple puree"
+                    // Formato de búsqueda: "apple puree" (usando la traducción de la API)
                     val finalQuery = "$ingredientsEn $type".trim()
                     
                     // Si no hay nada seleccionado, buscamos por categoría genérica de bebé
@@ -194,7 +259,7 @@ class ApiActivity : AppCompatActivity() {
                         if (!seenIds.contains(id)) {
                             seenIds.add(id)
                             val originalTitle = item.getString("title")
-                            // Traducimos de EN a ES
+                            // TRADUCCIÓN EN -> ES: Traducimos el título de la receta para el usuario
                             val translatedTitle = translateText(originalTitle, "en", "es")
                             allRecipes.add(Recipe(
                                 originalTitle,

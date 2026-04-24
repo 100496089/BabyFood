@@ -7,12 +7,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.*
+import org.json.JSONObject
+import java.net.URL
 
 class FavoritesActivity : AppCompatActivity() {
 
     private lateinit var db: DatabaseAdapter
     private lateinit var adapter: RecipeAdapter
     private val favoriteList = mutableListOf<Recipe>()
+
+    // ChatGPT: Vinculamos la llave para traducir también aquí
+    private val apiKeyGoogle = BuildConfig.GOOGLE_TRANSLATE_API_KEY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,20 +50,54 @@ class FavoritesActivity : AppCompatActivity() {
         cargarFavoritos()
     }
 
+    // ChatGPT: Función de traducción para la lista
+    private suspend fun translateText(text: String, source: String = "en", target: String = "es"): String = withContext(Dispatchers.IO) {
+        if (text.isEmpty()) return@withContext ""
+        try {
+            val key = apiKeyGoogle
+            val url = "https://translation.googleapis.com/language/translate/v2?key=$key"
+            val body = JSONObject().apply {
+                put("q", text)
+                put("source", source)
+                put("target", target)
+                put("format", "text")
+            }
+            val connection = URL(url).openConnection() as java.net.HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.doOutput = true
+            connection.outputStream.use { it.write(body.toString().toByteArray()) }
+            val response = connection.inputStream.bufferedReader().use { it.readText() }
+            val json = JSONObject(response)
+            json.getJSONObject("data").getJSONArray("translations").getJSONObject(0).getString("translatedText")
+        } catch (e: Exception) {
+            text
+        }
+    }
+
     private fun cargarFavoritos() {
         favoriteList.clear()
         val cursor = db.fetchAllFavorites()
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_ID))
-                val title = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_TITLE))
-                val image = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_IMAGE))
-                // En favoritos usamos el título guardado para ambos campos del modelo Recipe
-                favoriteList.add(Recipe(title, title, image, id))
-            } while (cursor.moveToNext())
+        
+        CoroutineScope(Dispatchers.IO).launch {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_ID))
+                    val title = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_TITLE))
+                    val image = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_IMAGE))
+                    
+                    // Traducimos el título guardado para mostrarlo en español
+                    val translated = translateText(title, "en", "es")
+                    
+                    favoriteList.add(Recipe(title, translated, image, id))
+                } while (cursor.moveToNext())
+            }
+            cursor?.close()
+            
+            withContext(Dispatchers.Main) {
+                adapter.notifyDataSetChanged()
+            }
         }
-        cursor?.close()
-        adapter.notifyDataSetChanged()
     }
 
 //ChatGPT
