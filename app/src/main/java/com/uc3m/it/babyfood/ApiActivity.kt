@@ -13,6 +13,7 @@ import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.net.URL
 import java.net.URLEncoder
+import com.uc3m.it.babyfood.BuildConfig
 
 class ApiActivity : AppCompatActivity() {
 
@@ -22,7 +23,7 @@ class ApiActivity : AppCompatActivity() {
     private val apiKeySpoonacular = BuildConfig.SPOONACULAR_API_KEY
     private val apiKeySpoonacular2 = BuildConfig.SPOONACULAR_API_KEY_2
     private val apiKeySpoonacular3 = BuildConfig.SPOONACULAR_API_KEY_3
-    private val apiKey = apiKeySpoonacular3
+    private val apiKey = apiKeySpoonacular
     private lateinit var adapter: RecipeAdapter //declaro el adapter pero se inicializará mas tarde
     private val recipeList = mutableListOf<Recipe>() // Lista de recetas que llegan de la api
     //se trata de una lista que se puede modificar
@@ -91,75 +92,8 @@ class ApiActivity : AppCompatActivity() {
         bottomNav.selectedItemId = R.id.search_button
     }
 
-    private fun translate(food: String): String {
-        return when (food.lowercase()) {
-            // Verduras y hortalizas
-            "zanahoria" -> "carrot"
-            "brócoli" -> "broccoli"
-            "patata" -> "potato"
-            "tomate" -> "tomato"
-            "calabaza" -> "pumpkin"
-            "calabacín" -> "zucchini"
-            "berenjena" -> "eggplant"
-            "guisantes" -> "peas"
-            "judías verdes" -> "green beans"
-            "puerro" -> "leek"
-            "batata" -> "sweet potato"
-            "coliflor" -> "cauliflower"
-            "pepino" -> "cucumber"
-
-            // Frutas
-            "plátano" -> "banana"
-            "manzana" -> "apple"
-            "pera" -> "pear"
-            "naranja" -> "orange"
-            "uva" -> "grape"
-            "aguacate" -> "avocado"
-            "mango" -> "mango"
-            "papaya" -> "papaya"
-            "fresa" -> "strawberry"
-            "arándanos" -> "blueberries"
-            "ciruela" -> "plum"
-            "melocotón" -> "peach"
-            "sandía" -> "watermelon"
-            "melón" -> "melon"
-            "limon" -> "lemon"
-            "limón" -> "lemon"
-            "kiwi" -> "kiwi"
-
-            // Proteínas
-            "pollo" -> "chicken"
-            "vacuno" -> "beef"
-            "cerdo" -> "pork"
-            "pavo" -> "turkey"
-            "conejo" -> "rabbit"
-            "huevo" -> "egg"
-            "merluza" -> "hake"
-            "salmón" -> "salmon"
-            "lentejas" -> "lentils"
-            "garbanzos" -> "chickpeas"
-            "alubias" -> "beans"
-            "tofu" -> "tofu"
-
-            // Cereales y lácteos
-            "maíz" -> "corn"
-            "arroz" -> "rice"
-            "avena" -> "oats"
-            "pasta" -> "pasta"
-            "quinoa" -> "quinoa"
-            "cuscús" -> "couscous"
-            "pan" -> "bread"
-            "leche" -> "milk"
-            "yogur natural" -> "plain yogurt"
-            "queso fresco" -> "fresh cheese"
-
-            // Otros
-            "aceite de oliva" -> "olive oil"
-
-            else -> food.lowercase()
-        }
-    }
-    private suspend fun translateText(text: String): String = withContext(Dispatchers.IO) {
+    private suspend fun translateText(text: String, source: String = "en", target: String = "es"): String = withContext(Dispatchers.IO) {
+        if (text.isEmpty()) return@withContext ""
         try {
             //api de google translate
             val key = apiKeyGoogle
@@ -168,8 +102,8 @@ class ApiActivity : AppCompatActivity() {
             //lo que le mando a google para que traduzca
             val body = JSONObject().apply {
                 put("q", text) //el texto que quiero traducir
-                put("source", "en") //el idioma original
-                put("target", "es") //al que lo quiero traducir
+                put("source", source) //el idioma original
+                put("target", target) //al que lo quiero traducir
                 put("format", "text") //el formato
             }
             //conectamos con la api
@@ -225,20 +159,18 @@ class ApiActivity : AppCompatActivity() {
                 val allRecipes = mutableListOf<Recipe>()
                 val seenIds = mutableSetOf<Int>()
 
-                // Traducimos ingredientes seleccionados y los juntamos en una cadena
-                val ingredientsQuery = includeIngredients.joinToString(" ") { translate(it) }
+                // Traducimos ingredientes de ES a EN
+                val ingredientsEs = includeIngredients.joinToString(" ")
+                val ingredientsEn = if (ingredientsEs.isNotEmpty()) translateText(ingredientsEs, "es", "en") else ""
                 
-                // Preparamos los excluidos (evitando excluir lo que el usuario ha seleccionado)
-                val translatedSelected = includeIngredients.map { translate(it).lowercase() }
-                // Filtramos para excluir lo que el usuario ha seleccionado para la URL
-                val excludeParam = excludeIngredients
-                    .map { translate(it).lowercase() }
-                    .filter { it !in translatedSelected }
-                    .joinToString(",")
+                // Traducimos excluidos de ES a EN
+                val excludeEs = excludeIngredients.joinToString(",")
+                val excludeEn = if (excludeEs.isNotEmpty()) translateText(excludeEs, "es", "en") else ""
+                val excludeParam = excludeEn.replace(" ", "")
 
                 for (type in types) {
-                    // Formato de búsqueda: "manzana puree", "manzana muffins", etc.
-                    val finalQuery = "$ingredientsQuery $type".trim()
+                    // Formato de búsqueda: "apple puree"
+                    val finalQuery = "$ingredientsEn $type".trim()
                     
                     // Si no hay nada seleccionado, buscamos por categoría genérica de bebé
                     val searchQuery = if (finalQuery.isEmpty()) "baby $type" else finalQuery
@@ -248,7 +180,7 @@ class ApiActivity : AppCompatActivity() {
                             "query=${URLEncoder.encode(searchQuery, "UTF-8")}" +
                             "&excludeIngredients=${URLEncoder.encode(excludeParam, "UTF-8")}" +
                             "&number=5" + 
-                            "&apiKey=$apiKeySpoonacular3"
+                            "&apiKey=$apiKey"
 
                     val respuesta = URL(urlString).readText()
                     Log.d("API_RESPUESTA", "Buscando $type: $respuesta")
@@ -262,7 +194,8 @@ class ApiActivity : AppCompatActivity() {
                         if (!seenIds.contains(id)) {
                             seenIds.add(id)
                             val originalTitle = item.getString("title")
-                            val translatedTitle = translateText(originalTitle)
+                            // Traducimos de EN a ES
+                            val translatedTitle = translateText(originalTitle, "en", "es")
                             allRecipes.add(Recipe(
                                 originalTitle,
                                 translatedTitle,

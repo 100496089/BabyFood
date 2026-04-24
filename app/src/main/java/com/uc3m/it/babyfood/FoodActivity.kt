@@ -2,6 +2,8 @@ package com.uc3m.it.babyfood
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -38,9 +40,9 @@ class FoodActivity : AppCompatActivity() {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        // Configuración del spinner de meses basada en BabyUtils.kt
+        // Configuración del spinner de meses
         val optionsMonths = arrayOf(
-            "tercer-quinto mes",
+            "primer-quinto mes",
             "sexto mes",
             "séptimo mes",
             "octavo mes",
@@ -50,15 +52,27 @@ class FoodActivity : AppCompatActivity() {
             "duodécimo mes",
             "más de un año"
         )
-        
+
+        val monthsValues = intArrayOf(
+            4,   // primer-quinto mes
+            6,   // sexto mes
+            7,   // séptimo mes
+            8,   // octavo mes
+            9,   // noveno mes
+            10,  // décimo mes
+            11,  // undécimo mes
+            12,  // duodécimo mes
+            13   // más de un año
+        )
+        //adapter que mostrará las opciones en el spinner
         val adapterMonths = ArrayAdapter(this, android.R.layout.simple_spinner_item, optionsMonths)
         val selectOpts: Spinner = findViewById(R.id.spinnerMonths)
         adapterMonths.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         selectOpts.adapter = adapterMonths
 
         // Ponemos la selección automática según la edad real del bebé
-        val currentAge = BabyUtils.getAgeInMonths()
-        val selectionIndex = when (currentAge) {
+        val currentAge = BabyUtils.getAgeInMonths() //qué opción del spinner debe salir seleccionada
+        val selectionIndex = when (currentAge) { //convierte la edad en meses a una posición del spinner
             in 0..5 -> 0
             6 -> 1
             7 -> 2
@@ -69,7 +83,9 @@ class FoodActivity : AppCompatActivity() {
             12 -> 7
             else -> 8 // 12 meses o más
         }
-        selectOpts.setSelection(selectionIndex)
+        
+        var lastValidPosition = selectionIndex //guarda la última posición permitida
+        selectOpts.setSelection(selectionIndex) //hace que el spinner se ponga automáticamente en la edad real del bebé
 
 
         val recyclerView: RecyclerView = findViewById<RecyclerView>(R.id.recyclerFoods)
@@ -140,20 +156,56 @@ class FoodActivity : AppCompatActivity() {
             // Otros
             Food("Aceite de oliva",R.drawable.z_aceite)
         )
-        val excludedFoods = BabyUtils.getExcludedFoods() // Lista de alimentos excluidos
-        val allowedFoods = BabyUtils.getAllowedFoods()// Lista de alimentos permitidos
 
-// Adapter
-        val filteredFoodList = foodList.filter { food ->
-            val isNotExcluded = !excludedFoods.contains(food.name)
-            val isAllowed = allowedFoods.isEmpty() || allowedFoods.contains(food.name)
+        val foodAdapter = FoodAdapter(emptyList()) //el adapter le meto la lista
 
-            isNotExcluded && isAllowed
+        // Función para aplicar filtros de edad y búsqueda según la posición del spinner
+        fun updateFoodList() {
+            val spinnerPosition = selectOpts.selectedItemPosition
+            val selectedMonths = monthsValues[spinnerPosition]
+
+            val text = searchEditText.text.toString()
+            if (spinnerPosition == 0) {
+                foodAdapter.updateList(emptyList())
+                Toast.makeText(this, "En esta etapa solo se recomienda leche materna", Toast.LENGTH_SHORT).show()
+                return
+            }
+            val filteredList = foodList.filter { food ->
+                val matchesSearch = food.name.contains(text, ignoreCase = true)
+
+                val isAllowed = selectedMonths >= BabyUtils.getMinAgeForFood(food.name)
+
+                matchesSearch && isAllowed
+            }
+
+            foodAdapter.updateList(filteredList)
         }
 
-        val foodAdapter = FoodAdapter(filteredFoodList)//el adapter le meto la lista
+        // Listener del Spinner para controlar que no se elija una edad mayor a la real
+        selectOpts.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                //Aquí position es la opción que ha elegido el usuario
+                if (position > selectionIndex) {
+                    Toast.makeText(this@FoodActivity, "No puedes seleccionar una edad mayor a la de tu bebé", Toast.LENGTH_SHORT).show()
+                    selectOpts.setSelection(lastValidPosition)
+                } else {
+                    lastValidPosition = position
+                    updateFoodList()
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
 
-//GEMINI
+        // Grid de 2 columnas
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
+        recyclerView.adapter = foodAdapter
+
+        //listener para la búsqueda--- GEMINI
+        searchEditText.addTextChangedListener {
+            updateFoodList()
+        }
+
+        //GEMINI
         val btnContinue = findViewById<Button>(R.id.btnContinue)//Es una función que busca en tu archivo XML (activity_food.xml) un elemento que tenga el ID btnContinue
         // Para devolver un resultado a su actividad
 
@@ -173,31 +225,5 @@ class FoodActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
-
-        // Grid de 2 columnas
-        recyclerView.layoutManager = GridLayoutManager(this, 2)
-        recyclerView.adapter = foodAdapter
-
-        //listener para la búsqueda--- GEMINI
-        searchEditText.addTextChangedListener { text ->
-
-            val filteredList = foodList.filter { food ->
-                val matchesSearch = food.name.contains(
-                    text.toString(),
-                    ignoreCase = true //hace que no importe mayúsculas/minúsculas
-                )
-                val isNotExcluded = !excludedFoods.contains(food.name)
-                val isAllowed = allowedFoods.isEmpty() || allowedFoods.contains(food.name)
-
-                matchesSearch && isNotExcluded && isAllowed
-            }
-            foodAdapter.updateList(filteredList)//AVISA al adapter que la lista ha cambiado
-
-
     }
-
-
-
-    }
-
 }

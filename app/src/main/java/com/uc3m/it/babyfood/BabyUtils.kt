@@ -96,60 +96,21 @@ object BabyUtils {
 
             // 7-8 meses -> carnes, huevo, papillas más espesas
             "Pollo", "Vacuno", "Cerdo", "Pavo", "Conejo", "Huevo",
-            "Avena" -> 6
+            "Avena" -> 7
 
             // 9-10 meses -> alimentos blandos en trozos
             "Merluza", "Salmón", "Lentejas", "Garbanzos", "Alubias", "Tofu",
             "Maíz", "Quinoa", "Cuscús", "Pan", "Uva", "Fresa", "Arándanos",
-            "Kiwi", "Limon" -> 8
+            "Kiwi", "Limon" -> 9
 
             // 11-12 meses -> pasta, verduras cocidas, quesos suaves, más variedad
-            "Pasta", "Yogur natural", "Queso fresco" -> 10
+            "Pasta", "Yogur natural", "Queso fresco" -> 11
 
             else -> 11
         }
 
-        //SEGÚN LA IMAGEN DE QUE PUEDEN COMER LOS BEBES
-        /*
-        fun getRecipeTypes(): List<String> {
-    val months = BabyUtils.getAgeInMonths()
-
-    return when {
-        months < 6 -> listOf() // solo leche, no recetas
-
-        months in 6..7 -> listOf(
-            "puree",
-            "baby food",
-            "porridge"
-        )
-
-        months in 8..9 -> listOf(
-            "puree",
-            "porridge",
-            "soup",
-            "mash",
-            "baby food"
-        )
-
-        months in 10..12 -> listOf(
-            "puree",
-            "porridge",
-            "soup",
-            "mash",
-            "finger food",
-            "pancakes",
-            "muffins"
-        )
-
-        else -> listOf(
-            "main course",
-            "side dish",
-            "breakfast"
-        )
     }
-}
-         */
-    }
+
     fun getExcludedFoods(): List<String> {
         val months = getAgeInMonths() //sacamos los meses del bebé
 //devuelve los alimento cuando el mes sea menor que la edad mínima para ese alimento
@@ -157,11 +118,5 @@ object BabyUtils {
             months < getMinAgeForFood(food)
         }
     }
-    fun getAllowedFoods(): List<String> {
-        val months = getAgeInMonths()
-//si ya tiene la edad devuelve los alimentos
-        return foodNames.filter { food ->
-            months >= getMinAgeForFood(food)
-        }
-    }
+
 }
