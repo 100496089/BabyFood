@@ -22,7 +22,8 @@ class ApiActivity : AppCompatActivity() {
     private val apiKeySpoonacular = BuildConfig.SPOONACULAR_API_KEY
     private val apiKeySpoonacular2 = BuildConfig.SPOONACULAR_API_KEY_2
     private val apiKeySpoonacular3 = BuildConfig.SPOONACULAR_API_KEY_3
-    private val apiKey = apiKeySpoonacular3
+    private val apiKeySpoonacular4 = BuildConfig.SPOONACULAR_API_KEY_4
+    private val apiKey = apiKeySpoonacular4
     private lateinit var adapter: RecipeAdapter //declaro el adapter pero se inicializará mas tarde
     private val recipeList = mutableListOf<Recipe>() // Lista de recetas que llegan de la api
     //se trata de una lista que se puede modificar
@@ -227,7 +228,7 @@ class ApiActivity : AppCompatActivity() {
 
                 // Traducimos ingredientes seleccionados y los juntamos en una cadena
                 val ingredientsQuery = includeIngredients.joinToString(" ") { translate(it) }
-                
+
                 // Preparamos los excluidos (evitando excluir lo que el usuario ha seleccionado)
                 val translatedSelected = includeIngredients.map { translate(it).lowercase() }
                 // Filtramos para excluir lo que el usuario ha seleccionado para la URL
@@ -239,7 +240,7 @@ class ApiActivity : AppCompatActivity() {
                 for (type in types) {
                     // Formato de búsqueda: "manzana puree", "manzana muffins", etc.
                     val finalQuery = "$ingredientsQuery $type".trim()
-                    
+
                     // Si no hay nada seleccionado, buscamos por categoría genérica de bebé
                     val searchQuery = if (finalQuery.isEmpty()) "baby $type" else finalQuery
 
@@ -247,12 +248,12 @@ class ApiActivity : AppCompatActivity() {
                     val urlString = "https://api.spoonacular.com/recipes/complexSearch?" +
                             "query=${URLEncoder.encode(searchQuery, "UTF-8")}" +
                             "&excludeIngredients=${URLEncoder.encode(excludeParam, "UTF-8")}" +
-                            "&number=5" + 
-                            "&apiKey=$apiKeySpoonacular3"
+                            "&number=5" +
+                            "&apiKey=$apiKeySpoonacular4"
 
                     val respuesta = URL(urlString).readText()
                     Log.d("API_RESPUESTA", "Buscando $type: $respuesta")
-                    
+
                     val json = JSONObject(respuesta)
                     val listaJson = json.getJSONArray("results")
 
@@ -277,7 +278,7 @@ class ApiActivity : AppCompatActivity() {
                     recipeList.clear()
                     recipeList.addAll(allRecipes)
                     adapter.notifyDataSetChanged()
-                    
+
                     if (allRecipes.isEmpty()) {
                         Toast.makeText(this@ApiActivity, "No se encontraron recetas", Toast.LENGTH_LONG).show()
                     }

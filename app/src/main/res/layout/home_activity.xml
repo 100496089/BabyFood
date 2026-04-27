@@ -10,11 +10,11 @@
 
     <!-- ScrollView para el contenido principal -->
     <ScrollView
+        android:id="@+id/scrollViewMain"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
         android:clipToPadding="false"
-        android:clipChildren="false"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
 
@@ -227,35 +227,43 @@
                                 android:orientation="horizontal">
 
                                 <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/img_receta_1"
                                     android:layout_width="150dp"
                                     android:layout_height="150dp"
                                     android:layout_marginEnd="8dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/receta_arroz"
+                                    android:clickable="true"
+                                    android:focusable="true"
                                     app:shapeAppearanceOverlay="@style/CornerImage" />
 
                                 <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/img_receta_2"
                                     android:layout_width="150dp"
                                     android:layout_height="150dp"
                                     android:layout_marginEnd="8dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/img"
+                                    android:clickable="true"
+                                    android:focusable="true"
                                     app:shapeAppearanceOverlay="@style/CornerImage" />
 
                                 <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/img_receta_3"
                                     android:layout_width="150dp"
                                     android:layout_height="150dp"
                                     android:layout_marginEnd="8dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/img_1"
+                                    android:clickable="true"
+                                    android:focusable="true"
                                     app:shapeAppearanceOverlay="@style/CornerImage" />
 
                                 <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/img_receta_4"
                                     android:layout_width="150dp"
                                     android:layout_height="150dp"
                                     android:layout_marginEnd="8dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/img_2"
+                                    android:clickable="true"
+                                    android:focusable="true"
                                     app:shapeAppearanceOverlay="@style/CornerImage" />
 
                             </LinearLayout>
@@ -279,7 +287,8 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
         android:background="@android:color/white"
         app:itemIconSize="26dp"
         app:itemIconTint="@color/bottom_nav_colors"

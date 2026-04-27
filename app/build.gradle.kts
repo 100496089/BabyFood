@@ -15,6 +15,7 @@ val googleKey = localProperties.getProperty("GOOGLE_TRANSLATE_API_KEY") ?: ""
 val spoonacularKey = localProperties.getProperty("SPOONACULAR_API_KEY") ?: ""
 val spoonacularKey2 = localProperties.getProperty("SPOONACULAR_API_KEY_2") ?: ""
 val spoonacularKey3 = localProperties.getProperty("SPOONACULAR_API_KEY_3") ?: ""
+val spoonacularKey4 = localProperties.getProperty("SPOONACULAR_API_KEY_4") ?: ""
 
 android {
     namespace = "com.uc3m.it.babyfood"
@@ -33,6 +34,7 @@ android {
         buildConfigField("String", "SPOONACULAR_API_KEY", "\"$spoonacularKey\"")
         buildConfigField("String", "SPOONACULAR_API_KEY_2", "\"$spoonacularKey2\"")
         buildConfigField("String", "SPOONACULAR_API_KEY_3", "\"$spoonacularKey3\"")
+        buildConfigField("String", "SPOONACULAR_API_KEY_4", "\"$spoonacularKey4\"")
     }
 
     buildFeatures {

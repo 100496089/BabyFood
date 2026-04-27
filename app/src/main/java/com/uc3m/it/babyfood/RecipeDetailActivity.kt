@@ -20,7 +20,7 @@ import com.bumptech.glide.Glide
 //GEMINI
 class RecipeDetailActivity : AppCompatActivity() {
 
-    private val apiKey = BuildConfig.SPOONACULAR_API_KEY_3
+    private val apiKey = BuildConfig.SPOONACULAR_API_KEY_4
     private val apiKeyGoogle = BuildConfig.GOOGLE_TRANSLATE_API_KEY
 
     private lateinit var db: DatabaseAdapter
@@ -40,7 +40,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         // Botón volver a ApiActivity
         val btnBack = findViewById<ImageButton>(R.id.btnBack)
         btnBack.setOnClickListener {
-           // val intent = Intent(this, ApiActivity::class.java)
+            // val intent = Intent(this, ApiActivity::class.java)
             //startActivity(intent)
             //finish()
             onBackPressedDispatcher.onBackPressed() //cierra la actividad actual y vuelve a la anterior (ApiActivity)
@@ -55,7 +55,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         if (recipeIdIntent != -1) {
             recipeId = recipeIdIntent
             cargarReceta(recipeId) //Llama a la función que descarga la receta
-            
+
             // Estado inicial
             isFav = db.isFavorite(recipeId)
             actualizarIconoFavorito(imgLike)
@@ -63,7 +63,7 @@ class RecipeDetailActivity : AppCompatActivity() {
 
         btnLikeLayout.setOnClickListener {
             if (recipeId == -1 || recipeTitle.isEmpty()) return@setOnClickListener
-            
+
             isFav = !isFav
 
             if (isFav) {
@@ -107,7 +107,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
-//ChatGPT
+    //ChatGPT
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->
@@ -121,7 +121,7 @@ class RecipeDetailActivity : AppCompatActivity() {
                     true
                 }
                 R.id.search_button -> {
-                  //  startActivity(Intent(this, ApiActivity::class.java))
+                    //  startActivity(Intent(this, ApiActivity::class.java))
                     finish()   // cierra la actividad actual, sin crear nada nuevo
                     true //indicamos que el botón de menú ya fue gestionado
                 }
@@ -133,12 +133,12 @@ class RecipeDetailActivity : AppCompatActivity() {
             }
         }
         // Sombreado de la lupa (search_button)
-       // bottomNav.selectedItemId = R.id.search_button
+        // bottomNav.selectedItemId = R.id.search_button
         bottomNav.menu.findItem(R.id.search_button).isChecked = true
         //Dentro del menú buscamos el botón de buscar y con 'isChecked' lo marcamos como seleccionado
 
     }
-//para que no salga en formato html
+    //para que no salga en formato html
     private fun cleanHtml(text: String): String {
         return android.text.Html.fromHtml(
             text,

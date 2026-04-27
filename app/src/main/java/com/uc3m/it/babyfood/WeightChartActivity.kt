@@ -1,5 +1,6 @@
 package com.uc3m.it.babyfood
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
@@ -42,7 +43,7 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
         btnBack.setOnClickListener {
             finish()
         }
-        
+
         lineChart.setOnChartValueSelectedListener(this)
     }
 
@@ -59,7 +60,7 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
         xAxis.granularity = 1f // Forzar a que los saltos sean de 1 en 1 (un punto por etiqueta)
-        
+
         // Formateador para convertir el índice (0, 1, 2...) de vuelta a fecha
         xAxis.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
@@ -79,10 +80,18 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
     }
 
     private fun loadDataIntoChart() {
-        val cursor = dbAdapter.fetchAllWeights() //obtengo los datos de la base de datos
-        val entries = ArrayList<Entry>()
+        val cursor = dbAdapter.fetchAllWeights()
+        val weightEntries = ArrayList<Entry>()
+        val minPercentileEntries = ArrayList<Entry>()
+        val maxPercentileEntries = ArrayList<Entry>()
+        val circleColors = ArrayList<Int>() // Lista para los colores de los puntos
+
         dateLabels.clear()
         weightIds.clear()
+
+        val prefs = getSharedPreferences("BabyFoodPrefs", Context.MODE_PRIVATE)
+        val birthDate = prefs.getString("fecha", "") ?: ""
+        val isBoy = prefs.getString("genero", "") == "Niño"
 
         if (cursor.moveToFirst()) {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -101,7 +110,21 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
                     // Guardamos el ID y la fecha para la etiqueta y usamos el índice para la posición X
                     weightIds.add(id)
                     dateLabels.add(formattedDate)
-                    entries.add(Entry(index, weight.toFloat()))
+                    weightEntries.add(Entry(index, weight.toFloat()))
+
+                    // Cálculo de percentiles para este punto temporal
+                    val monthsAtWeight = BabyUtils.getMonthsBetween(birthDate, dateStr)
+                    val range = BabyUtils.getWeightRange(monthsAtWeight, isBoy)
+                    minPercentileEntries.add(Entry(index, range.first))
+                    maxPercentileEntries.add(Entry(index, range.second))
+                    
+                    // Si el peso está fuera de rango, el punto es ROJO, si no, VERDE o MORADO
+                    if (weight < range.first || weight > range.second) {
+                        circleColors.add(Color.RED)
+                    } else {
+                        circleColors.add(Color.parseColor("#6200EE")) // Morado original
+                    }
+
                     index++
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -110,28 +133,40 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
         }
         cursor.close()
 
-        if (entries.isNotEmpty()) {
-            val dataSet = LineDataSet(entries, "Evolución del Peso (kg)")
-            
-            // Personalización estética
-            dataSet.color = Color.parseColor("#6200EE") // Color de la línea
-            dataSet.setCircleColor(Color.parseColor("#BB86FC")) // Color de los puntos
-            dataSet.lineWidth = 3f
-            dataSet.circleRadius = 5f
-            dataSet.setDrawCircleHole(false)
-            dataSet.valueTextSize = 12f
-            dataSet.setDrawFilled(true)
-            dataSet.fillAlpha = 50 //transparencia del relleno
-            dataSet.fillColor = Color.parseColor("#6200EE")
-            dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // Línea suavizada
+        if (weightEntries.isNotEmpty()) {
+            val weightDataSet = LineDataSet(weightEntries, "Peso del Bebé (kg)").apply {
+                color = Color.parseColor("#6200EE")
+                setCircleColors(circleColors) // Aplicamos la lista de colores personalizada
+                lineWidth = 3f
+                circleRadius = 5f
+                setDrawCircleHole(false)
+                valueTextSize = 10f
+            }
+            // Línea de Percentil Mínimo (Referencia)
+            val minDataSet = LineDataSet(minPercentileEntries, "P15 (Mínimo)").apply {
+                color = Color.LTGRAY
+                setDrawCircles(false)
+                lineWidth = 1f
+                enableDashedLine(10f, 10f, 0f)
+                setDrawValues(false)
+            }
 
-            val lineData = LineData(dataSet)
+            // Línea de Percentil Máximo (Referencia)
+            val maxDataSet = LineDataSet(maxPercentileEntries, "P85 (Máximo)").apply {
+                color = Color.LTGRAY
+                setDrawCircles(false)
+                lineWidth = 1f
+                enableDashedLine(10f, 10f, 0f)
+                setDrawValues(false)
+            }
+
+            val lineData = LineData(minDataSet, maxDataSet, weightDataSet)
             lineChart.data = lineData
-            
+
             // fijo un número máximo de etiquetas en el eje X (5) para que sea siempre legible
             lineChart.xAxis.labelCount = if (dateLabels.size > 5) 5 else dateLabels.size
             lineChart.setVisibleXRangeMaximum(5f) //hace que la gráfica sea scrolleable a partir de 5 valores
-            
+
             lineChart.animateX(1000) // Animación al cargar
             lineChart.invalidate()
         } else {
@@ -140,33 +175,33 @@ class WeightChartActivity : AppCompatActivity(), OnChartValueSelectedListener {
     }
 
     override fun onValueSelected(e: Entry?, h: Highlight?) {
-        if (e == null) return
+        if (e == null || h == null) return
 
-        val index = e.x.toInt()
-        if (index >= 0 && index < weightIds.size) {
-            val weightId = weightIds[index]
-            val date = dateLabels[index]
-            val weight = e.y
+        // Comprobamos que el usuario ha pulsado sobre la línea de "Peso del Bebé" (es el dataset con índice 2)
+        // ya que añadimos minDataSet (0), maxDataSet (1) y weightDataSet (2)
+        if (h.dataSetIndex == 2) {
+            val index = e.x.toInt()
+            if (index >= 0 && index < weightIds.size) {
+                val weightId = weightIds[index]
+                val date = dateLabels[index]
+                val weight = e.y
 
-            AlertDialog.Builder(this)
-                .setTitle("Borrar registro")
-                .setMessage("¿Deseas eliminar el registro de peso de $weight kg del día $date?")
-                .setPositiveButton("Borrar") { _, _ ->
-                    if (dbAdapter.deleteWeight(weightId)) {
-                        Toast.makeText(this, "Registro borrado", Toast.LENGTH_SHORT).show()
-                        loadDataIntoChart() // Recargar el gráfico
-                    } else {
-                        Toast.makeText(this, "Error al borrar", Toast.LENGTH_SHORT).show()
+                AlertDialog.Builder(this)
+                    .setTitle("Borrar registro")
+                    .setMessage("¿Deseas eliminar el registro de peso de $weight kg del día $date?")
+                    .setPositiveButton("Borrar") { _, _ ->
+                        if (dbAdapter.deleteWeight(weightId)) {
+                            Toast.makeText(this, "Registro borrado", Toast.LENGTH_SHORT).show()
+                            loadDataIntoChart()
+                        }
                     }
-                }
-                .setNegativeButton("Cancelar", null)
-                .show()
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            }
         }
     }
 
-    override fun onNothingSelected() {
-        // No se requiere acción
-    }
+    override fun onNothingSelected() {}
 
     override fun onDestroy() {
         super.onDestroy()

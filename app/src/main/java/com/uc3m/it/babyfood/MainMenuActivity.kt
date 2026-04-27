@@ -65,6 +65,7 @@ class MainMenuActivity : AppCompatActivity() {
         val pesoGuardado = prefs.getString("peso", null)
         val fotoGuardada = prefs.getString("foto_perfil", null)
         val alergiasGuardadas = prefs.getString("alergia", "")
+        val generoGuardado = prefs.getString("genero", "")
 
         val isEditing = intent.getBooleanExtra("isEditing", false) //Compruebo si estoy editando el perfil
 
@@ -98,6 +99,7 @@ class MainMenuActivity : AppCompatActivity() {
         val editTextFecha = findViewById<EditText>(R.id.editTextFecha)
         val editTextPeso = findViewById<EditText>(R.id.editTextPeso)
         val editTextAlergia = findViewById<TextInputEditText>(R.id.editTextAlergia)
+        val radioGroupGender = findViewById<RadioGroup>(R.id.radioGroupGender)
         val buttonEnviar = findViewById<Button>(R.id.buttonMenu)
 
         currentPhotoPath = prefs.getString("foto_perfil", null)
@@ -113,8 +115,15 @@ class MainMenuActivity : AppCompatActivity() {
         }
 
         editTextNombre.setText(nombreGuardado)
-        editTextFecha.setText(prefs.getString("fecha", ""))
-        editTextPeso.setText(prefs.getString("peso", ""))
+        editTextFecha.setText(fechaGuardada)
+        editTextPeso.setText(pesoGuardado)
+
+        // Cargar género guardado
+        if (generoGuardado == "Niña") {
+            findViewById<RadioButton>(R.id.radioGirl).isChecked = true
+        } else {
+            findViewById<RadioButton>(R.id.radioBoy).isChecked = true
+        }
         
         // Inicializar el estado de las alergias seleccionadas
         if (!alergiasGuardadas.isNullOrEmpty() && alergiasGuardadas != "Ninguna") {
@@ -154,6 +163,9 @@ class MainMenuActivity : AppCompatActivity() {
             val fecha = editTextFecha.text.toString()
             val pesoStr = editTextPeso.text.toString()
             val alergia = editTextAlergia.text.toString()
+            // Obtener género seleccionado
+            val selectedGenderId = radioGroupGender.checkedRadioButtonId
+            val genero = if (selectedGenderId == R.id.radioGirl) "Niña" else "Niño"
 
             val camposRellenos = nombre.isNotEmpty() &&
                     fecha.isNotEmpty() &&
@@ -169,6 +181,7 @@ class MainMenuActivity : AppCompatActivity() {
                 editor.putString("fecha", fecha)
                 editor.putString("peso", pesoStr)
                 editor.putString("alergia", alergia)
+                editor.putString("genero", genero)
                 editor.putString("foto_perfil", currentPhotoPath)
                 editor.apply()
 
