@@ -33,7 +33,7 @@ class FavoritesActivity : AppCompatActivity() {
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerFavorites)
-        
+
         adapter = RecipeAdapter(favoriteList) { receta ->
             val intent = Intent(this, RecipeDetailActivity::class.java)
             intent.putExtra("recipeId", receta.id)
@@ -50,42 +50,42 @@ class FavoritesActivity : AppCompatActivity() {
         super.onResume()
         cargarFavoritos()
     }
-//carga la base de datos
-private fun cargarFavoritos() {
-    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-        val tempList = mutableListOf<Recipe>()
-        val cursor = db.fetchAllFavorites()
+    //carga la base de datos
+    private fun cargarFavoritos() {
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            val tempList = mutableListOf<Recipe>()
+            val cursor = db.fetchAllFavorites()
 
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_ID))
-                val title = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_TITLE))
-                val image = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_IMAGE))
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_ID))
+                    val title = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_TITLE))
+                    val image = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_IMAGE))
 
-                val translatedTitle = translateText(title)
+                    val translatedTitle = translateText(title)
 
-                tempList.add(
-                    Recipe(
-                        title = title,
-                        translatedTitle = translatedTitle,
-                        image = image,
-                        id = id
+                    tempList.add(
+                        Recipe(
+                            title = title,
+                            translatedTitle = translatedTitle,
+                            image = image,
+                            id = id
+                        )
                     )
-                )
-            } while (cursor.moveToNext())
-        }
+                } while (cursor.moveToNext())
+            }
 
-        cursor?.close() //cierra recursos
+            cursor?.close() //cierra recursos
 
-        withContext(kotlinx.coroutines.Dispatchers.Main) {
-            favoriteList.clear()
-            favoriteList.addAll(tempList)
-            adapter.notifyDataSetChanged()
+            withContext(kotlinx.coroutines.Dispatchers.Main) {
+                favoriteList.clear()
+                favoriteList.addAll(tempList)
+                adapter.notifyDataSetChanged()
+            }
         }
     }
-}
 
-//ChatGPT
+    //ChatGPT
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->

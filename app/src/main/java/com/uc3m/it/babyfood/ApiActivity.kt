@@ -13,6 +13,7 @@ import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.net.URL
 import java.net.URLEncoder
+import com.uc3m.it.babyfood.BuildConfig
 
 class ApiActivity : AppCompatActivity() {
 
@@ -37,10 +38,7 @@ class ApiActivity : AppCompatActivity() {
         // Botón volver al foodActivity
         val btnBack = findViewById<ImageButton>(R.id.btnBack)
         btnBack.setOnClickListener {
-            val intent = Intent(this, FoodActivity::class.java)
-            startActivity(intent)
             finish()
-
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerRecetas)
@@ -160,7 +158,8 @@ class ApiActivity : AppCompatActivity() {
             else -> food.lowercase()
         }
     }
-    private suspend fun translateText(text: String): String = withContext(Dispatchers.IO) {
+    private suspend fun translateText(text: String, source: String = "en", target: String = "es"): String = withContext(Dispatchers.IO) {
+        if (text.isEmpty()) return@withContext ""
         try {
             //api de google translate
             val key = apiKeyGoogle
@@ -169,8 +168,8 @@ class ApiActivity : AppCompatActivity() {
             //lo que le mando a google para que traduzca
             val body = JSONObject().apply {
                 put("q", text) //el texto que quiero traducir
-                put("source", "en") //el idioma original
-                put("target", "es") //al que lo quiero traducir
+                put("source", source) //el idioma original
+                put("target", target) //al que lo quiero traducir
                 put("format", "text") //el formato
             }
             //conectamos con la api
@@ -226,21 +225,19 @@ class ApiActivity : AppCompatActivity() {
                 val allRecipes = mutableListOf<Recipe>()
                 val seenIds = mutableSetOf<Int>()
 
-                // Traducimos ingredientes seleccionados y los juntamos en una cadena
-                val ingredientsQuery = includeIngredients.joinToString(" ") { translate(it) }
+                // TRADUCCIÓN ES -> EN: Traducimos los ingredientes seleccionados para la búsqueda
+                val ingredientsEs = includeIngredients.joinToString(", ")
+                val ingredientsEn = translateText(ingredientsEs, "es", "en")
 
-                // Preparamos los excluidos (evitando excluir lo que el usuario ha seleccionado)
-                val translatedSelected = includeIngredients.map { translate(it).lowercase() }
-                // Filtramos para excluir lo que el usuario ha seleccionado para la URL
-                val excludeParam = excludeIngredients
-                    .map { translate(it).lowercase() }
-                    .filter { it !in translatedSelected }
-                    .joinToString(",")
+                // Traducimos también los excluidos para que la API de Spoonacular los entienda
+                val excludeEs = excludeIngredients.joinToString(", ")
+                val excludeEn = translateText(excludeEs, "es", "en")
+                val excludeParam = excludeEn.replace(" ", "") // Limpiamos espacios para la URL
 
                 for (type in types) {
-                    // Formato de búsqueda: "manzana puree", "manzana muffins", etc.
-                    val finalQuery = "$ingredientsQuery $type".trim()
-
+                    // Formato de búsqueda: "apple puree" (usando la traducción de la API)
+                    val finalQuery = "$ingredientsEn $type".trim()
+                    
                     // Si no hay nada seleccionado, buscamos por categoría genérica de bebé
                     val searchQuery = if (finalQuery.isEmpty()) "baby $type" else finalQuery
 
@@ -253,7 +250,7 @@ class ApiActivity : AppCompatActivity() {
 
                     val respuesta = URL(urlString).readText()
                     Log.d("API_RESPUESTA", "Buscando $type: $respuesta")
-
+                    
                     val json = JSONObject(respuesta)
                     val listaJson = json.getJSONArray("results")
 
@@ -263,7 +260,8 @@ class ApiActivity : AppCompatActivity() {
                         if (!seenIds.contains(id)) {
                             seenIds.add(id)
                             val originalTitle = item.getString("title")
-                            val translatedTitle = translateText(originalTitle)
+                            // TRADUCCIÓN EN -> ES: Traducimos el título de la receta para el usuario
+                            val translatedTitle = translateText(originalTitle, "en", "es")
                             allRecipes.add(Recipe(
                                 originalTitle,
                                 translatedTitle,
@@ -278,7 +276,7 @@ class ApiActivity : AppCompatActivity() {
                     recipeList.clear()
                     recipeList.addAll(allRecipes)
                     adapter.notifyDataSetChanged()
-
+                    
                     if (allRecipes.isEmpty()) {
                         Toast.makeText(this@ApiActivity, "No se encontraron recetas", Toast.LENGTH_LONG).show()
                     }
