@@ -23,8 +23,8 @@ class ApiActivity : AppCompatActivity() {
     private val apiKeySpoonacular = BuildConfig.SPOONACULAR_API_KEY
     private val apiKeySpoonacular2 = BuildConfig.SPOONACULAR_API_KEY_2
     private val apiKeySpoonacular3 = BuildConfig.SPOONACULAR_API_KEY_3
-    private val apiKeySpoonacular4 = BuildConfig.SPOONACULAR_API_KEY_4
-    private val apiKey = apiKeySpoonacular4
+    //private val apiKeySpoonacular4 = BuildConfig.SPOONACULAR_API_KEY_4
+    private val apiKey = apiKeySpoonacular3
     private lateinit var adapter: RecipeAdapter //declaro el adapter pero se inicializará mas tarde
     private val recipeList = mutableListOf<Recipe>() // Lista de recetas que llegan de la api
     //se trata de una lista que se puede modificar
@@ -246,7 +246,7 @@ class ApiActivity : AppCompatActivity() {
                             "query=${URLEncoder.encode(searchQuery, "UTF-8")}" +
                             "&excludeIngredients=${URLEncoder.encode(excludeParam, "UTF-8")}" +
                             "&number=5" +
-                            "&apiKey=$apiKeySpoonacular4"
+                            "&apiKey=$apiKey"
 
                     val respuesta = URL(urlString).readText()
                     Log.d("API_RESPUESTA", "Buscando $type: $respuesta")

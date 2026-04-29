@@ -20,7 +20,7 @@ import com.bumptech.glide.Glide
 //GEMINI
 class RecipeDetailActivity : AppCompatActivity() {
 
-    private val apiKey = BuildConfig.SPOONACULAR_API_KEY_4
+    private val apiKey = BuildConfig.SPOONACULAR_API_KEY_3
     private val apiKeyGoogle = BuildConfig.GOOGLE_TRANSLATE_API_KEY
 
     private lateinit var db: DatabaseAdapter
