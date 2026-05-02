@@ -67,23 +67,6 @@ object BabyUtils {
         }
     }
 
-    //añadido para filtrar según la edad del bebé: ChatGPT
-    fun getAgeInMonths(): Int {
-        return when {
-            //asociemos la edad calculada a meses
-            babyAge.contains("Recién") -> 0
-            babyAge.contains("meses") -> {
-                //divide en partes el texto y se queda con el priemr elemento
-                babyAge.split(" ")[0].toIntOrNull() ?: 0
-            }
-            babyAge.contains("años") -> {
-                val years = babyAge.split(" ")[0].toIntOrNull() ?: 0
-                years * 12
-            }
-            else -> 0
-        }
-    }
-
     //Funciones para el cálculo de percentiles (ayuda de Gemini)
     fun getMonthsBetween(birthDateStr: String, targetDateStr: String): Int {
         try {
@@ -139,7 +122,22 @@ object BabyUtils {
             }
         }
     }
-
+    //añadido para filtrar según la edad del bebé: ChatGPT
+    fun getAgeInMonths(): Int {
+        return when {
+            //asociemos la edad calculada a meses
+            babyAge.contains("Recién") -> 0
+            babyAge.contains("meses") -> {
+                //divide en partes el texto y se queda con el priemr elemento
+                babyAge.split(" ")[0].toIntOrNull() ?: 0
+            }
+            babyAge.contains("años") -> {
+                val years = babyAge.split(" ")[0].toIntOrNull() ?: 0
+                years * 12
+            }
+            else -> 0
+        }
+    }
     fun getMinAgeForFood(food: String): Int {
         return when (food) {
 
