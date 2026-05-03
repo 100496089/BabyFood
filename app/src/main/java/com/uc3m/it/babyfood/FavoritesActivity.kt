@@ -50,12 +50,12 @@ class FavoritesActivity : AppCompatActivity() {
         super.onResume()
         cargarFavoritos()
     }
-    //carga la base de datos
+    //Carga la base de datos. Ayuda de GEMINI basandose en las BD de mis compañeras
     private fun cargarFavoritos() {
-        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val tempList = mutableListOf<Recipe>()
             val cursor = db.fetchAllFavorites()
-
+            //métodos para navegar por la lista de resultados
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.KEY_FAV_ID))
@@ -75,9 +75,9 @@ class FavoritesActivity : AppCompatActivity() {
                 } while (cursor.moveToNext())
             }
 
-            cursor?.close() //cierra recursos
+            cursor?.close() //cDentro de styles.xml:cierra recursos
 
-            withContext(kotlinx.coroutines.Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 favoriteList.clear()
                 favoriteList.addAll(tempList)
                 adapter.notifyDataSetChanged()
@@ -85,7 +85,7 @@ class FavoritesActivity : AppCompatActivity() {
         }
     }
 
-    //ChatGPT
+    //Copiado de otra compañera
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->

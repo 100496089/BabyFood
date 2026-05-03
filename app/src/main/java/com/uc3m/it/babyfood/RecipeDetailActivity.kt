@@ -14,7 +14,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.widget.Toast
-
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 //GEMINI
@@ -65,11 +64,11 @@ class RecipeDetailActivity : AppCompatActivity() {
             if (recipeId == -1 || recipeTitle.isEmpty()) return@setOnClickListener
 
             isFav = !isFav
-
+            //operaciones básicas de SQLite
             if (isFav) {
-                db.addFavorite(recipeId, recipeTitle, recipeImage)
+                db.addFavorite(recipeId, recipeTitle, recipeImage) //insertar una fila cuando se guarda una receta como favorita
             } else {
-                db.removeFavorite(recipeId)
+                db.removeFavorite(recipeId) //borrar una fila cuando se quita de favoritos
             }
             actualizarIconoFavorito(imgLike)
         }
@@ -107,7 +106,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
-    //ChatGPT
+    //Copiado de una compañera
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->

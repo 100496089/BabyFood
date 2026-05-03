@@ -48,7 +48,7 @@ class ApiActivity : AppCompatActivity() {
             val intent = Intent(this, RecipeDetailActivity::class.java)
             intent.putExtra("recipeId", receta.id)
 
-        //Fecha y tipo de comida que vienen desde FoodActivity
+            //Fecha y tipo de comida que vienen desde FoodActivity
             intent.putExtra("selectedDate", getIntent().getStringExtra("selectedDate"))
             intent.putExtra("mealType", getIntent().getStringExtra("mealType"))
 
@@ -61,7 +61,7 @@ class ApiActivity : AppCompatActivity() {
         setupBottomNavigation()
         obtenerTodasLasRecetas()
     }
-//ChatGPT
+//Copiado de otra compañera
     private fun setupBottomNavigation() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNav.setOnItemSelectedListener { item ->
@@ -90,74 +90,6 @@ class ApiActivity : AppCompatActivity() {
         bottomNav.selectedItemId = R.id.search_button
     }
 
-    private fun translate(food: String): String {
-        return when (food.lowercase()) {
-            // Verduras y hortalizas
-            "zanahoria" -> "carrot"
-            "brócoli" -> "broccoli"
-            "patata" -> "potato"
-            "tomate" -> "tomato"
-            "calabaza" -> "pumpkin"
-            "calabacín" -> "zucchini"
-            "berenjena" -> "eggplant"
-            "guisantes" -> "peas"
-            "judías verdes" -> "green beans"
-            "puerro" -> "leek"
-            "batata" -> "sweet potato"
-            "coliflor" -> "cauliflower"
-            "pepino" -> "cucumber"
-
-            // Frutas
-            "plátano" -> "banana"
-            "manzana" -> "apple"
-            "pera" -> "pear"
-            "naranja" -> "orange"
-            "uva" -> "grape"
-            "aguacate" -> "avocado"
-            "mango" -> "mango"
-            "papaya" -> "papaya"
-            "fresa" -> "strawberry"
-            "arándanos" -> "blueberries"
-            "ciruela" -> "plum"
-            "melocotón" -> "peach"
-            "sandía" -> "watermelon"
-            "melón" -> "melon"
-            "limon" -> "lemon"
-            "limón" -> "lemon"
-            "kiwi" -> "kiwi"
-
-            // Proteínas
-            "pollo" -> "chicken"
-            "vacuno" -> "beef"
-            "cerdo" -> "pork"
-            "pavo" -> "turkey"
-            "conejo" -> "rabbit"
-            "huevo" -> "egg"
-            "merluza" -> "hake"
-            "salmón" -> "salmon"
-            "lentejas" -> "lentils"
-            "garbanzos" -> "chickpeas"
-            "alubias" -> "beans"
-            "tofu" -> "tofu"
-
-            // Cereales y lácteos
-            "maíz" -> "corn"
-            "arroz" -> "rice"
-            "avena" -> "oats"
-            "pasta" -> "pasta"
-            "quinoa" -> "quinoa"
-            "cuscús" -> "couscous"
-            "pan" -> "bread"
-            "leche" -> "milk"
-            "yogur natural" -> "plain yogurt"
-            "queso fresco" -> "fresh cheese"
-
-            // Otros
-            "aceite de oliva" -> "olive oil"
-
-            else -> food.lowercase()
-        }
-    }
     private suspend fun translateText(text: String, source: String = "en", target: String = "es"): String = withContext(Dispatchers.IO) {
         if (text.isEmpty()) return@withContext ""
         try {
@@ -173,8 +105,8 @@ class ApiActivity : AppCompatActivity() {
                 put("format", "text") //el formato
             }
             //conectamos con la api
-            val connection = URL(url).openConnection() as java.net.HttpURLConnection
-            //Le dices que vas a enviar datos, no solo leer una URL
+            val connection = URL(url).openConnection() as java.net.HttpURLConnection //cliente HTTP
+            //Le dices que vas a enviar datos, no solo leer una URL, petición POST
             connection.requestMethod = "POST"
             //manda un json
             connection.setRequestProperty("Content-Type", "application/json")
@@ -201,7 +133,7 @@ class ApiActivity : AppCompatActivity() {
 
     private fun obtenerTodasLasRecetas() {
         //Coge los ingredientes que vienen de la pantalla anterior, y si no hay, usa una lista vacía
-        //Usa esto porquese necesitan traducir
+        //Usa esto porque los ingredientes se necesitan traducir
         val includeIngredients = intent.getStringArrayListExtra("includeIngredients") ?: arrayListOf()
         //excluye los ingredientes directamente de BabyUtils
         val excludeIngredients = BabyUtils.getExcludedFoods()
@@ -218,8 +150,8 @@ class ApiActivity : AppCompatActivity() {
             "pancakes",
             "muffins"
         )
-
-//Android no permite hacer llamadas a internet en el hilo principal, porque bloquearía la app.
+        //Las operaciones de red deben hacerse en un hilo separado para no bloquear la app
+        //Android no permite hacer llamadas a internet en el hilo principal, porque bloquearía la app.
         CoroutineScope(Dispatchers.IO).launch { //forma de ejecutar tareas en segundo plano sin bloquear la app
             try {
                 val allRecipes = mutableListOf<Recipe>()
@@ -248,9 +180,10 @@ class ApiActivity : AppCompatActivity() {
                             "&number=5" +
                             "&apiKey=$apiKey"
 
-                    val respuesta = URL(urlString).readText()
+                    val respuesta = URL(urlString).readText() //petición tipo GET, solo recupero información del servidor
                     Log.d("API_RESPUESTA", "Buscando $type: $respuesta")
                     
+                    //Los datos de APIs se reciben en JSON y hay que parsearlos
                     val json = JSONObject(respuesta)
                     val listaJson = json.getJSONArray("results")
 
@@ -273,6 +206,7 @@ class ApiActivity : AppCompatActivity() {
                 }
 
                 withContext(Dispatchers.Main) {//actualizar la lista de recetas en el hilo principal
+                    //Esto es equivalente a onPostExecute en AsyncTask
                     recipeList.clear()
                     recipeList.addAll(allRecipes)
                     adapter.notifyDataSetChanged()
