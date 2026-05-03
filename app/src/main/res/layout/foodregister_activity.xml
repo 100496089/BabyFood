@@ -130,17 +130,17 @@
         android:layout_width="370dp"
         android:layout_height="70dp"
         android:text="@string/addFood_Button"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="115dp"
+        android:layout_marginBottom="11dp"
         style="@style/addAlimento"
         android:onClick="createNote"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:background="@android:color/white"
         app:itemIconSize="26dp"
         app:itemIconTint="@color/bottom_nav_colors"

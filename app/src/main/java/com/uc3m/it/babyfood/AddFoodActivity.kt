@@ -33,7 +33,7 @@ class AddFoodActivity : AppCompatActivity(){
 
     private var dateText: TextView? = null // Para mostrar la fecha seleccionada
     private var selectedDate: String = ""  // Para guardar el valor que irá a la BD
-
+    //Ayuda de Gemini
     private fun hideKeyboard(view: View?) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
@@ -122,7 +122,7 @@ class AddFoodActivity : AppCompatActivity(){
         }
     }
 
-
+    //Ayuda de Gemini
     // almacenar la comida
     //guardar en la BD
     fun saveNote(view: View?) {
@@ -164,6 +164,7 @@ class AddFoodActivity : AppCompatActivity(){
         )
         startActivity(intent)
     }
+
     fun date(view: View) {
         val c = java.util.Calendar.getInstance()
         val year = c.get(java.util.Calendar.YEAR)
@@ -178,14 +179,14 @@ class AddFoodActivity : AppCompatActivity(){
 
         dpd.show()
     }
-
+    //Cogido de clase
     // boton back
     fun back(view: View?){
         finish()
     }
 
+    // Cogido de clase
     //sacar foto
-
     // En caso de que la activity sea destruida mientras que otra app toma la fotografía,
     // es necesario guardar la ruta y restaurarla de nuevo, puesto que si no, no habrá forma
     // de acceder a la imagen.

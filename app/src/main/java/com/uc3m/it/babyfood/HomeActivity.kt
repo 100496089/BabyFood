@@ -13,6 +13,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.imageview.ShapeableImageView
@@ -67,6 +70,11 @@ class HomeActivity : AppCompatActivity() {
         obtenerSugerenciasAPI(alergiasUsuario)
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNav) { view, insets ->
+            val navInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            view.updatePadding(bottom = navInsets.bottom)
+            insets
+        }
         bottomNav.setOnItemSelectedListener { item ->
             when(item.itemId){
                 R.id.home_button -> true

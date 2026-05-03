@@ -8,14 +8,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.SimpleCursorAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class FoodRegisterActivity : AppCompatActivity(){
@@ -102,6 +103,11 @@ class FoodRegisterActivity : AppCompatActivity(){
         }
         //AYUDA DE GEMINI
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNav) { view, insets ->
+            val navInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            view.updatePadding(bottom = navInsets.bottom)
+            insets
+        }
         bottomNav.setOnItemSelectedListener { item ->
 
             when(item.itemId){
@@ -122,6 +128,12 @@ class FoodRegisterActivity : AppCompatActivity(){
                 }
 
                 R.id.favorites_button -> {
+                    // Creamos el Intent que va a lanzar la segunda activity (SecondActivity)
+                    val intent = Intent(
+                        this,
+                        FavoritesActivity::class.java
+                    )
+                    startActivity(intent)
                     true
                 }
 

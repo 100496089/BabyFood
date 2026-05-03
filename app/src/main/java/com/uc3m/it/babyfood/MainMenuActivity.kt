@@ -202,6 +202,7 @@ class MainMenuActivity : AppCompatActivity() {
         }
     }
 
+    //ayuda de gemini
     private fun showMultiSelectAlergiasDialog(textView: TextInputEditText) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Selecciona alergias")
